@@ -62,7 +62,7 @@ Primary risks are: the backup schema extension must keep older backups importabl
 | Iteration | Status | Updated | Basis |
 | --- | --- | --- | --- |
 | [Iteration 32: Quick Actions and Screen Locking](iteration-32-quick-actions-screen-locking.md) | `Completed` | 2026-09-20 | The project author accepted the observable quick-actions and screen-locking result on the primary physical device on 2026-09-20. |
-| [Iteration 33: Home and Drawer Contract Completion](iteration-33-home-drawer-contract-completion.md) | `Planned` | 2026-09-17 | The author's 2026-09-17 version outline designates the remaining Home and Drawer contract content as the second iteration. |
+| [Iteration 33: Home and Drawer Contract Completion](iteration-33-home-drawer-contract-completion.md) | `In Progress` | 2026-09-20 | The project author authorized the first slice, the Home default-launcher prompt, on 2026-09-20. |
 | [Iteration 34: Public Release Readiness](iteration-34-public-release-readiness.md) | `Planned` | 2026-09-17 | The author's 2026-09-17 version outline designates pre-release preparation as the third iteration; the author ruled the same day that the stale URL fix and the primary-device performance expectation belong to it. |
 
 ## Iteration evidence and results
@@ -73,7 +73,7 @@ Primary risks are: the backup schema extension must keep older backups importabl
 
 ### Iteration 33
 
-[Contract](iteration-33-home-drawer-contract-completion.md). No evidence exists yet; the iteration is `Planned`.
+[Contract](iteration-33-home-drawer-contract-completion.md). `In Progress` as of 2026-09-20. The first authorized slice is the Home default-launcher prompt; glow and tapering-slider work remain queued.
 
 ### Iteration 34
 

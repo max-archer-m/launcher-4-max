@@ -1981,8 +1981,59 @@ class HomeScreenTest {
         composeRule.onNodeWithTag("settings_license").performClick()
         composeRule.onNodeWithTag("launcher4max_license_sheet").assertIsDisplayed()
         composeRule.onNodeWithText("Apache License test content").assertIsDisplayed()
-
     }
+
+    @Test
+    fun defaultLauncherPromptShowsWhenRequestedAndRoutesSelection() {
+        var selected = false
+        var dismissed = false
+        composeRule.setContent {
+            Launcher4MaxTheme {
+                HomeScreen(
+                    showDefaultLauncherPrompt = true,
+                    onSelectDefaultLauncherPrompt = { selected = true },
+                    onDismissDefaultLauncherPrompt = { dismissed = true },
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("home_default_launcher_prompt").assertIsDisplayed()
+        composeRule.onNodeWithText("Not set as the default launcher yet").assertIsDisplayed()
+        composeRule.onNodeWithText(
+            "Set as default to return here",
+        ).assertIsDisplayed()
+        composeRule.onNodeWithText("Not set as the default launcher yet").performClick()
+        composeRule.runOnIdle { assertEquals(true, selected) }
+        composeRule.onNodeWithContentDescription("Dismiss").assertIsDisplayed().performClick()
+        composeRule.runOnIdle { assertEquals(true, dismissed) }
+    }
+
+    @Test
+    fun defaultLauncherPromptIsHiddenInEditMode() {
+        composeRule.setContent {
+            Launcher4MaxTheme {
+                HomeScreen(
+                    editMode = true,
+                    showDefaultLauncherPrompt = true,
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("home_default_launcher_prompt").assertDoesNotExist()
+        composeRule.onNodeWithTag("home_edit_dock").assertIsDisplayed()
+    }
+
+    @Test
+    fun defaultLauncherPromptIsAbsentWhenNotRequested() {
+        composeRule.setContent {
+            Launcher4MaxTheme {
+                HomeScreen()
+            }
+        }
+
+        composeRule.onNodeWithTag("home_default_launcher_prompt").assertDoesNotExist()
+    }
+
     @Test
     fun defaultBindingsHaveNoHomeAction() {
         val controller = TestAccessibilityLockController(systemEnabled = true, connected = true)

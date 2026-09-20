@@ -54,7 +54,7 @@ Specification terms and user-facing interface labels are separate. Interface lab
 | Backup | 备份收藏与设置 | Back up favorites and settings |
 | Restore | 从备份恢复 | Restore from backup |
 | Default-launcher prompt title | 尚未设为默认启动器 | Not set as the default launcher yet |
-| Default-launcher prompt supporting line | 设为默认后，按系统 Home 键直接回到这个主页 | Set it as default and the Home button returns here |
+| Default-launcher prompt supporting line | 设为默认后，回到这里 | Set as default to return here |
 | Default-launcher prompt dismiss control | 关闭 | Dismiss |
 
 `收藏主列表` is the canonical Chinese working term for the favorite main list. `home 收藏区` is an informal synonym for the same region and is not a separate term.

@@ -7,6 +7,14 @@
     <dimen name="home_content_padding">8dp</dimen>
     <dimen name="home_module_spacing">8dp</dimen>
 
+    <!-- Home screen / Default-launcher prompt -->
+    <dimen name="home_default_launcher_prompt_min_height">72dp</dimen>
+    <dimen name="home_default_launcher_prompt_corner_radius">12dp</dimen>
+    <dimen name="home_default_launcher_prompt_content_padding">16dp</dimen>
+    <dimen name="home_default_launcher_prompt_icon_size">24dp</dimen>
+    <dimen name="home_default_launcher_prompt_trailing_gap">8dp</dimen>
+    <dimen name="home_default_launcher_prompt_dismiss_target">48dp</dimen>
+
     <!-- Home screen / Basic information module / Time and date -->
     <dimen name="home_information_margin">8dp</dimen>
     <dimen name="home_time_min_height">64dp</dimen>

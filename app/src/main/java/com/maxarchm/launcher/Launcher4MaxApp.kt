@@ -46,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import java.time.LocalDate
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -130,6 +131,7 @@ internal fun Launcher4MaxApp(systemHomeEvents: MutableSharedFlow<Unit>? = null) 
         favoriteStore = graph.favoriteStore,
         drawerDisplaySettingsStore = graph.drawerDisplaySettingsStore,
         quickActionBindingsStore = graph.quickActionBindingsStore,
+        defaultLauncherPromptStore = graph.defaultLauncherPromptStore,
         informationLauncher = graph.informationLauncher,
         uninstallLauncher = graph.uninstallLauncher,
         shortcutController = graph.shortcutController,
@@ -147,6 +149,7 @@ internal fun Launcher4MaxApp(
     favoriteStore: FavoriteStore? = null,
     drawerDisplaySettingsStore: DrawerDisplaySettingsStore? = null,
     quickActionBindingsStore: QuickActionBindingsStore? = null,
+    defaultLauncherPromptStore: DefaultLauncherPromptStore? = null,
     onDrawerDisplaySettingsSaveFailure: (() -> Unit)? = null,
     informationLauncher: ApplicationInformationLauncher = ApplicationInformationLauncher { false },
     uninstallLauncher: ApplicationUninstallLauncher = EmptyApplicationUninstallLauncher,
@@ -200,6 +203,15 @@ internal fun Launcher4MaxApp(
         (quickActionBindingsState as? QuickActionBindingsReadState.Readable)
             ?.bindings
             ?: QuickActionBindings()
+    val effectiveDefaultLauncherPromptStore = defaultLauncherPromptStore ?: remember(
+        androidContext,
+    ) {
+        DefaultLauncherPromptStore(context = androidContext)
+    }
+    val defaultLauncherPromptSession = remember { DefaultLauncherPromptSession() }
+    var showDefaultLauncherPrompt by remember { mutableStateOf(false) }
+    val currentSettingsPlatform by rememberUpdatedState(settingsPlatform)
+    val currentPromptStore by rememberUpdatedState(effectiveDefaultLauncherPromptStore)
     val favoriteEditor = remember(
         key1 = effectiveFavoriteStore,
         calculation = { HomeFavoriteEditor(store = effectiveFavoriteStore) },
@@ -795,6 +807,24 @@ internal fun Launcher4MaxApp(
                     homeCoordinator.dismissEditMode()
                 }
                 Lifecycle.Event.ON_RESUME -> {
+                    val isDefaultHome = currentSettingsPlatform.isDefaultHome()
+                    val dismissedToday = currentPromptStore.isDismissedOn(
+                        date = LocalDate.now(),
+                    )
+                    if (!hasResumed || wasPaused) {
+                        showDefaultLauncherPrompt = defaultLauncherPromptSession
+                            .evaluateForegroundEntry(
+                                isDefaultHome = isDefaultHome,
+                                dismissedToday = dismissedToday,
+                            )
+                    } else if (isDefaultHome) {
+                        showDefaultLauncherPrompt = defaultLauncherPromptSession
+                            .onBecameDefaultHome()
+                    } else {
+                        showDefaultLauncherPrompt = defaultLauncherPromptSession.isVisible(
+                            isDefaultHome = isDefaultHome,
+                        )
+                    }
                     if (hasResumed && wasPaused) {
                         val shouldRefreshInventory = externalLaunchPendingReturn ||
                             inventoryRefreshPendingReturn
@@ -1093,6 +1123,18 @@ internal fun Launcher4MaxApp(
                     companionNestedScrollConnection.takeUnless { homeCoordinator.editMode },
                 accessibilityLockController = accessibilityLockController,
                 quickActionBindings = quickActionBindings,
+                showDefaultLauncherPrompt = showDefaultLauncherPrompt,
+                onSelectDefaultLauncherPrompt = {
+                    settingsPlatform.openDefaultHomeSettings()
+                },
+                onDismissDefaultLauncherPrompt = {
+                    showDefaultLauncherPrompt = defaultLauncherPromptSession.onDismiss()
+                    scope.launch {
+                        effectiveDefaultLauncherPromptStore.dismissForLocalDate(
+                            date = LocalDate.now(),
+                        )
+                    }
+                },
                 drawerDragJourney = homeCoordinator.drawerDragJourney,
                 drawerDragTouchInWindow = homeCoordinator.drawerDragTouchPosition,
                 drawerDragDropping = homeCoordinator.drawerDragDropping,

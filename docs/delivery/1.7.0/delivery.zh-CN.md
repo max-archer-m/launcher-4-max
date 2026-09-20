@@ -62,7 +62,7 @@
 | 迭代 | 状态 | 更新日期 | 依据 |
 | --- | --- | --- | --- |
 | [迭代 32：快捷操作与屏幕锁定](iteration-32-quick-actions-screen-locking.zh-CN.md) | `Completed` | 2026-09-20 | 项目作者于 2026-09-20 在主物理设备上接受了可观察的快捷操作与锁屏结果。 |
-| [迭代 33：Home 与抽屉契约补齐](iteration-33-home-drawer-contract-completion.zh-CN.md) | `Planned` | 2026-09-17 | 作者 2026-09-17 的版本大纲将剩余 Home 与抽屉契约内容列为第二个迭代。 |
+| [迭代 33：Home 与抽屉契约补齐](iteration-33-home-drawer-contract-completion.zh-CN.md) | `In Progress` | 2026-09-20 | 项目作者于 2026-09-20 授权第一片：Home 默认启动器提示。 |
 | [迭代 34：公开发布就绪](iteration-34-public-release-readiness.zh-CN.md) | `Planned` | 2026-09-17 | 作者 2026-09-17 的版本大纲将发布前准备列为第三个迭代；作者同日裁决过期 URL 修复与主设备性能预期归属该迭代。 |
 
 ## 迭代证据与结果
@@ -73,7 +73,7 @@
 
 ### 迭代 33
 
-[契约](iteration-33-home-drawer-contract-completion.zh-CN.md)。尚无证据；迭代处于 `Planned`。
+[契约](iteration-33-home-drawer-contract-completion.zh-CN.md)。自 2026-09-20 起为 `In Progress`。已授权的第一片是 Home 默认启动器提示；光晕与渐缩滑杆工作仍排队。
 
 ### 迭代 34
 

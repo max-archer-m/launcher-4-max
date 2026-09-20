@@ -63,6 +63,7 @@ import com.maxarchm.launcher.ui.home.HomeFavoriteEditOrchestration
 import com.maxarchm.launcher.ui.home.components.HomeApplicationMovementOverlay
 import com.maxarchm.launcher.ui.home.components.HomeDrawerDragHandling
 import com.maxarchm.launcher.ui.home.components.HomeBasicInformation
+import com.maxarchm.launcher.ui.home.components.HomeDefaultLauncherPrompt
 import com.maxarchm.launcher.ui.home.components.HomeEditDock
 import com.maxarchm.launcher.ui.home.components.HomeFavoriteBarContainerDragPreview
 import com.maxarchm.launcher.ui.home.components.HomeFavoriteExitOverlay
@@ -133,6 +134,9 @@ internal fun HomeScreen(
     onCommitModuleOrder: suspend (List<String>) -> Boolean = { false },
     accessibilityLockController: AccessibilityLockController = EmptyAccessibilityLockController,
     quickActionBindings: QuickActionBindings = QuickActionBindings(),
+    showDefaultLauncherPrompt: Boolean = false,
+    onSelectDefaultLauncherPrompt: () -> Unit = {},
+    onDismissDefaultLauncherPrompt: () -> Unit = {},
     drawerDragJourney: DrawerDragJourney? = null,
     drawerDragTouchInWindow: Offset = Offset.Zero,
     drawerDragDropping: Boolean = false,
@@ -577,6 +581,17 @@ internal fun HomeScreen(
                     ),
                 )
                 Spacer(Modifier.height(dimensionResource(R.dimen.home_module_spacing)))
+                if (showDefaultLauncherPrompt) {
+                    HomeDefaultLauncherPrompt(
+                        onSelect = onSelectDefaultLauncherPrompt,
+                        onDismiss = onDismissDefaultLauncherPrompt,
+                        modifier = Modifier.padding(
+                            start = contentPadding,
+                            end = contentPadding,
+                        ),
+                    )
+                    Spacer(Modifier.height(dimensionResource(R.dimen.home_module_spacing)))
+                }
             }
             Box(
                 modifier = Modifier

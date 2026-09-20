@@ -27,6 +27,8 @@ internal class AppGraph(context: Context) {
         DrawerDisplaySettingsStore(context = context)
     val quickActionBindingsStore: QuickActionBindingsStore =
         QuickActionBindingsStore(context = context)
+    val defaultLauncherPromptStore: DefaultLauncherPromptStore =
+        DefaultLauncherPromptStore(context = context)
     val informationLauncher: AndroidApplicationInformationLauncher =
         AndroidApplicationInformationLauncher(context = context)
     val uninstallLauncher: AndroidApplicationUninstallLauncher =
@@ -48,5 +50,6 @@ internal class AppGraph(context: Context) {
         favoriteStore.loadBlocking()
         drawerDisplaySettingsStore.loadBlocking()
         quickActionBindingsStore.loadBlocking()
+        defaultLauncherPromptStore.loadBlocking()
     }
 }

@@ -54,7 +54,7 @@
 | Backup | 备份收藏与设置 | Back up favorites and settings |
 | Restore | 从备份恢复 | Restore from backup |
 | Default-launcher prompt title | 尚未设为默认启动器 | Not set as the default launcher yet |
-| Default-launcher prompt supporting line | 设为默认后，按系统 Home 键直接回到这个主页 | Set it as default and the Home button returns here |
+| Default-launcher prompt supporting line | 设为默认后，回到这里 | Set as default to return here |
 | Default-launcher prompt dismiss control | 关闭 | Dismiss |
 
 `收藏主列表` 是 favorite main list 的规范中文工作术语。`home 收藏区` 是同一区域的口语同义说法，不是独立术语。
