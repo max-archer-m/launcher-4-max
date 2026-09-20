@@ -61,7 +61,7 @@
 
 | 迭代 | 状态 | 更新日期 | 依据 |
 | --- | --- | --- | --- |
-| [迭代 32：快捷操作与屏幕锁定](iteration-32-quick-actions-screen-locking.zh-CN.md) | `In Progress` | 2026-09-20 | 项目作者于 2026-09-20 授权快捷操作契约的生产实现。 |
+| [迭代 32：快捷操作与屏幕锁定](iteration-32-quick-actions-screen-locking.zh-CN.md) | `Completed` | 2026-09-20 | 项目作者于 2026-09-20 在主物理设备上接受了可观察的快捷操作与锁屏结果。 |
 | [迭代 33：Home 与抽屉契约补齐](iteration-33-home-drawer-contract-completion.zh-CN.md) | `Planned` | 2026-09-17 | 作者 2026-09-17 的版本大纲将剩余 Home 与抽屉契约内容列为第二个迭代。 |
 | [迭代 34：公开发布就绪](iteration-34-public-release-readiness.zh-CN.md) | `Planned` | 2026-09-17 | 作者 2026-09-17 的版本大纲将发布前准备列为第三个迭代；作者同日裁决过期 URL 修复与主设备性能预期归属该迭代。 |
 
@@ -69,7 +69,7 @@
 
 ### 迭代 32
 
-[契约](iteration-32-quick-actions-screen-locking.zh-CN.md)。截至 2026-09-20 为 `In Progress`。项目作者已授权可配置快捷操作契约的生产实现。第一实现切片持久化 Home 空白区域的两个绑定、以绑定动作替换硬编码双击锁屏与长按编辑、加入快捷操作设置页，并将绑定纳入备份 schema。第二实现切片将用途受限无障碍服务及其 manifest 与配置移入 mainline 源集，在每一种构建类型接线真实控制器，并把 ADR-0004 改写为绑定驱动触发。作者报告两个切片均编译验收通过。代理本地检查（`git diff --check`、新增 Kotlin 行宽扫描）通过；代理未运行 Gradle 构建或测试（`Not run`）。作者运行的 `./gradlew lint` 在修正 Settings 主条目的 `ModifierParameter` 参数顺序后通过；无需刷新 lint baseline。设备旅程保持 `Unknown`。
+[契约](iteration-32-quick-actions-screen-locking.zh-CN.md)。于 2026-09-20 `Completed`。实现交付两个可配置 Home 空白槽位及其 No action 默认、绑定的编辑模式与锁屏手势、带槽位弹窗与始终可见服务状态行的快捷操作设置页、方向性兼容规则下绑定纳入备份、移除独立双击锁屏 Settings 项、每一种构建类型 mainline 中的用途受限无障碍服务，以及 ADR-0004 改写为绑定驱动触发。代理本地检查（`git diff --check`、新增 Kotlin 行宽扫描）通过；代理未运行 Gradle 构建或测试（`Not run`）。作者运行的 `./gradlew lint` 在修正 `ModifierParameter` 参数顺序后通过；无需刷新 lint baseline。作者在主物理设备上完成构建、安装与设备检查，并接受契约旅程，报告无明显问题。验收证据为作者报告。剩余建议缺口如实记录、不视为通过：绑定锁屏手势的专用 release APK 验证，与迭代 34 的产物工作协调。契约的产品契约基线为 `da22d3d1c4c3e22105a8d6f96256c1e6ffe626d4`。完成仍待将本证据与实现同步到作者指定的共享 Git 历史。
 
 ### 迭代 33
 

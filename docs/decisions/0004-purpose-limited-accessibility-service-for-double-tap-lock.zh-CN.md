@@ -76,7 +76,7 @@ Launcher4Max 的无障碍服务仅用于支持已绑定的锁屏快捷操作。�
 - 当前实现确认 `onAccessibilityEvent` 和 `onInterrupt` 为空操作，仅请求 `GLOBAL_ACTION_LOCK_SCREEN`，且连接模型不拥有持久数据。
 - Settings UI、Privacy 呈现和显著披露显示当前绑定手势正文。
 - 当前 mainline manifest 和 `accessibilityService` XML 确认未声明任何窗口内容、按键事件或扩展视图能力。
-- 迭代 32 的绑定手势触发与 release 构建中服务存在性的设备旅程在作者报告前保持 `Unknown`。作者运行的 `./gradlew lint` 已通过；无需刷新 lint baseline。代理运行的 Gradle 仍为 `Not run`。
+- 迭代 32 的绑定手势触发设备旅程已由作者于 2026-09-20 在主物理设备上接受。绑定锁屏手势的专用 release APK 验证在与迭代 34 产物工作协调前保持 `Unknown`。作者运行的 `./gradlew lint` 已通过；无需刷新 lint baseline。代理运行的 Gradle 仍为 `Not run`。
 - API 31 和另一台 API 36 或 API 37 物理设备覆盖仍为建议的兼容性证据。未执行的 OEM 和 Private Space 场景本身不使本决定无效，但必须在版本记录中记录为 `Unknown`、`Not run` 或 `Unavailable`。
 
 ## 实现说明
