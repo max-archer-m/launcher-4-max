@@ -28,7 +28,7 @@ On the primary device, while Launcher4Max is not the default launcher, Home show
 - The calibrated slider delivery values (end heights, bar height, width, and corner treatment) written back into the style-settings-panel contract once accepted on the author's device.
 - Slider disabled behavior per the host contract: a disabled slider reports unavailable and does not change the tier.
 - Localized English and Simplified Chinese strings for the prompt's three labels and any new or changed user-visible text with complete name parity.
-- Focused test sources covering prompt visibility and suppression state, the text treatment on the contracted texts, and the slider's stop mapping, tier selection, colors, and accessibility semantics.
+- Focused test sources covering prompt visibility and suppression state, the glyph-shadow treatment on Home and Drawer application names, the edit-dock instruction, and the Drawer search-field hint, and the slider's stop mapping, tier selection, colors, and accessibility semantics.
 
 ## Excluded work
 
@@ -67,7 +67,7 @@ This iteration is independent of Iteration 32 in behavior and code areas, with s
 - The tapering slider's end heights, bar height, width, and corner treatment share the same calibration dependency.
 - The parked Drawer automation cluster centers on slider drag injection; automated coverage for the new custom slider may hit the same limitation, so device acceptance carries the interaction evidence and automated tests focus on mapping, colors, and accessibility semantics.
 - The prompt must never appear mid-session after a foreground entry without it, including across process death within the same local day, which requires careful distinction between durable dismissal state and per-session evaluation.
-- Restoring the accepted glyph shadow on the contracted texts must preserve the previously fixed favorite-ribbon width and text-clipping behavior.
+- Keeping the accepted glyph shadow on Home and Drawer application names, the edit-dock instruction, and the Drawer search-field hint must preserve the previously fixed favorite-ribbon width and text-clipping behavior.
 
 ## Acceptance criteria
 
@@ -75,7 +75,7 @@ This iteration is independent of Iteration 32 in behavior and code areas, with s
 - Prompt visibility evaluates once per foreground entry, never inserts later in the same session, and removes immediately on becoming default.
 - Dismiss suppresses the prompt for the remainder of the local day, the dismissal date persists across restart, and becoming default records no dismissal.
 - The prompt routes to the same system destination as the Settings default-home entry, the arrow hint is non-interactive, and the prompt is hidden throughout edit mode with one layout change absorbing removal and restoration.
-- The contracted texts render the accepted glyph shadow with the same parameters as the Home basic-information text, and no other text changes treatment.
+- Home and Drawer application names, the edit-dock instruction, and the Drawer search-field hint render the accepted glyph shadow with the same parameters as the Home basic-information text, and no other text changes treatment.
 - The application-size block presents the two tapering sliders with the calibrated values; each slider snaps at the three stops, splits its track colors at the thumb, exposes its localized label, tier name, and range actions, and a disabled slider changes nothing.
 - The calibrated values are recorded back into the style-settings-panel contract through the authorized amendment path.
 - All new or changed user-visible strings exist in English and Simplified Chinese with complete name parity.
