@@ -29,7 +29,7 @@ The application identity is `com.maxarchm.launcher`. The `versionName` is `1.7.0
 - [Settings presentation](../../product/presentation/settings.md)
 - [Drawer presentation](../../product/presentation/drawer.md)
 - [Style settings panel presentation](../../product/presentation/style-settings-panel.md), including the application-size tapering sliders
-- [Design foundations](../../product/design-foundations.md), including the shared text glow
+- [Design foundations](../../product/design-foundations.md)
 - [Navigation](../../product/navigation.md)
 - [Release governance](../../release.md)
 - [Validation guide](../../validation.md)
@@ -39,7 +39,7 @@ The application identity is `com.maxarchm.launcher`. The `versionName` is `1.7.0
 
 In the completed version, the author can bind each of the two Home basic-information quick-action slots to No action, Edit mode, or Screen lock through a dedicated Quick action settings sub-page, with the bindings preserved in the manual backup file; when Screen lock is bound while the accessibility service is off, selecting it enters the disclosed authorization flow without changing the saved binding. The accessibility service exists in every build type under its purpose-limited boundary, so the bound screen-lock gesture works in release builds. The former standalone Double-tap-to-lock Settings item is removed, and the privacy statement and accessibility disclosure speak of the bound gesture and screen locking.
 
-On Home, the author sees a dismissible default-launcher prompt between the basic-information region and the favorite list whenever Launcher4Max is not the default launcher, evaluates its visibility once per foreground entry, and routes its selection to the same system destination as the Settings default-home entry. Application names and the contracted hint texts render the shared text glow in place of the glyph shadow, and the application-size block presents the two three-stop tapering sliders with their calibrated visual values.
+On Home, the author sees a dismissible default-launcher prompt between the basic-information region and the favorite list whenever Launcher4Max is not the default launcher, evaluates its visibility once per foreground entry, and routes its selection to the same system destination as the Settings default-home entry. Application names on both surfaces and the contracted hint texts keep the accepted glyph shadow with the same parameters as the Home basic-information text, and the application-size block presents the two three-stop tapering sliders with their calibrated visual values.
 
 The repository holds the operational decisions release governance requires: the APK retention location and policy, the release-keystore custody and backup procedure, the authoritative build, signing, digest, and install commands, the tag naming convention, and the distribution channel, together with a public-facing README, installation instructions, screenshots, and a dependency and license inventory. The performance expectation is recorded as primary-device acceptance of the core journeys.
 
@@ -55,7 +55,7 @@ The repository holds the operational decisions release governance requires: the 
 
 Iterations 32 and 33 implement already-accepted contracts; development owns implementation details. Iteration 34 begins with an authorized product-contract change (the distribution boundary and the performance-expectation record) before its operational work, and its contract baseline moves through the amendment rule when the author accepts that change.
 
-Primary risks are: the backup schema extension must keep older backups importable under the directional compatibility rule; replacing the hard-coded double-tap and long-press gestures with slot resolution must not regress edit-mode entry or the failure toast; the accessibility service mainline move changes the release manifest and requires the ADR-0004 rewrite to the binding-driven trigger; the text glow and tapering-slider values are deliberately uncalibrated and need author-device calibration before their contracts can be finalized; the parked Drawer test cluster centers on slider drag injection, so custom-slider automated coverage carries that known risk; and the release gates (keystore custody, digests, traceability) are process work that cannot be shortcut by code.
+Primary risks are: the backup schema extension must keep older backups importable under the directional compatibility rule; replacing the hard-coded double-tap and long-press gestures with slot resolution must not regress edit-mode entry or the failure toast; the accessibility service mainline move changes the release manifest and requires the ADR-0004 rewrite to the binding-driven trigger; the tapering-slider values are deliberately uncalibrated and need author-device calibration before the contract can be finalized; the parked Drawer test cluster centers on slider drag injection, so custom-slider automated coverage carries that known risk; and the release gates (keystore custody, digests, traceability) are process work that cannot be shortcut by code.
 
 ## Included iterations
 
@@ -73,7 +73,7 @@ Primary risks are: the backup schema extension must keep older backups importabl
 
 ### Iteration 33
 
-[Contract](iteration-33-home-drawer-contract-completion.md). `In Progress` as of 2026-09-20. The first authorized slice is the Home default-launcher prompt; glow and tapering-slider work remain queued.
+[Contract](iteration-33-home-drawer-contract-completion.md). `In Progress` as of 2026-09-20. The prompt slice is delivered; the tapering-slider slice remains queued.
 
 ### Iteration 34
 
@@ -95,7 +95,7 @@ The accepted APK must retain `com.maxarchm.launcher`, use accepted `1.7.0`/`vers
 
 - Only one physical validation device exists; broader device, API, OEM, and locale coverage remains unknown until performed.
 - The parked Drawer automation cluster (slider drag injection and related suites) remains open from the post-1.6.0 restructure; it is not an included-path gate for this version but limits regression signal in that area.
-- The text glow and tapering-slider delivery values are `To be decided` until the Iteration 33 calibration is accepted and written back to their presentation contracts.
+- The tapering-slider delivery values are `To be decided` until the Iteration 33 calibration is accepted and written back to the style-settings-panel contract.
 - Third-party License presentation stays `To be decided` until the Iteration 34 inventory and disposition are accepted.
 - Document-picker and OEM presentation variance accepted in earlier versions remains accepted variance.
 

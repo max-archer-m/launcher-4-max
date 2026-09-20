@@ -20,7 +20,7 @@ This document owns exact Drawer layout, typography, component geometry, and visu
 ## Background opacity and contrast
 
 - The Drawer background composites one full-surface layer of `darkSurfaceBaseColor` over the wallpaper at the user-selected opacity percentage. `0` leaves the wallpaper clear across the complete Drawer, and `100` presents the complete solid surface color; intermediate percentages present that color blended over the wallpaper. The background adds no blur, glass effect, or additional scrim, does not sample the wallpaper, and does not change by list position, pointer position, search result, or local luminance.
-- Text and monochrome foreground artwork use `primaryTextColor` and one fixed dark glyph- or artwork-following shadow at every percentage, using the accepted parameters below, except where a clause assigns the shared text glow. Application names and the search-field hint text use the shared text glow defined by [design foundations](../design-foundations.md) instead of the glyph shadow. At low percentages the foreground contrast relies on these treatments; readability over bright wallpapers is the user's selected trade-off, judged by author-device acceptance.
+- Text and monochrome foreground artwork use `primaryTextColor` and one fixed dark glyph- or artwork-following shadow at every percentage, using the accepted parameters below. At low percentages the foreground contrast relies on these treatments; readability over bright wallpapers is the user's selected trade-off, judged by author-device acceptance.
 - The background opacity changes only the Drawer background and applicable contrast treatment. Top-app-bar, application, anchor, search, AlphabetIndex, Settings, multi-selection, modal, and interaction geometry remain unchanged.
 
 ### Accepted background parameters
@@ -29,7 +29,7 @@ The author accepted the following current delivery values on 2026-09-06; the 202
 
 | Treatment | Accepted value |
 | --- | --- |
-| Foreground glyph shadow (text and artwork without the shared text glow) | Black at `65%` opacity (`#A6000000`), `0dp` horizontal offset, `1dp` vertical offset, `2dp` blur radius |
+| Foreground glyph shadow (text and monochrome artwork) | Black at `65%` opacity (`#A6000000`), `0dp` horizontal offset, `1dp` vertical offset, `2dp` blur radius |
 | Background color | Shared `darkSurfaceBaseColor`, composited over the wallpaper at the selected percentage |
 | Background-opacity granularity | Whole percentages `0` through `100`; tentatively accepted |
 

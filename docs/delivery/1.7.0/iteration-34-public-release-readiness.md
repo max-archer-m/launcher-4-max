@@ -35,7 +35,7 @@ The product overview records the public-GitHub-only distribution boundary, and t
 
 - Git tag creation, GitHub Release creation, APK upload, and any publication; these remain separately authorized actions outside every iteration.
 - Landscape behavior.
-- Quick-actions, screen-locking, prompt, glow, and slider implementation, which belong to Iterations 32 and 33; this iteration only verifies the shipped result through the release artifact.
+- Quick-actions, screen-locking, prompt, and slider implementation, which belong to Iterations 32 and 33; this iteration only verifies the shipped result through the release artifact.
 - Any store distribution, or the specialist legal or store-approval conclusions it would require.
 - Code feature work beyond the privacy contact URL resource and any traceability-supporting build configuration the recorded commands require.
 

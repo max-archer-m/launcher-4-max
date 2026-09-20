@@ -41,7 +41,7 @@ On the primary device, a fresh configuration presents both quick-action slots as
 
 ## Excluded work
 
-- The Home default-launcher prompt, the shared text glow, and the application-size tapering sliders, which belong to Iteration 33.
+- The Home default-launcher prompt and the application-size tapering sliders, which belong to Iteration 33.
 - Any landscape behavior or orientation change.
 - The distribution-boundary product-contract change and every release-operations item, which belong to Iteration 34.
 - The `1.7.0` version identifier update (`versionName`/`versionCode`), which remains a version-level closure concern unless a later authorized amendment assigns it here.
