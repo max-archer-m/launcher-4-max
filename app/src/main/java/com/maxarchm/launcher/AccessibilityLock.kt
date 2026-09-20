@@ -96,7 +96,7 @@ internal class AndroidAccessibilityLockController(
     override fun requestLock(): LockRequestResult = AccessibilityLockConnection.requestLock()
 }
 
-internal fun debugAccessibilityLockServiceComponent(context: Context): ComponentName =
+internal fun accessibilityLockServiceComponent(context: Context): ComponentName =
     ComponentName(
         context.packageName,
         "${context.packageName}.AccessibilityLockProbeService",

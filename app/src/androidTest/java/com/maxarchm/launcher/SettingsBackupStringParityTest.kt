@@ -33,6 +33,8 @@ class SettingsBackupStringParityTest {
             R.string.quick_action_no_action,
             R.string.quick_action_edit_mode,
             R.string.quick_action_screen_lock,
+            R.string.accessibility_lock_probe_label,
+            R.string.accessibility_lock_probe_description,
             R.string.screen_lock_explanation,
             R.string.accessibility_disclosure_title,
             R.string.accessibility_disclosure_body,

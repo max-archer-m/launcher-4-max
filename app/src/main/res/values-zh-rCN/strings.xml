@@ -128,6 +128,8 @@
     <string name="quick_action_no_action">无操作</string>
     <string name="quick_action_edit_mode">编辑模式</string>
     <string name="quick_action_screen_lock">锁屏</string>
+    <string name="accessibility_lock_probe_label">Launcher4Max 锁屏</string>
+    <string name="accessibility_lock_probe_description">在 Launcher4Max Home 符合条件的空白位置，通过已绑定的快捷操作手势使用可选锁屏</string>
     <string name="capability_on">已开启</string>
     <string name="capability_off">已关闭</string>
     <string name="screen_lock_explanation">在 Home 合格空白上执行已绑定的快捷操作手势，可请求一次 Android 系统锁屏操作。此可选服务不读取屏幕或窗口内容，不观察其他应用，不收集无障碍事件，也不执行后台自动化操作。服务是否启用由 Android 系统设置控制。</string>

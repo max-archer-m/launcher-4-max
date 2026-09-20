@@ -37,14 +37,10 @@ internal class AppGraph(context: Context) {
         AndroidSettingsPlatform(context = context)
     val licenseText: String = readLicense(context = context)
     val accessibilityLockController: AccessibilityLockController =
-        if (BuildConfig.DEBUG) {
-            AndroidAccessibilityLockController(
-                context = context,
-                serviceComponent = debugAccessibilityLockServiceComponent(context = context),
-            )
-        } else {
-            EmptyAccessibilityLockController
-        }
+        AndroidAccessibilityLockController(
+            context = context,
+            serviceComponent = accessibilityLockServiceComponent(context = context),
+        )
 
     init {
         // One synchronous read per process puts the durable favorites and display settings

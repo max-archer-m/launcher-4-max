@@ -129,6 +129,8 @@
     <string name="quick_action_no_action">No action</string>
     <string name="quick_action_edit_mode">Edit mode</string>
     <string name="quick_action_screen_lock">Screen lock</string>
+    <string name="accessibility_lock_probe_label">Launcher4Max screen lock</string>
+    <string name="accessibility_lock_probe_description">Optional screen lock for a bound Home quick-action gesture on Launcher4Max</string>
     <string name="capability_on">On</string>
     <string name="capability_off">Off</string>
     <string name="screen_lock_explanation">A bound Home quick-action gesture in eligible blank space requests one Android screen-lock action. This optional service does not read screen or window content, observe other applications, collect accessibility events, or perform background automation. Android settings controls whether the service is enabled.</string>

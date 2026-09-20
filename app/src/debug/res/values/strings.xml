@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="accessibility_lock_probe_description">Optional screen lock for a bound Home quick-action gesture on Launcher4Max</string>
-    <string name="accessibility_lock_probe_label">Launcher4Max screen lock</string>
-</resources>
