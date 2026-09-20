@@ -69,7 +69,7 @@
 
 ### 迭代 32
 
-[契约](iteration-32-quick-actions-screen-locking.zh-CN.md)。于 2026-09-20 `Completed`。实现交付两个可配置 Home 空白槽位及其 No action 默认、绑定的编辑模式与锁屏手势、带槽位弹窗与始终可见服务状态行的快捷操作设置页、方向性兼容规则下绑定纳入备份、移除独立双击锁屏 Settings 项、每一种构建类型 mainline 中的用途受限无障碍服务，以及 ADR-0004 改写为绑定驱动触发。代理本地检查（`git diff --check`、新增 Kotlin 行宽扫描）通过；代理未运行 Gradle 构建或测试（`Not run`）。作者运行的 `./gradlew lint` 在修正 `ModifierParameter` 参数顺序后通过；无需刷新 lint baseline。作者在主物理设备上完成构建、安装与设备检查，并接受契约旅程，报告无明显问题。验收证据为作者报告。剩余建议缺口如实记录、不视为通过：绑定锁屏手势的专用 release APK 验证，与迭代 34 的产物工作协调。契约的产品契约基线为 `da22d3d1c4c3e22105a8d6f96256c1e6ffe626d4`。完成仍待将本证据与实现同步到作者指定的共享 Git 历史。
+[契约](iteration-32-quick-actions-screen-locking.zh-CN.md)。于 2026-09-20 `Completed`。实现交付两个可配置 Home 空白槽位及其 No action 默认、绑定的编辑模式与锁屏手势、带槽位弹窗与始终可见服务状态行的快捷操作设置页、方向性兼容规则下绑定纳入备份、移除独立双击锁屏 Settings 项、每一种构建类型 mainline 中的用途受限无障碍服务，以及 ADR-0004 改写为绑定驱动触发。代理本地检查（`git diff --check`、新增 Kotlin 行宽扫描）通过；代理未运行 Gradle 构建或测试（`Not run`）。作者运行的 `./gradlew lint` 在修正 `ModifierParameter` 参数顺序后通过；无需刷新 lint baseline。作者在主物理设备上完成构建、安装与设备检查，并接受契约旅程，报告无明显问题。验收证据为作者报告。剩余建议缺口如实记录、不视为通过：绑定锁屏手势的专用 release APK 验证，与迭代 34 的产物工作协调。契约的产品契约基线为 `da22d3d1c4c3e22105a8d6f96256c1e6ffe626d4`。实现与本证据已作为 `e103a5d07a1f615e9388baebccdc5ba4c9705dae` 合入 `main`，并同步到作者指定的共享 Git 历史。
 
 ### 迭代 33
 
