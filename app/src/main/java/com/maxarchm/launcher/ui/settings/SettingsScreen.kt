@@ -443,8 +443,8 @@ private fun PrimarySettingsItem(
     supportingText: String?,
     onClick: () -> Unit,
     testTag: String,
-    enabled: Boolean = true,
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
 ) {
     Row(
         modifier = modifier

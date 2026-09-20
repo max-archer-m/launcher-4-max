@@ -69,7 +69,7 @@
 
 ### 迭代 32
 
-[契约](iteration-32-quick-actions-screen-locking.zh-CN.md)。截至 2026-09-20 为 `In Progress`。项目作者已授权可配置快捷操作契约的生产实现。第一实现切片持久化 Home 空白区域的两个绑定、以绑定动作替换硬编码双击锁屏与长按编辑、加入快捷操作设置页，并将绑定纳入备份 schema。第二实现切片将用途受限无障碍服务及其 manifest 与配置移入 mainline 源集，在每一种构建类型接线真实控制器，并把 ADR-0004 改写为绑定驱动触发。作者报告两个切片均编译验收通过。代理本地检查（`git diff --check`、新增 Kotlin 行宽扫描）通过；代理未运行 Gradle 构建或测试（`Not run`）。设备旅程保持 `Unknown`。release manifest 变更所需的 lint baseline 刷新仍待作者运行 lint。
+[契约](iteration-32-quick-actions-screen-locking.zh-CN.md)。截至 2026-09-20 为 `In Progress`。项目作者已授权可配置快捷操作契约的生产实现。第一实现切片持久化 Home 空白区域的两个绑定、以绑定动作替换硬编码双击锁屏与长按编辑、加入快捷操作设置页，并将绑定纳入备份 schema。第二实现切片将用途受限无障碍服务及其 manifest 与配置移入 mainline 源集，在每一种构建类型接线真实控制器，并把 ADR-0004 改写为绑定驱动触发。作者报告两个切片均编译验收通过。代理本地检查（`git diff --check`、新增 Kotlin 行宽扫描）通过；代理未运行 Gradle 构建或测试（`Not run`）。作者运行的 `./gradlew lint` 在修正 Settings 主条目的 `ModifierParameter` 参数顺序后通过；无需刷新 lint baseline。设备旅程保持 `Unknown`。
 
 ### 迭代 33
 

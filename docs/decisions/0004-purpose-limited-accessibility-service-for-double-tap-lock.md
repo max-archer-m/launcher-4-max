@@ -76,7 +76,7 @@ Binding the trigger to a Home quick-action slot, rather than a hard-coded double
 - The current implementation confirms that `onAccessibilityEvent` and `onInterrupt` are no-ops, that only `GLOBAL_ACTION_LOCK_SCREEN` is requested, and that the connection model owns no persistent data.
 - Settings UI, Privacy presentation, and prominent disclosure display the current bound-gesture copy.
 - The current mainline manifest and `accessibilityService` XML confirm no window-content, key-event, or extended-view capabilities are declared.
-- Iteration 32 device journeys for the bound-gesture trigger and the release-build presence of the service remain `Unknown` until the author reports them. Agent-run Gradle, including any lint-baseline refresh, is `Not run`.
+- Iteration 32 device journeys for the bound-gesture trigger and the release-build presence of the service remain `Unknown` until the author reports them. The author-run `./gradlew lint` passed; no lint-baseline refresh was required. Agent-run Gradle remains `Not run`.
 - API 31 and one additional API 36 or API 37 physical-device coverage remain recommended compatibility evidence. Unperformed OEM and Private Space scenarios do not by themselves invalidate this decision but must be recorded as `Unknown`, `Not run`, or `Unavailable` in the version record.
 
 ## Implementation Notes
