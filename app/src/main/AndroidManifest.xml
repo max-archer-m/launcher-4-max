@@ -46,6 +46,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!--
+          Purpose-limited screen-lock service. A bound Home quick-action gesture
+          requests one GLOBAL_ACTION_LOCK_SCREEN after the user enables this
+          service in Android accessibility settings.
+        -->
+        <service
+            android:name=".AccessibilityLockProbeService"
+            android:description="@string/accessibility_lock_probe_description"
+            android:exported="true"
+            android:label="@string/accessibility_lock_probe_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_lock_probe_config" />
+        </service>
     </application>
 
 </manifest>

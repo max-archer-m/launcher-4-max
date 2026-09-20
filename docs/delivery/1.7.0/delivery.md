@@ -61,7 +61,7 @@ Primary risks are: the backup schema extension must keep older backups importabl
 
 | Iteration | Status | Updated | Basis |
 | --- | --- | --- | --- |
-| [Iteration 32: Quick Actions and Screen Locking](iteration-32-quick-actions-screen-locking.md) | `Planned` | 2026-09-17 | The author's 2026-09-17 version outline designates the quick-actions contract completion as the first iteration; the author ruled the same day that the accessibility service mainline move belongs to it. |
+| [Iteration 32: Quick Actions and Screen Locking](iteration-32-quick-actions-screen-locking.md) | `Completed` | 2026-09-20 | The project author accepted the observable quick-actions and screen-locking result on the primary physical device on 2026-09-20. |
 | [Iteration 33: Home and Drawer Contract Completion](iteration-33-home-drawer-contract-completion.md) | `Planned` | 2026-09-17 | The author's 2026-09-17 version outline designates the remaining Home and Drawer contract content as the second iteration. |
 | [Iteration 34: Public Release Readiness](iteration-34-public-release-readiness.md) | `Planned` | 2026-09-17 | The author's 2026-09-17 version outline designates pre-release preparation as the third iteration; the author ruled the same day that the stale URL fix and the primary-device performance expectation belong to it. |
 
@@ -69,7 +69,7 @@ Primary risks are: the backup schema extension must keep older backups importabl
 
 ### Iteration 32
 
-[Contract](iteration-32-quick-actions-screen-locking.md). No evidence exists yet; the iteration is `Planned`.
+[Contract](iteration-32-quick-actions-screen-locking.md). `Completed` on 2026-09-20. The implementation delivers the two configurable Home blank-space bindings with No action defaults, bound Edit mode and Screen lock gestures, the Quick action settings page with its slot popup and always-visible service-state row, backup inclusion of the bindings under directional compatibility, removal of the standalone Double-tap-to-lock Settings item, the purpose-limited accessibility service in the mainline of every build type, and the ADR-0004 rewrite to the binding-driven trigger. The agent's local checks (`git diff --check`, line-length sweep of added Kotlin) passed; the agent ran no Gradle build or test command (`Not run`). The author-run `./gradlew lint` passed after a `ModifierParameter` parameter-order fix; no lint-baseline refresh was required. The author performed the build, installation, and device checks on the primary physical device and accepted the contracted journeys, reporting no material defect. Acceptance evidence is author-reported. Remaining recommended gaps, recorded accurately and not claimed as passing: a dedicated release-APK verification of the bound Screen lock gesture, to be coordinated with Iteration 34's artifact work. The contract's product-contract baseline is `da22d3d1c4c3e22105a8d6f96256c1e6ffe626d4`. Completion remains pending synchronization of this evidence and the implementation to the author-designated shared Git history.
 
 ### Iteration 33
 

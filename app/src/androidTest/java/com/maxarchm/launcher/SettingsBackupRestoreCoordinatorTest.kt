@@ -13,15 +13,18 @@ class SettingsBackupRestoreCoordinatorTest {
     fun successfulRestoreReplacesFavoritesAndDisplaySettings() = runBlocking {
         val favorites = FakeFavoritesAccess(null)
         val settings = FakeSettingsAccess()
+        val bindings = FakeBindingsAccess()
         val coordinator = SettingsBackupRestoreCoordinator(
             favorites = favorites,
             settings = settings,
+            bindings = bindings,
         )
         val backup = SettingsBackupState(
             aggregate = aggregateWithIdentity(serial = 2),
             settings = DrawerDisplaySettings(
                 backgroundOpacity = 100,
             ),
+            bindings = QuickActionBindings(doubleTap = QuickAction.ScreenLock),
         )
 
         val succeeded = coordinator.restore(backup)
@@ -29,6 +32,7 @@ class SettingsBackupRestoreCoordinatorTest {
         assertTrue(succeeded)
         assertEquals(backup.aggregate, favorites.aggregate)
         assertEquals(backup.settings, settings.settings)
+        assertEquals(backup.bindings, bindings.bindings)
     }
 
     @Test
@@ -40,6 +44,7 @@ class SettingsBackupRestoreCoordinatorTest {
         val coordinator = SettingsBackupRestoreCoordinator(
             favorites = favorites,
             settings = settings,
+            bindings = FakeBindingsAccess(),
         )
         val backup = SettingsBackupState(
             aggregate = aggregateWithIdentity(serial = 2),
@@ -66,6 +71,7 @@ class SettingsBackupRestoreCoordinatorTest {
         val coordinator = SettingsBackupRestoreCoordinator(
             favorites = favorites,
             settings = settings,
+            bindings = FakeBindingsAccess(),
         )
         val backup = SettingsBackupState(
             aggregate = aggregateWithIdentity(serial = 2),
@@ -86,6 +92,7 @@ class SettingsBackupRestoreCoordinatorTest {
         val coordinator = SettingsBackupRestoreCoordinator(
             favorites = favorites,
             settings = settings,
+            bindings = FakeBindingsAccess(),
         )
         val backup = SettingsBackupState(
             aggregate = aggregateWithIdentity(serial = 2),
@@ -146,6 +153,23 @@ class SettingsBackupRestoreCoordinatorTest {
             restoreCalls.add(settings)
             if (restoreFails) return false
             this.settings = settings
+            return true
+        }
+    }
+
+    private class FakeBindingsAccess(
+        initial: QuickActionBindings? = QuickActionBindings(),
+    ) : BackupBindingsAccess {
+        var bindings: QuickActionBindings? = initial
+        var restoreFails = false
+        val restoreCalls = mutableListOf<QuickActionBindings>()
+
+        override fun currentBindings(): QuickActionBindings? = bindings
+
+        override suspend fun restoreBindings(bindings: QuickActionBindings): Boolean {
+            restoreCalls.add(bindings)
+            if (restoreFails) return false
+            this.bindings = bindings
             return true
         }
     }

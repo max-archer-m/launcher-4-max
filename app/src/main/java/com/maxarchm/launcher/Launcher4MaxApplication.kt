@@ -25,6 +25,8 @@ internal class AppGraph(context: Context) {
         OrderedFavoriteStoreAdapter(context = context)
     val drawerDisplaySettingsStore: DrawerDisplaySettingsStore =
         DrawerDisplaySettingsStore(context = context)
+    val quickActionBindingsStore: QuickActionBindingsStore =
+        QuickActionBindingsStore(context = context)
     val informationLauncher: AndroidApplicationInformationLauncher =
         AndroidApplicationInformationLauncher(context = context)
     val uninstallLauncher: AndroidApplicationUninstallLauncher =
@@ -35,19 +37,16 @@ internal class AppGraph(context: Context) {
         AndroidSettingsPlatform(context = context)
     val licenseText: String = readLicense(context = context)
     val accessibilityLockController: AccessibilityLockController =
-        if (BuildConfig.DEBUG) {
-            AndroidAccessibilityLockController(
-                context = context,
-                serviceComponent = debugAccessibilityLockServiceComponent(context = context),
-            )
-        } else {
-            EmptyAccessibilityLockController
-        }
+        AndroidAccessibilityLockController(
+            context = context,
+            serviceComponent = accessibilityLockServiceComponent(context = context),
+        )
 
     init {
         // One synchronous read per process puts the durable favorites and display settings
         // in front of the first frame; later reloads stay async and mutex-guarded.
         favoriteStore.loadBlocking()
         drawerDisplaySettingsStore.loadBlocking()
+        quickActionBindingsStore.loadBlocking()
     }
 }

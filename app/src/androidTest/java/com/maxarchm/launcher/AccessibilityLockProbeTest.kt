@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 class AccessibilityLockProbeTest {
     @Suppress("DEPRECATION")
     @Test
-    fun debugProbeManifestUsesSystemBindingPermissionAndMetadata() {
+    fun probeManifestUsesSystemBindingPermissionAndMetadata() {
         val context = ApplicationProvider.getApplicationContext<android.content.Context>()
         val component = ComponentName(context, AccessibilityLockProbeService::class.java)
         val serviceInfo = context.packageManager.getServiceInfo(
