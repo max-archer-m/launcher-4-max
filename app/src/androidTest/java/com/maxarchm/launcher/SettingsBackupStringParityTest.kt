@@ -27,6 +27,15 @@ class SettingsBackupStringParityTest {
             R.string.settings_data_restore_dialog_body,
             R.string.settings_data_restore_confirm,
             R.string.privacy_statement,
+            R.string.quick_action_settings,
+            R.string.quick_action_double_tap_slot,
+            R.string.quick_action_long_press_slot,
+            R.string.quick_action_no_action,
+            R.string.quick_action_edit_mode,
+            R.string.quick_action_screen_lock,
+            R.string.screen_lock_explanation,
+            R.string.accessibility_disclosure_title,
+            R.string.accessibility_disclosure_body,
         )
 
         identifiers.forEach { identifier ->
@@ -50,7 +59,11 @@ class SettingsBackupStringParityTest {
 
         assertTrue(englishStatement.contains("manual local backup"))
         assertTrue(englishStatement.contains("never uploaded"))
+        assertTrue(englishStatement.contains("quick-action bindings"))
+        assertTrue(englishStatement.contains("bound gesture"))
         assertTrue(chineseStatement.contains("手动本地备份"))
         assertTrue(chineseStatement.contains("绝不会被上传"))
+        assertTrue(chineseStatement.contains("快捷操作绑定"))
+        assertTrue(chineseStatement.contains("已绑定的手势"))
     }
 }

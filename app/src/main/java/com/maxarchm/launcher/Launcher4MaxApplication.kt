@@ -25,6 +25,8 @@ internal class AppGraph(context: Context) {
         OrderedFavoriteStoreAdapter(context = context)
     val drawerDisplaySettingsStore: DrawerDisplaySettingsStore =
         DrawerDisplaySettingsStore(context = context)
+    val quickActionBindingsStore: QuickActionBindingsStore =
+        QuickActionBindingsStore(context = context)
     val informationLauncher: AndroidApplicationInformationLauncher =
         AndroidApplicationInformationLauncher(context = context)
     val uninstallLauncher: AndroidApplicationUninstallLauncher =
@@ -49,5 +51,6 @@ internal class AppGraph(context: Context) {
         // in front of the first frame; later reloads stay async and mutex-guarded.
         favoriteStore.loadBlocking()
         drawerDisplaySettingsStore.loadBlocking()
+        quickActionBindingsStore.loadBlocking()
     }
 }

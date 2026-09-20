@@ -132,6 +132,7 @@ internal fun HomeScreen(
     ) -> FavoriteAggregate? = { transform -> transform(FavoriteAggregate()) },
     onCommitModuleOrder: suspend (List<String>) -> Boolean = { false },
     accessibilityLockController: AccessibilityLockController = EmptyAccessibilityLockController,
+    quickActionBindings: QuickActionBindings = QuickActionBindings(),
     drawerDragJourney: DrawerDragJourney? = null,
     drawerDragTouchInWindow: Offset = Offset.Zero,
     drawerDragDropping: Boolean = false,
@@ -557,6 +558,7 @@ internal fun HomeScreen(
                                 editMode = true,
                                 accessibilityLockController = accessibilityLockController,
                                 onRequestEditMode = onRequestEditMode,
+                                bindings = quickActionBindings,
                             )
                             Spacer(Modifier.height(dimensionResource(R.dimen.home_module_spacing)))
                         }
@@ -567,6 +569,7 @@ internal fun HomeScreen(
                     editMode = false,
                     accessibilityLockController = accessibilityLockController,
                     onRequestEditMode = onRequestEditMode,
+                    bindings = quickActionBindings,
                     modifier = Modifier.padding(
                         top = contentPadding,
                         start = contentPadding,

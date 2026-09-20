@@ -30,10 +30,11 @@ internal interface BackupSettingsAccess {
     suspend fun restoreSettings(settings: DrawerDisplaySettings): Boolean
 }
 
-/** One parsed backup document: the favorite state and the display settings it carries. */
+/** One parsed backup document: favorites, display settings, and quick-action bindings. */
 internal data class SettingsBackupState(
     val aggregate: OrderedFavoriteAggregate,
     val settings: DrawerDisplaySettings,
+    val bindings: QuickActionBindings = QuickActionBindings(),
 )
 
 /**
@@ -62,11 +63,12 @@ private const val BACKUP_TIMESTAMP_PATTERN = "yyyyMMddHHmm"
  * present section restores that field's default value.
  */
 internal object SettingsBackupJson {
-    const val BACKUP_SCHEMA_VERSION = 1
+    const val BACKUP_SCHEMA_VERSION = 2
 
     fun serialize(
         aggregate: OrderedFavoriteAggregate,
         settings: DrawerDisplaySettings,
+        bindings: QuickActionBindings = QuickActionBindings(),
     ): String {
         val favorites = JSONObject().put(
             "modules",
@@ -114,10 +116,14 @@ internal object SettingsBackupJson {
                 settings.sectionAnchorPresentation.storageValue,
             )
             .put("backgroundOpacity", settings.backgroundOpacity)
+        val quickActionBindings = JSONObject()
+            .put("doubleTap", bindings.doubleTap.storageValue)
+            .put("longPress", bindings.longPress.storageValue)
         return JSONObject()
             .put("schemaVersion", BACKUP_SCHEMA_VERSION)
             .put("favorites", favorites)
             .put("displaySettings", displaySettings)
+            .put("quickActionBindings", quickActionBindings)
             .toString(2)
     }
 
@@ -126,18 +132,25 @@ internal object SettingsBackupJson {
         val schemaVersion = root.getInt("schemaVersion")
         if (schemaVersion > BACKUP_SCHEMA_VERSION ||
             (root.has("favorites") && root.optJSONObject("favorites") == null) ||
-            (root.has("displaySettings") && root.optJSONObject("displaySettings") == null)
+            (root.has("displaySettings") && root.optJSONObject("displaySettings") == null) ||
+            (root.has("quickActionBindings") &&
+                root.optJSONObject("quickActionBindings") == null)
         ) {
             null
         } else {
             val aggregate = parseFavorites(root.optJSONObject("favorites"))
             val settings = parseDisplaySettings(root.optJSONObject("displaySettings"))
-            if (aggregate == null || settings == null ||
+            val bindings = parseBindings(root.optJSONObject("quickActionBindings"))
+            if (aggregate == null || settings == null || bindings == null ||
                 !isValidOrderedFavoriteAggregate(aggregate)
             ) {
                 null
             } else {
-                SettingsBackupState(aggregate = aggregate, settings = settings)
+                SettingsBackupState(
+                    aggregate = aggregate,
+                    settings = settings,
+                    bindings = bindings,
+                )
             }
         }
     } catch (_: Exception) {
@@ -237,6 +250,25 @@ internal object SettingsBackupJson {
         }
     }
 
+    private fun parseBindings(bindings: JSONObject?): QuickActionBindings? {
+        val defaults = QuickActionBindings()
+        if (bindings == null) return defaults
+        return try {
+            QuickActionBindings(
+                doubleTap = bindings.enumField(
+                    name = "doubleTap",
+                    default = defaults.doubleTap,
+                ) { value -> quickActionFromStorageValueOrNull(value) } ?: return null,
+                longPress = bindings.enumField(
+                    name = "longPress",
+                    default = defaults.longPress,
+                ) { value -> quickActionFromStorageValueOrNull(value) } ?: return null,
+            )
+        } catch (_: Exception) {
+            null
+        }
+    }
+
     /**
      * Reads one enum-like field. A missing field keeps its default value; a present
      * but unrecognized value fails the whole backup interpretation.
@@ -331,36 +363,55 @@ internal object SettingsBackupJson {
         "left_side" -> DrawerSectionAnchorPresentation.LeftSide
         else -> null
     }
+
+    private fun quickActionFromStorageValueOrNull(value: String): QuickAction? = try {
+        quickActionFromStorageValue(value)
+    } catch (_: IllegalArgumentException) {
+        null
+    }
 }
 
 /**
  * Replaces the complete current state with a parsed backup as one coordinated
- * operation. The favorites store is replaced first; if the display-settings
- * replacement fails, the previous favorites state is written back and the rollback
- * is verified (with one retry) so no mixed state remains before restore reports
- * failure.
+ * operation. Favorites are replaced first, then display settings, then bindings.
+ * A later-stage failure rolls earlier stages back (favorites rollback is retried
+ * once) so no mixed state remains before restore reports failure.
  */
 internal class SettingsBackupRestoreCoordinator(
     private val favorites: BackupFavoritesAccess,
     private val settings: BackupSettingsAccess,
+    private val bindings: BackupBindingsAccess,
 ) {
     suspend fun restore(backup: SettingsBackupState): Boolean {
         val previousFavorites = favorites.currentOrderedAggregate() ?: return false
         val previousSettings = settings.currentSettings() ?: return false
-        if (backup.settings == previousSettings) {
-            return favorites.restoreAggregate(backup.aggregate)
+        val previousBindings = bindings.currentBindings() ?: return false
+        val favoritesChanged = backup.aggregate != previousFavorites
+        val settingsChanged = backup.settings != previousSettings
+        val bindingsChanged = backup.bindings != previousBindings
+
+        if (favoritesChanged && !favorites.restoreAggregate(backup.aggregate)) {
+            return false
         }
-        if (!favorites.restoreAggregate(backup.aggregate)) return false
-        if (!settings.restoreSettings(backup.settings)) {
-            if (!favorites.restoreAggregate(previousFavorites)) {
-                // A transient rollback write failure is retried once; restore keeps
-                // reporting failure either way so a mixed state is never presented as
-                // a completed restore.
-                favorites.restoreAggregate(previousFavorites)
-            }
+        if (settingsChanged && !settings.restoreSettings(backup.settings)) {
+            if (favoritesChanged) rollbackFavorites(previousFavorites)
+            return false
+        }
+        if (bindingsChanged && !bindings.restoreBindings(backup.bindings)) {
+            if (settingsChanged) settings.restoreSettings(previousSettings)
+            if (favoritesChanged) rollbackFavorites(previousFavorites)
             return false
         }
         return true
+    }
+
+    private suspend fun rollbackFavorites(previous: OrderedFavoriteAggregate) {
+        if (!favorites.restoreAggregate(previous)) {
+            // A transient rollback write failure is retried once; restore keeps
+            // reporting failure either way so a mixed state is never presented as
+            // a completed restore.
+            favorites.restoreAggregate(previous)
+        }
     }
 }
 
@@ -380,10 +431,12 @@ internal class SettingsBackupController(
     private val context: Context,
     private val favorites: BackupFavoritesAccess,
     private val settings: BackupSettingsAccess,
+    private val bindings: BackupBindingsAccess,
 ) : SettingsBackupControl {
     private val coordinator = SettingsBackupRestoreCoordinator(
         favorites = favorites,
         settings = settings,
+        bindings = bindings,
     )
 
     override fun suggestedFileName(): String {
@@ -402,9 +455,11 @@ internal class SettingsBackupController(
         try {
             val aggregate = favorites.currentOrderedAggregate() ?: return@withContext false
             val currentSettings = settings.currentSettings() ?: return@withContext false
+            val currentBindings = bindings.currentBindings() ?: return@withContext false
             val document = SettingsBackupJson.serialize(
                 aggregate = aggregate,
                 settings = currentSettings,
+                bindings = currentBindings,
             )
             context.contentResolver.openOutputStream(uri, WRITE_MODE)?.use { output ->
                 output.write(document.toByteArray())

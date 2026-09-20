@@ -1984,22 +1984,7 @@ class HomeScreenTest {
 
     }
     @Test
-    fun disabledDoubleTapLockHasNoHomeAction() {
-        val controller = TestAccessibilityLockController(systemEnabled = false, connected = false)
-        composeRule.setContent {
-            Launcher4MaxTheme {
-                HomeScreen(accessibilityLockController = controller)
-            }
-        }
-
-        composeRule.onNodeWithTag("home_double_tap_lock_region")
-            .performTouchInput { doubleClick() }
-
-        composeRule.runOnIdle { assertEquals(0, controller.lockRequests) }
-    }
-
-    @Test
-    fun enabledDoubleTapLockRequestsOneActionFromEligibleBlankSpace() {
+    fun defaultBindingsHaveNoHomeAction() {
         val controller = TestAccessibilityLockController(systemEnabled = true, connected = true)
         composeRule.setContent {
             Launcher4MaxTheme {
@@ -2007,10 +1992,69 @@ class HomeScreenTest {
             }
         }
 
-        composeRule.onNodeWithTag("home_double_tap_lock_region")
+        composeRule.onNodeWithTag("home_quick_action_region")
+            .performTouchInput { doubleClick() }
+        composeRule.onNodeWithTag("home_quick_action_region")
+            .performTouchInput { longClick() }
+
+        composeRule.runOnIdle { assertEquals(0, controller.lockRequests) }
+    }
+
+    @Test
+    fun boundScreenLockRequestsOneActionFromEligibleBlankSpace() {
+        val controller = TestAccessibilityLockController(systemEnabled = true, connected = true)
+        composeRule.setContent {
+            Launcher4MaxTheme {
+                HomeScreen(
+                    accessibilityLockController = controller,
+                    quickActionBindings = QuickActionBindings(
+                        doubleTap = QuickAction.ScreenLock,
+                    ),
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("home_quick_action_region")
             .performTouchInput { doubleClick() }
 
         composeRule.runOnIdle { assertEquals(1, controller.lockRequests) }
+    }
+
+    @Test
+    fun boundScreenLockDoesNothingWhenServiceIsOff() {
+        val controller = TestAccessibilityLockController(systemEnabled = false, connected = false)
+        composeRule.setContent {
+            Launcher4MaxTheme {
+                HomeScreen(
+                    accessibilityLockController = controller,
+                    quickActionBindings = QuickActionBindings(
+                        doubleTap = QuickAction.ScreenLock,
+                    ),
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("home_quick_action_region")
+            .performTouchInput { doubleClick() }
+
+        composeRule.runOnIdle { assertEquals(0, controller.lockRequests) }
+    }
+
+    @Test
+    fun settingsListContainsQuickActionSettingsAndNoStandaloneLockItem() {
+        composeRule.setContent {
+            Launcher4MaxTheme {
+                SettingsScreen(
+                    platform = EmptySettingsPlatform,
+                    licenseText = "",
+                    onBack = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("settings_quick_action_settings").assertIsDisplayed()
+        composeRule.onNodeWithTag("settings_double_tap_lock").assertDoesNotExist()
+        composeRule.onNodeWithTag("settings_privacy").assertIsDisplayed()
     }
 
     @Test
@@ -2022,13 +2066,14 @@ class HomeScreenTest {
                     platform = EmptySettingsPlatform,
                     licenseText = "",
                     accessibilityLockController = controller,
+                    quickActionSettingsOpen = true,
                     onBack = {},
                 )
             }
         }
 
-        composeRule.onNodeWithTag("settings_double_tap_lock").performClick()
-        composeRule.onNodeWithTag("double_tap_lock_explanation_sheet").assertIsDisplayed()
+        composeRule.onNodeWithTag("quick_action_service_state").performClick()
+        composeRule.onNodeWithTag("screen_lock_explanation_sheet").assertIsDisplayed()
         composeRule.onNodeWithTag("open_accessibility_settings").performClick()
         composeRule.onNodeWithTag("accessibility_prominent_disclosure").assertIsDisplayed()
         composeRule.runOnIdle { assertEquals(0, controller.settingsRequests) }
@@ -2047,17 +2092,49 @@ class HomeScreenTest {
                     platform = EmptySettingsPlatform,
                     licenseText = "",
                     accessibilityLockController = controller,
+                    quickActionSettingsOpen = true,
                     onBack = {},
                 )
             }
         }
 
-        composeRule.onNodeWithTag("settings_double_tap_lock").performClick()
+        composeRule.onNodeWithTag("quick_action_service_state").performClick()
         composeRule.onNodeWithTag("open_accessibility_settings").performClick()
         composeRule.onNodeWithTag("accessibility_disclosure_continue").performClick()
 
         composeRule.runOnIdle { assertEquals(1, controller.settingsRequests) }
         composeRule.onAllNodesWithTag("accessibility_prominent_disclosure").assertCountEquals(0)
+    }
+
+    @Test
+    fun selectingScreenLockWhileServiceOffSavesBindingAndEntersAuthorization() {
+        val controller = TestAccessibilityLockController(systemEnabled = false, connected = false)
+        var boundSlot: QuickActionSlot? = null
+        var boundAction: QuickAction? = null
+        composeRule.setContent {
+            Launcher4MaxTheme {
+                SettingsScreen(
+                    platform = EmptySettingsPlatform,
+                    licenseText = "",
+                    accessibilityLockController = controller,
+                    quickActionSettingsOpen = true,
+                    onBindQuickAction = { slot, action ->
+                        boundSlot = slot
+                        boundAction = action
+                    },
+                    onBack = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("quick_action_slot_double_tap").performClick()
+        composeRule.onNodeWithTag("quick_action_option_screen_lock").performClick()
+
+        composeRule.runOnIdle {
+            assertEquals(QuickActionSlot.DoubleTap, boundSlot)
+            assertEquals(QuickAction.ScreenLock, boundAction)
+        }
+        composeRule.onNodeWithTag("screen_lock_explanation_sheet").assertIsDisplayed()
     }
 
 }

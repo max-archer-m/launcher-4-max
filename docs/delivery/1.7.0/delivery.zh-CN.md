@@ -61,7 +61,7 @@
 
 | 迭代 | 状态 | 更新日期 | 依据 |
 | --- | --- | --- | --- |
-| [迭代 32：快捷操作与屏幕锁定](iteration-32-quick-actions-screen-locking.zh-CN.md) | `Planned` | 2026-09-17 | 作者 2026-09-17 的版本大纲将快捷操作契约补齐列为第一个迭代；作者同日裁决无障碍服务 mainline 化归属该迭代。 |
+| [迭代 32：快捷操作与屏幕锁定](iteration-32-quick-actions-screen-locking.zh-CN.md) | `In Progress` | 2026-09-20 | 项目作者于 2026-09-20 授权快捷操作契约的生产实现。 |
 | [迭代 33：Home 与抽屉契约补齐](iteration-33-home-drawer-contract-completion.zh-CN.md) | `Planned` | 2026-09-17 | 作者 2026-09-17 的版本大纲将剩余 Home 与抽屉契约内容列为第二个迭代。 |
 | [迭代 34：公开发布就绪](iteration-34-public-release-readiness.zh-CN.md) | `Planned` | 2026-09-17 | 作者 2026-09-17 的版本大纲将发布前准备列为第三个迭代；作者同日裁决过期 URL 修复与主设备性能预期归属该迭代。 |
 
@@ -69,7 +69,7 @@
 
 ### 迭代 32
 
-[契约](iteration-32-quick-actions-screen-locking.zh-CN.md)。尚无证据；迭代处于 `Planned`。
+[契约](iteration-32-quick-actions-screen-locking.zh-CN.md)。截至 2026-09-20 为 `In Progress`。项目作者已授权可配置快捷操作契约的生产实现。第一实现切片持久化 Home 空白区域的两个绑定、以绑定动作替换硬编码双击锁屏与长按编辑、加入快捷操作设置页，并将绑定纳入备份 schema；作者报告该切片编译验收通过。无障碍服务仍为 debug-only，待后续 mainline 化与 ADR-0004 改写。代理本地检查（`git diff --check`、新增 Kotlin 行宽扫描）通过；代理未运行 Gradle 构建或测试（`Not run`）。设备旅程保持 `Unknown`。
 
 ### 迭代 33
 

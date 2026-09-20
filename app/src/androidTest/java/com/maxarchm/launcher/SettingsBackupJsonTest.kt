@@ -15,20 +15,26 @@ import com.maxarchm.launcher.ui.drawer.DrawerSectionAnchorPresentation
 
 class SettingsBackupJsonTest {
     @Test
-    fun roundTripPreservesCompleteFavoriteAndDisplaySettingsState() {
+    fun roundTripPreservesCompleteFavoriteDisplaySettingsAndBindings() {
         val aggregate = testAggregate()
         val settings = testSettings()
+        val bindings = QuickActionBindings(
+            doubleTap = QuickAction.ScreenLock,
+            longPress = QuickAction.EditMode,
+        )
 
         val parsed = SettingsBackupJson.parse(
             SettingsBackupJson.serialize(
                 aggregate = aggregate,
                 settings = settings,
+                bindings = bindings,
             ),
         )
 
         assertNotNull(parsed)
         assertEquals(aggregate, parsed?.aggregate)
         assertEquals(settings, parsed?.settings)
+        assertEquals(bindings, parsed?.bindings)
     }
 
     @Test
@@ -47,6 +53,40 @@ class SettingsBackupJsonTest {
         val parsed = SettingsBackupJson.parse(document.toString())
 
         assertNotNull(parsed)
+    }
+
+    @Test
+    fun missingQuickActionBindingsSectionRestoresNoActionDefaults() {
+        val document = validBackupDocument()
+            .remove("quickActionBindings")
+
+        val parsed = SettingsBackupJson.parse(document.toString())
+
+        assertNotNull(parsed)
+        assertEquals(QuickActionBindings(), parsed?.bindings)
+    }
+
+    @Test
+    fun schemaVersionOneWithoutBindingsImportsAsNoActionDefaults() {
+        val document = validBackupDocument()
+            .put("schemaVersion", 1)
+            .remove("quickActionBindings")
+
+        val parsed = SettingsBackupJson.parse(document.toString())
+
+        assertNotNull(parsed)
+        assertEquals(QuickActionBindings(), parsed?.bindings)
+    }
+
+    @Test
+    fun unrecognizedBindingValueFails() {
+        val bindings = validBackupDocument()
+            .getJSONObject("quickActionBindings")
+            .put("doubleTap", "launch_camera")
+        val document = validBackupDocument()
+            .put("quickActionBindings", bindings)
+
+        assertNull(SettingsBackupJson.parse(document.toString()))
     }
 
     @Test

@@ -8,16 +8,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,6 +30,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -38,21 +44,40 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntRect
+import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.round
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupPositionProvider
+import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.maxarchm.launcher.AccessibilityLockController
 import com.maxarchm.launcher.EmptyAccessibilityLockController
+import com.maxarchm.launcher.QuickAction
+import com.maxarchm.launcher.QuickActionBindings
+import com.maxarchm.launcher.QuickActionSlot
 import com.maxarchm.launcher.R
 import com.maxarchm.launcher.SettingsBackupControl
 import com.maxarchm.launcher.SettingsBackupState
+import com.maxarchm.launcher.storageValue
 import kotlinx.coroutines.launch
 
 @Composable
@@ -61,6 +86,10 @@ internal fun SettingsScreen(
     licenseText: String,
     accessibilityLockController: AccessibilityLockController = EmptyAccessibilityLockController,
     backupController: SettingsBackupControl? = null,
+    bindings: QuickActionBindings = QuickActionBindings(),
+    onBindQuickAction: (QuickActionSlot, QuickAction) -> Unit = { _, _ -> },
+    quickActionSettingsOpen: Boolean = false,
+    onQuickActionSettingsOpenChange: (Boolean) -> Unit = {},
     onBack: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -69,7 +98,9 @@ internal fun SettingsScreen(
     var isDefaultHome by remember(platform) { mutableStateOf(platform.isDefaultHome()) }
     var showLicense by remember { mutableStateOf(false) }
     var showPrivacy by remember { mutableStateOf(false) }
-    var showDoubleTapExplanation by remember { mutableStateOf(false) }
+    var showScreenLockExplanation by remember { mutableStateOf(false) }
+    var popupSlot by remember { mutableStateOf<QuickActionSlot?>(null) }
+    var popupAnchorInWindow by remember { mutableStateOf<IntOffset?>(null) }
     var showProminentDisclosure by remember { mutableStateOf(false) }
     var backupInFlight by remember { mutableStateOf(false) }
     var pendingRestore by remember { mutableStateOf<SettingsBackupState?>(null) }
@@ -143,8 +174,29 @@ internal fun SettingsScreen(
                 .fillMaxSize()
                 .windowInsetsPadding(WindowInsets.safeDrawing),
         ) {
-            SettingsTopBar(onBack = onBack)
+            SettingsTopBar(
+                title = stringResource(
+                    if (quickActionSettingsOpen) {
+                        R.string.quick_action_settings
+                    } else {
+                        R.string.settings
+                    },
+                ),
+                onBack = onBack,
+            )
             HorizontalDivider(color = MaterialTheme.colorScheme.onSurfaceVariant)
+            if (quickActionSettingsOpen) {
+                QuickActionSettingsContent(
+                    bindings = bindings,
+                    serviceEnabled = isAccessibilitySystemEnabled && isAccessibilityConnected,
+                    onOpenSlot = { slot, anchor ->
+                        popupSlot = slot
+                        popupAnchorInWindow = anchor
+                    },
+                    onOpenServiceState = { showScreenLockExplanation = true },
+                    modifier = Modifier.weight(1f),
+                )
+            } else {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -165,21 +217,13 @@ internal fun SettingsScreen(
                         testTag = "settings_default_home",
                     )
                 }
-                if (accessibilityLockController.availableForValidation) {
-                    item(key = "double-tap-lock") {
-                        PrimarySettingsItem(
-                            title = stringResource(R.string.double_tap_to_lock),
-                            supportingText = stringResource(
-                                if (isAccessibilitySystemEnabled && isAccessibilityConnected) {
-                                    R.string.capability_on
-                                } else {
-                                    R.string.capability_off
-                                },
-                            ),
-                            onClick = { showDoubleTapExplanation = true },
-                            testTag = "settings_double_tap_lock",
-                        )
-                    }
+                item(key = "quick-action-settings") {
+                    PrimarySettingsItem(
+                        title = stringResource(R.string.quick_action_settings),
+                        supportingText = null,
+                        onClick = { onQuickActionSettingsOpenChange(true) },
+                        testTag = "settings_quick_action_settings",
+                    )
                 }
                 if (backupController != null) {
                     item(key = "data-backup") {
@@ -207,14 +251,12 @@ internal fun SettingsScreen(
                         )
                     }
                 }
-                if (accessibilityLockController.availableForValidation) {
-                    item(key = "privacy") {
-                        SecondarySettingsItem(
-                            text = stringResource(R.string.privacy),
-                            onClick = { showPrivacy = true },
-                            testTag = "settings_privacy",
-                        )
-                    }
+                item(key = "privacy") {
+                    SecondarySettingsItem(
+                        text = stringResource(R.string.privacy),
+                        onClick = { showPrivacy = true },
+                        testTag = "settings_privacy",
+                    )
                 }
                 item(key = "license") {
                     SecondarySettingsItem(
@@ -246,7 +288,30 @@ internal fun SettingsScreen(
                     )
                 }
             }
+            }
         }
+    }
+
+    popupSlot?.let { slot ->
+        val currentBinding = bindings.actionFor(slot)
+        QuickActionSelectionPopup(
+            current = currentBinding,
+            anchorInWindow = popupAnchorInWindow,
+            onSelect = { action ->
+                popupSlot = null
+                popupAnchorInWindow = null
+                onBindQuickAction(slot, action)
+                if (action == QuickAction.ScreenLock &&
+                    !accessibilityLockController.isSystemEnabled()
+                ) {
+                    showScreenLockExplanation = true
+                }
+            },
+            onDismiss = {
+                popupSlot = null
+                popupAnchorInWindow = null
+            },
+        )
     }
 
     if (showLicense) {
@@ -271,8 +336,8 @@ internal fun SettingsScreen(
         )
     }
 
-    if (showDoubleTapExplanation) {
-        DoubleTapLockExplanationSheet(
+    if (showScreenLockExplanation) {
+        ScreenLockExplanationSheet(
             enabled = isAccessibilitySystemEnabled && isAccessibilityConnected,
             onOpenAccessibilitySettings = {
                 val systemEnabled = accessibilityLockController.isSystemEnabled()
@@ -286,11 +351,13 @@ internal fun SettingsScreen(
                         ).show()
                     }
                 } else {
-                    showDoubleTapExplanation = false
+                    showScreenLockExplanation = false
                     showProminentDisclosure = true
                 }
             },
-            onDismiss = { showDoubleTapExplanation = false },
+            onDismiss = {
+                showScreenLockExplanation = false
+            },
         )
     }
 
@@ -337,7 +404,10 @@ internal fun SettingsScreen(
 }
 
 @Composable
-private fun SettingsTopBar(onBack: () -> Unit) {
+private fun SettingsTopBar(
+    title: String,
+    onBack: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -358,7 +428,7 @@ private fun SettingsTopBar(onBack: () -> Unit) {
             )
         }
         Text(
-            text = stringResource(R.string.settings),
+            text = title,
             modifier = Modifier
                 .padding(start = dimensionResource(R.dimen.settings_horizontal_padding))
                 .testTag("settings_title"),
@@ -374,9 +444,10 @@ private fun PrimarySettingsItem(
     onClick: () -> Unit,
     testTag: String,
     enabled: Boolean = true,
+    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .heightIn(
                 min = dimensionResource(
@@ -449,7 +520,7 @@ private fun SecondarySettingsItem(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun DoubleTapLockExplanationSheet(
+private fun ScreenLockExplanationSheet(
     enabled: Boolean,
     onOpenAccessibilitySettings: () -> Unit,
     onDismiss: () -> Unit,
@@ -460,7 +531,7 @@ private fun DoubleTapLockExplanationSheet(
         contentColor = MaterialTheme.colorScheme.onSurface,
         scrimColor = MaterialTheme.colorScheme.scrim,
         dragHandle = { SettingsModalDragHandle() },
-        modifier = Modifier.testTag("double_tap_lock_explanation_sheet"),
+        modifier = Modifier.testTag("screen_lock_explanation_sheet"),
     ) {
         Column(
             modifier = Modifier
@@ -469,7 +540,7 @@ private fun DoubleTapLockExplanationSheet(
                 .padding(dimensionResource(R.dimen.settings_horizontal_padding)),
         ) {
             Text(
-                text = stringResource(R.string.double_tap_to_lock),
+                text = stringResource(R.string.quick_action_screen_lock),
                 style = MaterialTheme.typography.titleLarge,
             )
             Text(
@@ -480,7 +551,7 @@ private fun DoubleTapLockExplanationSheet(
                 style = MaterialTheme.typography.bodySmall,
             )
             Text(
-                text = stringResource(R.string.double_tap_lock_explanation),
+                text = stringResource(R.string.screen_lock_explanation),
                 modifier = Modifier.padding(
                     vertical = dimensionResource(R.dimen.settings_modal_content_spacing),
                 ),
@@ -675,6 +746,159 @@ internal fun RestoreConfirmationDialog(
         },
         modifier = Modifier.testTag("settings_restore_dialog"),
     )
+}
+
+@Composable
+private fun QuickActionSettingsContent(
+    bindings: QuickActionBindings,
+    serviceEnabled: Boolean,
+    onOpenSlot: (QuickActionSlot, IntOffset) -> Unit,
+    onOpenServiceState: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .testTag("quick_action_settings_page"),
+    ) {
+        QuickActionSlotRow(
+            slot = QuickActionSlot.DoubleTap,
+            title = stringResource(R.string.quick_action_double_tap_slot),
+            action = bindings.doubleTap,
+            onOpen = onOpenSlot,
+            testTag = "quick_action_slot_double_tap",
+        )
+        QuickActionSlotRow(
+            slot = QuickActionSlot.LongPress,
+            title = stringResource(R.string.quick_action_long_press_slot),
+            action = bindings.longPress,
+            onOpen = onOpenSlot,
+            testTag = "quick_action_slot_long_press",
+        )
+        PrimarySettingsItem(
+            title = stringResource(R.string.quick_action_screen_lock),
+            supportingText = stringResource(
+                if (serviceEnabled) R.string.capability_on else R.string.capability_off,
+            ),
+            onClick = onOpenServiceState,
+            testTag = "quick_action_service_state",
+        )
+    }
+}
+
+@Composable
+private fun QuickActionSlotRow(
+    slot: QuickActionSlot,
+    title: String,
+    action: QuickAction,
+    onOpen: (QuickActionSlot, IntOffset) -> Unit,
+    testTag: String,
+) {
+    var coordinates by remember { mutableStateOf<LayoutCoordinates?>(null) }
+    PrimarySettingsItem(
+        title = title,
+        supportingText = stringResource(action.labelRes()),
+        onClick = {
+            val position = coordinates?.positionInWindow()?.round() ?: IntOffset.Zero
+            val size = coordinates?.size ?: IntSize.Zero
+            onOpen(
+                slot,
+                IntOffset(x = position.x, y = position.y + size.height / 2),
+            )
+        },
+        testTag = testTag,
+        modifier = Modifier.onGloballyPositioned { coordinates = it },
+    )
+}
+
+@Composable
+private fun QuickActionSelectionPopup(
+    current: QuickAction,
+    anchorInWindow: IntOffset?,
+    onSelect: (QuickAction) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val density = LocalDensity.current
+    val trailingInsetPx = with(density) {
+        dimensionResource(R.dimen.settings_popup_trailing_inset).roundToPx()
+    }
+    val positionProvider = remember(anchorInWindow, trailingInsetPx) {
+        object : PopupPositionProvider {
+            override fun calculatePosition(
+                anchorBounds: IntRect,
+                windowSize: IntSize,
+                layoutDirection: LayoutDirection,
+                popupContentSize: IntSize,
+            ): IntOffset {
+                val anchor = anchorInWindow ?: IntOffset(
+                    x = anchorBounds.right,
+                    y = anchorBounds.top + anchorBounds.height / 2,
+                )
+                val x = (windowSize.width - trailingInsetPx - popupContentSize.width)
+                    .coerceAtLeast(0)
+                return IntOffset(x = x, y = anchor.y)
+            }
+        }
+    }
+    val cornerRadius = dimensionResource(R.dimen.settings_popup_corner_radius)
+    Popup(
+        popupPositionProvider = positionProvider,
+        onDismissRequest = onDismiss,
+        properties = PopupProperties(focusable = true),
+    ) {
+        Column(
+            modifier = Modifier
+                .clip(RoundedCornerShape(cornerRadius))
+                .background(colorResource(R.color.launcher4max_sheet_surface))
+                .testTag("quick_action_selection_popup"),
+        ) {
+            QuickAction.entries.forEach { action ->
+                QuickActionOptionRow(
+                    action = action,
+                    selected = action == current,
+                    onSelect = { onSelect(action) },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun QuickActionOptionRow(
+    action: QuickAction,
+    selected: Boolean,
+    onSelect: () -> Unit,
+) {
+        Row(
+            modifier = Modifier
+                .height(dimensionResource(R.dimen.settings_popup_option_height))
+            .clickable(role = Role.RadioButton, onClick = onSelect)
+            .padding(horizontal = dimensionResource(R.dimen.settings_horizontal_padding))
+            .testTag("quick_action_option_${action.storageValue}"),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        RadioButton(
+            selected = selected,
+            onClick = null,
+            colors = RadioButtonDefaults.colors(
+                selectedColor = MaterialTheme.colorScheme.onSurface,
+                unselectedColor = MaterialTheme.colorScheme.onSurface,
+            ),
+            modifier = Modifier.size(dimensionResource(R.dimen.settings_popup_radio_size)),
+        )
+        Spacer(Modifier.width(dimensionResource(R.dimen.settings_popup_radio_label_gap)))
+        Text(
+            text = stringResource(action.labelRes()),
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = dimensionResource(R.dimen.settings_popup_primary_text_size).value.sp,
+        )
+    }
+}
+
+private fun QuickAction.labelRes(): Int = when (this) {
+    QuickAction.NoAction -> R.string.quick_action_no_action
+    QuickAction.EditMode -> R.string.quick_action_edit_mode
+    QuickAction.ScreenLock -> R.string.quick_action_screen_lock
 }
 
 private const val JSON_MIME_TYPE = "application/json"

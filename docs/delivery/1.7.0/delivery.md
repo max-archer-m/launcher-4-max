@@ -61,7 +61,7 @@ Primary risks are: the backup schema extension must keep older backups importabl
 
 | Iteration | Status | Updated | Basis |
 | --- | --- | --- | --- |
-| [Iteration 32: Quick Actions and Screen Locking](iteration-32-quick-actions-screen-locking.md) | `Planned` | 2026-09-17 | The author's 2026-09-17 version outline designates the quick-actions contract completion as the first iteration; the author ruled the same day that the accessibility service mainline move belongs to it. |
+| [Iteration 32: Quick Actions and Screen Locking](iteration-32-quick-actions-screen-locking.md) | `In Progress` | 2026-09-20 | The project author authorized production implementation of the quick-actions contract on 2026-09-20. |
 | [Iteration 33: Home and Drawer Contract Completion](iteration-33-home-drawer-contract-completion.md) | `Planned` | 2026-09-17 | The author's 2026-09-17 version outline designates the remaining Home and Drawer contract content as the second iteration. |
 | [Iteration 34: Public Release Readiness](iteration-34-public-release-readiness.md) | `Planned` | 2026-09-17 | The author's 2026-09-17 version outline designates pre-release preparation as the third iteration; the author ruled the same day that the stale URL fix and the primary-device performance expectation belong to it. |
 
@@ -69,7 +69,7 @@ Primary risks are: the backup schema extension must keep older backups importabl
 
 ### Iteration 32
 
-[Contract](iteration-32-quick-actions-screen-locking.md). No evidence exists yet; the iteration is `Planned`.
+[Contract](iteration-32-quick-actions-screen-locking.md). `In Progress` as of 2026-09-20. The project author authorized production implementation of the configurable quick-actions contract. The first implementation slice persists the two Home blank-space bindings, replaces the hard-coded double-tap lock and long-press edit gestures, adds the Quick action settings page, and includes the bindings in the backup schema; the author reported compile acceptance of that slice. The accessibility service remains debug-only pending the remaining mainline move and ADR-0004 rewrite. The agent's local checks (`git diff --check`, line-length sweep of added Kotlin) passed; the agent ran no Gradle build or test command (`Not run`). Device journeys remain `Unknown`.
 
 ### Iteration 33
 

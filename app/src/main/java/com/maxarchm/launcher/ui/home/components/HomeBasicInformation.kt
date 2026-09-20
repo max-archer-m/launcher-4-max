@@ -29,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
@@ -45,6 +46,8 @@ import androidx.compose.material3.Text
 import com.maxarchm.launcher.AccessibilityLockController
 import com.maxarchm.launcher.HomeDateTimeFormatter
 import com.maxarchm.launcher.LockRequestResult
+import com.maxarchm.launcher.QuickAction
+import com.maxarchm.launcher.QuickActionBindings
 import com.maxarchm.launcher.R
 import com.maxarchm.launcher.ui.drawer.drawerForegroundShadow
 import java.time.ZonedDateTime
@@ -57,6 +60,7 @@ internal fun HomeBasicInformation(
     accessibilityLockController: AccessibilityLockController,
     onRequestEditMode: () -> Unit,
     modifier: Modifier = Modifier,
+    bindings: QuickActionBindings = QuickActionBindings(),
     clock: () -> ZonedDateTime = { ZonedDateTime.now() },
 ) {
     val context = LocalContext.current
@@ -134,37 +138,64 @@ internal fun HomeBasicInformation(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight()
-                .pointerInput(key1 = accessibilityLockController, key2 = editMode) {
+                .pointerInput(
+                    accessibilityLockController,
+                    editMode,
+                    bindings,
+                ) {
                     detectTapGestures(
                         onDoubleTap = {
-                            if (!accessibilityLockController.availableForValidation ||
-                                editMode ||
-                                !accessibilityLockController.isSystemEnabled()
-                            ) {
-                                return@detectTapGestures
-                            }
-                            if (accessibilityLockController.requestLock() !=
-                                LockRequestResult.Requested
-                            ) {
-                                Toast.makeText(
-                                    context,
-                                    R.string.unable_to_lock_screen,
-                                    Toast.LENGTH_SHORT,
-                                ).show()
-                            }
+                            performBoundAction(
+                                action = bindings.doubleTap,
+                                editMode = editMode,
+                                accessibilityLockController = accessibilityLockController,
+                                context = context,
+                                hapticFeedback = hapticFeedback,
+                                onRequestEditMode = onRequestEditMode,
+                            )
                         },
                         onLongPress = {
-                            if (!editMode) {
-                                hapticFeedback.performHapticFeedback(
-                                    HapticFeedbackType.LongPress,
-                                )
-                                onRequestEditMode()
-                            }
+                            performBoundAction(
+                                action = bindings.longPress,
+                                editMode = editMode,
+                                accessibilityLockController = accessibilityLockController,
+                                context = context,
+                                hapticFeedback = hapticFeedback,
+                                onRequestEditMode = onRequestEditMode,
+                            )
                         },
                     )
                 }
-                .testTag("home_double_tap_lock_region"),
+                .testTag("home_quick_action_region"),
         )
+    }
+}
+
+private fun performBoundAction(
+    action: QuickAction,
+    editMode: Boolean,
+    accessibilityLockController: AccessibilityLockController,
+    context: Context,
+    hapticFeedback: HapticFeedback,
+    onRequestEditMode: () -> Unit,
+) {
+    if (editMode) return
+    when (action) {
+        QuickAction.NoAction -> Unit
+        QuickAction.EditMode -> {
+            hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+            onRequestEditMode()
+        }
+        QuickAction.ScreenLock -> {
+            if (!accessibilityLockController.isSystemEnabled()) return
+            if (accessibilityLockController.requestLock() != LockRequestResult.Requested) {
+                Toast.makeText(
+                    context,
+                    R.string.unable_to_lock_screen,
+                    Toast.LENGTH_SHORT,
+                ).show()
+            }
+        }
     }
 }
 

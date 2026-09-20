@@ -129,6 +129,7 @@ internal fun Launcher4MaxApp(systemHomeEvents: MutableSharedFlow<Unit>? = null) 
         entryLauncher = graph.entryLauncher,
         favoriteStore = graph.favoriteStore,
         drawerDisplaySettingsStore = graph.drawerDisplaySettingsStore,
+        quickActionBindingsStore = graph.quickActionBindingsStore,
         informationLauncher = graph.informationLauncher,
         uninstallLauncher = graph.uninstallLauncher,
         shortcutController = graph.shortcutController,
@@ -145,6 +146,7 @@ internal fun Launcher4MaxApp(
     entryLauncher: LaunchableEntryLauncher = LaunchableEntryLauncher { false },
     favoriteStore: FavoriteStore? = null,
     drawerDisplaySettingsStore: DrawerDisplaySettingsStore? = null,
+    quickActionBindingsStore: QuickActionBindingsStore? = null,
     onDrawerDisplaySettingsSaveFailure: (() -> Unit)? = null,
     informationLauncher: ApplicationInformationLauncher = ApplicationInformationLauncher { false },
     uninstallLauncher: ApplicationUninstallLauncher = EmptyApplicationUninstallLauncher,
@@ -187,6 +189,17 @@ internal fun Launcher4MaxApp(
     }
     val drawerDisplaySettingsState by effectiveDrawerDisplaySettingsStore.state
         .collectAsStateWithLifecycle()
+    val effectiveQuickActionBindingsStore = quickActionBindingsStore ?: remember(
+        androidContext,
+    ) {
+        QuickActionBindingsStore(context = androidContext)
+    }
+    val quickActionBindingsState by effectiveQuickActionBindingsStore.state
+        .collectAsStateWithLifecycle()
+    val quickActionBindings =
+        (quickActionBindingsState as? QuickActionBindingsReadState.Readable)
+            ?.bindings
+            ?: QuickActionBindings()
     val favoriteEditor = remember(
         key1 = effectiveFavoriteStore,
         calculation = { HomeFavoriteEditor(store = effectiveFavoriteStore) },
@@ -195,16 +208,19 @@ internal fun Launcher4MaxApp(
         androidContext,
         effectiveFavoriteStore,
         effectiveDrawerDisplaySettingsStore,
+        effectiveQuickActionBindingsStore,
     ) {
         val favoritesAccess = effectiveFavoriteStore as? BackupFavoritesAccess
         val settingsAccess = effectiveDrawerDisplaySettingsStore as? BackupSettingsAccess
-        if (favoritesAccess == null || settingsAccess == null) {
+        val bindingsAccess = effectiveQuickActionBindingsStore as? BackupBindingsAccess
+        if (favoritesAccess == null || settingsAccess == null || bindingsAccess == null) {
             null
         } else {
             SettingsBackupController(
                 context = androidContext,
                 favorites = favoritesAccess,
                 settings = settingsAccess,
+                bindings = bindingsAccess,
             )
         }
     }
@@ -227,6 +243,7 @@ internal fun Launcher4MaxApp(
     var favoriteSelection by remember { mutableStateOf<List<LaunchableIdentity>>(emptyList()) }
     var favoriteSelectionSaving by remember { mutableStateOf(false) }
     var settingsOpen by remember { mutableStateOf(false) }
+    var quickActionSettingsOpen by remember { mutableStateOf(false) }
     var externalLaunchPendingReturn by remember { mutableStateOf(false) }
     var inventoryRefreshPendingReturn by remember { mutableStateOf(false) }
     var shortcutOwner by remember { mutableStateOf<LaunchableIdentity?>(null) }
@@ -546,6 +563,7 @@ internal fun Launcher4MaxApp(
         selectedEntry = null
         selectedEntryFromHome = false
         settingsOpen = false
+        quickActionSettingsOpen = false
         homeCoordinator.dismissEditMode()
         homeCoordinator.clearEditSelection()
         homeCoordinator.completeFavoriteReveal()
@@ -843,7 +861,13 @@ internal fun Launcher4MaxApp(
         settleTo(AppSurface.Home)
     }
 
-    BackHandler(enabled = settingsOpen) { settingsOpen = false }
+    BackHandler(enabled = settingsOpen && quickActionSettingsOpen) {
+        quickActionSettingsOpen = false
+    }
+
+    BackHandler(enabled = settingsOpen && !quickActionSettingsOpen) {
+        settingsOpen = false
+    }
 
     val gestureModifier = Modifier.pointerInput(
         settledSurface,
@@ -1068,6 +1092,7 @@ internal fun Launcher4MaxApp(
                 companionFavoriteNestedScrollConnection =
                     companionNestedScrollConnection.takeUnless { homeCoordinator.editMode },
                 accessibilityLockController = accessibilityLockController,
+                quickActionBindings = quickActionBindings,
                 drawerDragJourney = homeCoordinator.drawerDragJourney,
                 drawerDragTouchInWindow = homeCoordinator.drawerDragTouchPosition,
                 drawerDragDropping = homeCoordinator.drawerDragDropping,
@@ -1302,7 +1327,28 @@ internal fun Launcher4MaxApp(
                 licenseText = licenseText,
                 accessibilityLockController = accessibilityLockController,
                 backupController = settingsBackupController,
-                onBack = { settingsOpen = false },
+                bindings = quickActionBindings,
+                onBindQuickAction = { slot, action ->
+                    scope.launch {
+                        effectiveQuickActionBindingsStore.replace(
+                            bindings = quickActionBindings.withSlot(
+                                slot = slot,
+                                action = action,
+                            ),
+                        )
+                    }
+                },
+                quickActionSettingsOpen = quickActionSettingsOpen,
+                onQuickActionSettingsOpenChange = { open ->
+                    quickActionSettingsOpen = open
+                },
+                onBack = {
+                    if (quickActionSettingsOpen) {
+                        quickActionSettingsOpen = false
+                    } else {
+                        settingsOpen = false
+                    }
+                },
             )
         }
     }
