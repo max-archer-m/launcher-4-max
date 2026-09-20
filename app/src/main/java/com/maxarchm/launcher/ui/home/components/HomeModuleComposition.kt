@@ -85,13 +85,13 @@ import com.maxarchm.launcher.OrderedFavoriteModuleType
 import com.maxarchm.launcher.R
 import com.maxarchm.launcher.drawCornerMark
 import com.maxarchm.launcher.rowHeightResource
-import com.maxarchm.launcher.ui.drawer.drawerForegroundShadow
 import com.maxarchm.launcher.ui.home.components.HomeApplicationAutoScroll
 import com.maxarchm.launcher.ui.home.components.HomeFavoriteEnterBatch
 import com.maxarchm.launcher.ui.home.components.HomeFavoriteEnterKey
 import com.maxarchm.launcher.ui.home.components.HomeMainListAddFavoriteEntry
 import com.maxarchm.launcher.ui.home.components.detectHomeApplicationMovement
 import com.maxarchm.launcher.ui.home.components.homeFavoriteEnter
+import com.maxarchm.launcher.ui.drawer.drawerForegroundShadow
 import kotlin.math.roundToInt
 
 @Composable
@@ -126,8 +126,6 @@ internal fun HomeEditDock(
                 R.dimen.style_settings_secondary_line_height,
             ).value.sp,
             style = LocalTextStyle.current.copy(
-                // The dock sits over the wallpaper; the instruction carries the same
-                // fixed dark text shadow as the Drawer foreground content.
                 shadow = drawerForegroundShadow(),
             ),
         )

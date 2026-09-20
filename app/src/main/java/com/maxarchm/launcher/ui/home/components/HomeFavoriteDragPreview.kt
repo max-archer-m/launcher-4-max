@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -61,6 +62,7 @@ import com.maxarchm.launcher.iconSizeResource
 import com.maxarchm.launcher.lineHeightResource
 import com.maxarchm.launcher.rowHeightResource
 import com.maxarchm.launcher.textSizeResource
+import com.maxarchm.launcher.ui.drawer.drawerForegroundShadow
 import com.maxarchm.launcher.ui.home.components.HomeFavoriteRibbonRailDivider
 import kotlin.math.roundToInt
 
@@ -470,6 +472,7 @@ internal fun HomeFavoritePreviewContent(
             overflow = TextOverflow.Ellipsis,
             fontSize = dimensionResource(listSize.textSizeResource()).value.sp,
             lineHeight = dimensionResource(listSize.lineHeightResource()).value.sp,
+            style = LocalTextStyle.current.copy(shadow = drawerForegroundShadow()),
         )
     }
 }

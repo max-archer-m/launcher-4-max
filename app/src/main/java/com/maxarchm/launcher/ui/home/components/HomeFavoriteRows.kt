@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -66,6 +67,7 @@ import com.maxarchm.launcher.iconSizeResource
 import com.maxarchm.launcher.lineHeightResource
 import com.maxarchm.launcher.rowHeightResource
 import com.maxarchm.launcher.textSizeResource
+import com.maxarchm.launcher.ui.drawer.drawerForegroundShadow
 
 @Composable
 internal fun HomeFavoriteBelowItem(
@@ -148,6 +150,7 @@ internal fun HomeFavoriteBelowItem(
             textAlign = TextAlign.Center,
             fontSize = dimensionResource(listSize.textSizeResource()).value.sp,
             lineHeight = dimensionResource(listSize.lineHeightResource()).value.sp,
+            style = LocalTextStyle.current.copy(shadow = drawerForegroundShadow()),
         )
     }
 }
@@ -347,6 +350,7 @@ internal fun HomeFavoriteRow(
                         ?: if (compact) R.dimen.home_companion_favorite_line_height
                         else R.dimen.home_favorite_line_height,
                 ).value.sp,
+                style = LocalTextStyle.current.copy(shadow = drawerForegroundShadow()),
             )
         }
         if (editMode) {
