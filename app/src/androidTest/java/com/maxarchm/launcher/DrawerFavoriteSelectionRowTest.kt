@@ -6,11 +6,13 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Process
 import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assertHeightIsEqualTo
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.unit.dp
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
@@ -119,6 +121,29 @@ class DrawerFavoriteSelectionRowTest {
         }
         composeRule.onNodeWithTag(testTag = "drawer_favorite_selection_row").performClick()
         composeRule.runOnIdle { assertEquals(1, toggles) }
+    }
+
+    @Test
+    fun belowRowHeightUsesIndependentIconAndTextTiers() {
+        composeRule.setContent {
+            Launcher4MaxTheme {
+                DrawerFavoriteSelectionRow(
+                    entry = testEntry(),
+                    displaySettings = DrawerDisplaySettings(
+                        iconSize = com.maxarchm.launcher.ui.drawer.DrawerApplicationSize.Small,
+                        textSize = com.maxarchm.launcher.ui.drawer.DrawerApplicationSize.Large,
+                        namePlacement = com.maxarchm.launcher.ui.drawer.DrawerNamePlacement.Below,
+                    ),
+                    order = null,
+                    alreadyFavorite = false,
+                    enabled = true,
+                    onClick = {},
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("drawer_favorite_selection_row")
+            .assertHeightIsEqualTo(92.dp)
     }
 
     private fun testEntry(): LaunchableEntry = LaunchableEntry(

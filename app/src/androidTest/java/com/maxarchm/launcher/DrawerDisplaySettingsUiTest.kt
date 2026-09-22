@@ -70,13 +70,13 @@ class DrawerDisplaySettingsUiTest {
         }
 
         composeRule.onNodeWithTag(testTag = "drawer_application_row")
-            .assertHeightIsEqualTo(expectedHeight = 56.dp)
+            .assertHeightIsEqualTo(expectedHeight = 60.dp)
         composeRule.onNodeWithTag(testTag = "drawer_display_settings_entry").performClick()
         composeRule.onNodeWithTag(testTag = "drawer_application_size_text_slider")
             .performSemanticsAction(SemanticsActions.SetProgress) { action -> action(2f) }
 
         composeRule.onNodeWithTag(testTag = "drawer_application_row")
-            .assertHeightIsEqualTo(expectedHeight = 56.dp)
+            .assertHeightIsEqualTo(expectedHeight = 60.dp)
         composeRule.onNodeWithTag(testTag = "drawer_display_settings_panel").assertIsDisplayed()
         composeRule.runOnIdle {
             assertEquals(1, changes)
@@ -100,7 +100,7 @@ class DrawerDisplaySettingsUiTest {
         composeRule.onNodeWithTag("drawer_application_size_icon_slider")
             .performTouchInput { swipeRight() }
         composeRule.onNodeWithTag("drawer_application_row")
-            .assertHeightIsEqualTo(48.dp)
+            .assertHeightIsEqualTo(52.dp)
         composeRule.onNodeWithText("Example application").assertTextEquals("Example application")
     }
 
@@ -130,6 +130,43 @@ class DrawerDisplaySettingsUiTest {
             assertEquals(DrawerApplicationSize.Large, settings.iconSize)
             assertEquals(DrawerApplicationSize.Medium, settings.textSize)
         }
+    }
+
+    @Test
+    fun belowPlacementUsesBothIndependentSizeTiersForRowHeight() {
+        composeRule.setContent {
+            Launcher4MaxTheme {
+                DrawerScreen(
+                    inventoryLoader = inventory(),
+                    displaySettings = DrawerDisplaySettings(
+                        iconSize = DrawerApplicationSize.Small,
+                        textSize = DrawerApplicationSize.Large,
+                        namePlacement = DrawerNamePlacement.Below,
+                    ),
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("drawer_application_row")
+            .assertHeightIsEqualTo(92.dp)
+    }
+
+    @Test
+    fun rightPlacementUsesTheLargerOfIndependentIconAndTextTiers() {
+        composeRule.setContent {
+            Launcher4MaxTheme {
+                DrawerScreen(
+                    inventoryLoader = inventory(),
+                    displaySettings = DrawerDisplaySettings(
+                        iconSize = DrawerApplicationSize.Small,
+                        textSize = DrawerApplicationSize.Large,
+                    ),
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("drawer_application_row")
+            .assertHeightIsEqualTo(52.dp)
     }
 
     @Test

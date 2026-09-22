@@ -963,14 +963,7 @@ internal fun DrawerFavoriteSelectionRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val iconSize = displaySettings.iconSize
-    val rowHeight = dimensionResource(
-        id = if (displaySettings.namePlacement == DrawerNamePlacement.Right) {
-            iconSize.rowHeightResource()
-        } else {
-            iconSize.belowRowHeightResource()
-        },
-    )
+    val rowHeight = drawerApplicationRowHeight(displaySettings)
     val disabledAlpha = integerResource(R.integer.disabled_content_alpha_percent) / 100f
     val selectedScale = integerResource(R.integer.drawer_selection_selected_scale_percent) / 100f
     val animationDuration = integerResource(R.integer.short_property_animation_duration_ms)
@@ -1379,14 +1372,7 @@ private fun DrawerApplicationRow(
     onDragToFavoriteEnd: (Offset?, Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val iconSize = displaySettings.iconSize
-    val rowHeight = dimensionResource(
-        id = if (displaySettings.namePlacement == DrawerNamePlacement.Right) {
-            iconSize.rowHeightResource()
-        } else {
-            iconSize.belowRowHeightResource()
-        },
-    )
+    val rowHeight = drawerApplicationRowHeight(displaySettings)
     val hapticFeedback = LocalHapticFeedback.current
     val openActionsLabel = stringResource(R.string.drawer_open_application_actions)
     var rowCoordinates by remember { mutableStateOf<LayoutCoordinates?>(null) }
@@ -1485,7 +1471,14 @@ internal fun DrawerApplicationContent(
     val iconSizePixels = with(LocalDensity.current) { iconSize.roundToPx() }
     if (displaySettings.namePlacement == DrawerNamePlacement.Right) {
         Row(
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(
+                    top = dimensionResource(
+                        R.dimen.drawer_application_below_vertical_inset,
+                    ),
+                    bottom = dimensionResource(R.dimen.drawer_application_bottom_inset),
+                ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             DrawerApplicationIcon(
@@ -1538,12 +1531,24 @@ internal fun DrawerApplicationContent(
             )
             Spacer(
                 modifier = Modifier.height(
-                    height = dimensionResource(
-                        id = R.dimen.drawer_application_below_vertical_inset,
-                    ),
+                    height = dimensionResource(R.dimen.drawer_application_bottom_inset),
                 ),
             )
         }
+    }
+}
+
+@Composable
+private fun drawerApplicationRowHeight(settings: DrawerDisplaySettings): Dp {
+    val topInset = dimensionResource(R.dimen.drawer_application_below_vertical_inset)
+    val bottomInset = dimensionResource(R.dimen.drawer_application_bottom_inset)
+    val iconHeight = dimensionResource(settings.iconSize.iconSizeResource())
+    val textLineHeight = dimensionResource(settings.textSize.lineHeightResource())
+    return when (settings.namePlacement) {
+        DrawerNamePlacement.Right -> maxOf(iconHeight, textLineHeight) + topInset + bottomInset
+        DrawerNamePlacement.Below -> iconHeight + textLineHeight +
+                dimensionResource(R.dimen.drawer_application_icon_label_gap) +
+                topInset + bottomInset
     }
 }
 

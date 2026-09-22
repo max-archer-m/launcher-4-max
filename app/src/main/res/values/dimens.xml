@@ -158,8 +158,8 @@
     <dimen name="style_settings_stepper_visible_height">28dp</dimen>
     <dimen name="style_settings_stepper_radius">4dp</dimen>
 
-    <!-- Tapering slider calibration accepted on-device 2026-09-21;
-         contract write-back deferred. -->
+    <!-- Tapering slider calibration accepted on-device 2026-09-21 and recorded in the
+         shared style-settings-panel presentation contract. -->
     <dimen name="style_settings_tapering_track_start_height">20dp</dimen>
     <dimen name="style_settings_tapering_track_end_height">8dp</dimen>
     <dimen name="style_settings_tapering_thumb_width">4dp</dimen>
@@ -187,6 +187,7 @@
     <dimen name="drawer_application_below_medium_row_height">92dp</dimen>
     <dimen name="drawer_application_below_small_row_height">80dp</dimen>
     <dimen name="drawer_application_below_vertical_inset">8dp</dimen>
+    <dimen name="drawer_application_bottom_inset">12dp</dimen>
     <dimen name="drawer_settings_icon_label_gap">16dp</dimen>
 
     <!-- Drawer / Application list / Alphabet section header -->

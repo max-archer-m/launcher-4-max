@@ -36,7 +36,7 @@ On the primary device, while Launcher4Max is not the default launcher, Home show
 - The distribution-boundary change and every release-operations item, which belong to Iteration 34.
 - Any landscape behavior or orientation change.
 - Slider application beyond the application-size block; no other surface adopts the tapering slider in this iteration.
-- Any change to the application-size tier model itself — the three tiers, their defaults, persistence, and backup contents remain as delivered in 1.6.0.
+- Any additional application-size tier beyond the accepted three tiers, or a change to their defaults. The accepted Home and Drawer work stores independent icon and text selections and preserves the applicable local-data and backup compatibility rules.
 
 ## Technical change areas
 
@@ -54,7 +54,7 @@ This iteration is independent of Iteration 32 in behavior and code areas, with s
 ## Migration and compatibility impact
 
 - The dismissal date is new presentation state outside the backup file: a fresh install or restored backup starts with no suppression, per contract.
-- No settings-store schema change is required; the application-size tiers persist exactly as delivered.
+- Home favorite modules and Drawer display settings persist independent icon and text tiers. Legacy Home and Drawer single-size local data and backups populate both fields with their recorded tier; when neither size field exists, both resolve to Medium. New writes preserve independent selections.
 
 ## Security, privacy, permission, and licensing impact
 
