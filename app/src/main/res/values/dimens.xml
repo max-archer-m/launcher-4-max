@@ -158,6 +158,16 @@
     <dimen name="style_settings_stepper_visible_height">28dp</dimen>
     <dimen name="style_settings_stepper_radius">4dp</dimen>
 
+    <!-- Tapering slider calibration accepted on-device 2026-09-21;
+         contract write-back deferred. -->
+    <dimen name="style_settings_tapering_track_start_height">20dp</dimen>
+    <dimen name="style_settings_tapering_track_end_height">8dp</dimen>
+    <dimen name="style_settings_tapering_thumb_width">4dp</dimen>
+    <dimen name="style_settings_tapering_thumb_height">40dp</dimen>
+    <dimen name="style_settings_tapering_thumb_radius">2dp</dimen>
+    <dimen name="style_settings_tapering_thumb_track_gap">6dp</dimen>
+    <dimen name="style_settings_tapering_stop_target_size">40dp</dimen>
+
     <!-- Drawer / Transition gesture from Home -->
     <dimen name="drawer_entry_drag_threshold">120dp</dimen>
     <dimen name="drawer_transition_full_gesture_distance">200dp</dimen>
