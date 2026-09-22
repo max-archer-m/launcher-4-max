@@ -476,10 +476,16 @@ internal fun HomeScreen(
         val orderedModules = (favoriteState as? FavoriteReadState.Readable)
             ?.orderedModules
             .orEmpty()
+        var moduleStylePreview by remember { mutableStateOf<OrderedFavoriteModule?>(null) }
         val previewAggregate = orchestration.editTransaction.previewAggregate(
             (favoriteState as? FavoriteReadState.Readable)?.aggregate ?: FavoriteAggregate(),
         )
-        val displayedModules = orderedModules.withPresentationFrom(previewAggregate)
+        val displayedModules = orderedModules.withPresentationFrom(previewAggregate).map { module ->
+            moduleStylePreview?.takeIf { it.id == module.id } ?: module
+        }
+        LaunchedEffect(editMode, stylePanelExpanded, selectedModuleId) {
+            if (!editMode || !stylePanelExpanded) moduleStylePreview = null
+        }
         val selectedModule = displayedModules.firstOrNull { it.id == selectedModuleId }
         val styleSaving = applicationEditingSaving ||
             orchestration.editMutationJob?.isActive == true ||
@@ -521,10 +527,27 @@ internal fun HomeScreen(
                                 selectedModule = selectedModule,
                                 enabled = !styleSaving,
                                 maximumHeight = stylePanelMaximumHeight,
-                                onChangeSize = { size ->
+                                onPreviewSizes = { iconSize, textSize ->
                                     selectedModule?.let { module ->
+                                        moduleStylePreview = module.copy(
+                                            iconSize = iconSize,
+                                            textSize = textSize,
+                                        )
+                                    }
+                                },
+                                onCommitIconSize = { iconSize ->
+                                    selectedModule?.let { module ->
+                                        moduleStylePreview = null
                                         orchestration.commitVerticalModuleStyle(module.id) {
-                                            it.copy(listSize = size)
+                                            it.copy(iconSize = iconSize)
+                                        }
+                                    }
+                                },
+                                onCommitTextSize = { textSize ->
+                                    selectedModule?.let { module ->
+                                        moduleStylePreview = null
+                                        orchestration.commitVerticalModuleStyle(module.id) {
+                                            it.copy(textSize = textSize)
                                         }
                                     }
                                 },
@@ -703,8 +726,11 @@ internal fun HomeScreen(
                             val previewAggregate = orchestration.editTransaction.previewAggregate(
                                 favoriteState.aggregate,
                             )
-                            val styledModules =
-                                orderedModules.withPresentationFrom(previewAggregate)
+                            val styledModules = orderedModules
+                                .withPresentationFrom(previewAggregate)
+                                .map { module ->
+                                    moduleStylePreview?.takeIf { it.id == module.id } ?: module
+                                }
                             val displayedModules = orchestration.moduleDragSession?.remainingModules
                                 ?: orchestration.editTransaction.pendingModuleOrder
                                 ?: styledModules
@@ -1036,7 +1062,8 @@ internal fun HomeScreen(
                                                 orchestration.dragSession = FavoriteDragSession(
                                                     generation = dragGeneration,
                                                     identity = identity,
-                                                    listSize = primaryContainer.listSize,
+                                                    iconSize = primaryContainer.iconSize,
+                                                    textSize = primaryContainer.textSize,
                                                     originInWindow = origin,
                                                     size = size,
                                                     touchStartInWindow = touch,
@@ -1216,7 +1243,8 @@ internal fun HomeScreen(
                                                 orchestration.dragSession = FavoriteDragSession(
                                                     generation = dragGeneration,
                                                     identity = identity,
-                                                    listSize = companionContainer.listSize,
+                                                    iconSize = companionContainer.iconSize,
+                                                    textSize = companionContainer.textSize,
                                                     originInWindow = origin,
                                                     size = size,
                                                     touchStartInWindow = touch,

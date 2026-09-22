@@ -33,7 +33,8 @@ class OrderedFavoriteUpgradeTest {
         val saved = OrderedFavoriteAggregate(modules = listOf(element = OrderedFavoriteModule(
             id = "new-list", type = OrderedFavoriteModuleType.Vertical,
             identities = listOf(element = identity(profile = 1)),
-            applicationSize = FavoriteListSize.Small,
+            iconSize = FavoriteListSize.Small,
+            textSize = FavoriteListSize.Small,
             namePlacement = FavoriteNamePlacement.Below, itemsPerRow = 3,
         )))
         assertTrue(store.replaceAggregate(aggregate = saved))

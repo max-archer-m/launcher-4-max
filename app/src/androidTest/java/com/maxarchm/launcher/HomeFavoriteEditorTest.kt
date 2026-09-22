@@ -440,7 +440,8 @@ class HomeFavoriteEditorTest {
                         val created = actual.last()
                         assertEquals(newType, created.type)
                         assertEquals(listOf(element = identity(serial = 1)), created.identities)
-                        assertEquals(FavoriteListSize.Medium, created.applicationSize)
+                        assertEquals(FavoriteListSize.Medium, created.iconSize)
+                        assertEquals(FavoriteListSize.Medium, created.textSize)
                         assertEquals(FavoriteNamePlacement.Right, created.namePlacement)
                         assertEquals(1, created.itemsPerRow)
                         assertTrue(created.id != source.id && created.id != other.id)
@@ -544,7 +545,16 @@ class HomeFavoriteEditorTest {
         id = id,
         type = type,
         identities = identities,
-        applicationSize = if (type == OrderedFavoriteModuleType.Vertical) FavoriteListSize.Large else FavoriteListSize.Medium,
+        iconSize = if (type == OrderedFavoriteModuleType.Vertical) {
+            FavoriteListSize.Large
+        } else {
+            FavoriteListSize.Medium
+        },
+        textSize = if (type == OrderedFavoriteModuleType.Vertical) {
+            FavoriteListSize.Large
+        } else {
+            FavoriteListSize.Medium
+        },
         namePlacement = if (type == OrderedFavoriteModuleType.Vertical) FavoriteNamePlacement.Below else FavoriteNamePlacement.Right,
         itemsPerRow = if (type == OrderedFavoriteModuleType.Vertical) 2 else 1,
     )

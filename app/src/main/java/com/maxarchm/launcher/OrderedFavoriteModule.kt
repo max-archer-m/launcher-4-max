@@ -27,7 +27,8 @@ internal data class OrderedFavoriteModule(
     val id: String,
     val type: OrderedFavoriteModuleType,
     val identities: List<LaunchableIdentity>,
-    val applicationSize: FavoriteListSize = FavoriteListSize.Medium,
+    val iconSize: FavoriteListSize = FavoriteListSize.Medium,
+    val textSize: FavoriteListSize = FavoriteListSize.Medium,
     val namePlacement: FavoriteNamePlacement = FavoriteNamePlacement.Right,
     val itemsPerRow: Int = 1,
 ) {
@@ -213,11 +214,25 @@ internal class OrderedFavoriteModuleStore private constructor(
                     val id = input.readUTF()
                     val type = OrderedFavoriteModuleType.values().getOrNull(input.readInt())
                         ?: throw IllegalArgumentException("Invalid ordered favorite module type")
-                    val applicationSize = if (schemaVersion >= STYLE_SCHEMA_VERSION) {
+                    val legacyApplicationSize = if (
+                        schemaVersion in STYLE_SCHEMA_VERSION until INDEPENDENT_SIZE_SCHEMA_VERSION
+                    ) {
                         FavoriteListSize.values().getOrNull(input.readInt())
                             ?: throw IllegalArgumentException("Invalid application size")
                     } else {
                         FavoriteListSize.Medium
+                    }
+                    val iconSize = if (schemaVersion >= INDEPENDENT_SIZE_SCHEMA_VERSION) {
+                        FavoriteListSize.values().getOrNull(input.readInt())
+                            ?: throw IllegalArgumentException("Invalid icon size")
+                    } else {
+                        legacyApplicationSize
+                    }
+                    val textSize = if (schemaVersion >= INDEPENDENT_SIZE_SCHEMA_VERSION) {
+                        FavoriteListSize.values().getOrNull(input.readInt())
+                            ?: throw IllegalArgumentException("Invalid text size")
+                    } else {
+                        legacyApplicationSize
                     }
                     val namePlacement = if (schemaVersion >= STYLE_SCHEMA_VERSION) {
                         FavoriteNamePlacement.values().getOrNull(input.readInt())
@@ -236,7 +251,8 @@ internal class OrderedFavoriteModuleStore private constructor(
                         OrderedFavoriteModule(
                             id = id,
                             type = type,
-                            applicationSize = applicationSize,
+                            iconSize = iconSize,
+                            textSize = textSize,
                             namePlacement = namePlacement,
                             itemsPerRow = itemsPerRow,
                             identities = buildList {
@@ -272,7 +288,8 @@ internal class OrderedFavoriteModuleStore private constructor(
             aggregate.modules.forEach { module ->
                 data.writeUTF(module.id)
                 data.writeInt(module.type.ordinal)
-                data.writeInt(module.applicationSize.ordinal)
+                data.writeInt(module.iconSize.ordinal)
+                data.writeInt(module.textSize.ordinal)
                 data.writeInt(module.namePlacement.ordinal)
                 data.writeInt(module.itemsPerRow)
                 data.writeInt(module.identities.size)
@@ -296,7 +313,8 @@ internal class OrderedFavoriteModuleStore private constructor(
         const val MAGIC = 0x41464D31
         const val MIN_READABLE_SCHEMA_VERSION = 1
         const val STYLE_SCHEMA_VERSION = 2
-        const val SCHEMA_VERSION = STYLE_SCHEMA_VERSION
+        const val INDEPENDENT_SIZE_SCHEMA_VERSION = 3
+        const val SCHEMA_VERSION = INDEPENDENT_SIZE_SCHEMA_VERSION
         const val LEGACY_MAGIC = 0x4156454E
         const val LEGACY_SCHEMA_VERSION = 1
         const val LEGACY_COMPOSITION_SCHEMA_VERSION = 2
@@ -488,7 +506,9 @@ private fun OrderedFavoriteAggregate.toLegacyAggregate(): FavoriteAggregate {
                 id = module.id,
                 type = FavoriteContainerType.VerticalList,
                 identities = module.identities,
-                listSize = module.applicationSize,
+                listSize = module.iconSize,
+                iconSize = module.iconSize,
+                textSize = module.textSize,
                 namePlacement = module.namePlacement,
                 itemsPerRow = module.itemsPerRow,
             )
@@ -516,7 +536,8 @@ private fun OrderedFavoriteAggregate.replaceWithLegacyAggregate(
             val type = container.type.toOrderedFavoriteModuleType()
             if (module.type == type &&
                 module.identities == container.identities &&
-                module.applicationSize == container.listSize &&
+                module.iconSize == container.iconSize &&
+                module.textSize == container.textSize &&
                 module.namePlacement == container.namePlacement &&
                 module.itemsPerRow == container.itemsPerRow
             ) {
@@ -525,7 +546,8 @@ private fun OrderedFavoriteAggregate.replaceWithLegacyAggregate(
                 module.copy(
                     type = type,
                     identities = container.identities,
-                    applicationSize = container.listSize,
+                    iconSize = container.iconSize,
+                    textSize = container.textSize,
                     namePlacement = container.namePlacement,
                     itemsPerRow = container.itemsPerRow,
                 )
@@ -542,7 +564,8 @@ private fun OrderedFavoriteAggregate.replaceWithLegacyAggregate(
                 id = container.id,
                 type = container.type.toOrderedFavoriteModuleType(),
                 identities = container.identities,
-                applicationSize = container.listSize,
+                iconSize = container.iconSize,
+                textSize = container.textSize,
                 namePlacement = container.namePlacement,
                 itemsPerRow = container.itemsPerRow,
             )
@@ -573,7 +596,8 @@ internal fun isValidOrderedFavoriteAggregate(
                         FavoriteNamePlacement.Below -> 1..4
                     }
                 OrderedFavoriteModuleType.Ribbon ->
-                    module.applicationSize == FavoriteListSize.Medium &&
+                    module.iconSize == FavoriteListSize.Medium &&
+                        module.textSize == FavoriteListSize.Medium &&
                         module.namePlacement == FavoriteNamePlacement.Right &&
                         module.itemsPerRow == 1
             }

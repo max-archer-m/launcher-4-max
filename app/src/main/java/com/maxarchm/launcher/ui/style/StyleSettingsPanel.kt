@@ -183,7 +183,7 @@ internal fun StyleApplicationSizeBlock(
 }
 
 @Composable
-private fun StyleTitleLine(text: String) {
+internal fun StyleTitleLine(text: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

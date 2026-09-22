@@ -26,7 +26,8 @@ import com.maxarchm.launcher.ui.home.components.HomeFavoritePreviewContent
 internal data class FavoriteDragSession(
     val generation: Int,
     val identity: LaunchableIdentity,
-    val listSize: FavoriteListSize,
+    val iconSize: FavoriteListSize,
+    val textSize: FavoriteListSize,
     val originInWindow: Offset,
     val size: IntSize,
     val touchStartInWindow: Offset,
@@ -111,7 +112,8 @@ internal fun HomeFavoriteDragPreview(
     ) {
         HomeFavoritePreviewContent(
             availability = availability,
-            listSize = session.listSize,
+            iconSize = session.iconSize,
+            textSize = session.textSize,
             maxWidth = with(density) { session.size.width.toDp() },
             shadowElevation = previewElevation,
         )
@@ -143,7 +145,8 @@ internal fun HomeFavoriteBarDragPreview(
     ) {
         HomeFavoritePreviewContent(
             availability = availability,
-            listSize = FavoriteListSize.Medium,
+            iconSize = FavoriteListSize.Medium,
+            textSize = FavoriteListSize.Medium,
             maxWidth = dimensionResource(R.dimen.home_favorite_bar_item_width),
             shadowElevation = previewElevation,
         )

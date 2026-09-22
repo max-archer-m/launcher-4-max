@@ -153,7 +153,8 @@ internal fun HomeFavoriteBarContainerDragPreview(
                         HomeFavoritePreviewContent(
                             availability = availabilityByIdentity[identity]
                                 ?: FavoriteAvailability.Unknown(null),
-                            listSize = FavoriteListSize.Medium,
+                            iconSize = FavoriteListSize.Medium,
+                            textSize = FavoriteListSize.Medium,
                             maxWidth = dimensionResource(R.dimen.home_favorite_bar_item_width),
                             shadowElevation = 0f,
                         )
@@ -220,7 +221,7 @@ internal fun HomeFavoriteListDragPreview(
     val height = with(density) { session.size.height.toDp() }
     val topLeft = session.originInWindow + session.delta - rootOriginInWindow
     val previewAlpha = integerResource(R.integer.home_drag_preview_alpha_percent) / 100f
-    val rowHeight = dimensionResource(session.sourceContainer.listSize.rowHeightResource())
+    val rowHeight = dimensionResource(session.sourceContainer.iconSize.rowHeightResource())
     val dividerColor = colorResource(R.color.home_favorite_list_control_border)
     val dividerWidth = with(LocalDensity.current) {
         dimensionResource(R.dimen.home_favorite_list_control_border_width).toPx()
@@ -405,7 +406,8 @@ internal fun HomeFavoriteListDragPreview(
                             HomeFavoritePreviewContent(
                                 availability = availabilityByIdentity[identity]
                                     ?: FavoriteAvailability.Unknown(null),
-                                listSize = session.sourceContainer.listSize,
+                                iconSize = session.sourceContainer.iconSize,
+                                textSize = session.sourceContainer.textSize,
                                 maxWidth = width,
                                 shadowElevation = 0f,
                             )
@@ -421,13 +423,14 @@ internal fun HomeFavoriteListDragPreview(
 
 internal fun HomeFavoritePreviewContent(
     availability: FavoriteAvailability,
-    listSize: FavoriteListSize,
+    iconSize: FavoriteListSize,
+    textSize: FavoriteListSize,
     maxWidth: androidx.compose.ui.unit.Dp,
     shadowElevation: Float,
 ) {
     val entry = availability.presentationEntry
-    val iconSize = dimensionResource(listSize.iconSizeResource())
-    val iconPixels = with(LocalDensity.current) { iconSize.roundToPx() }
+    val iconDimension = dimensionResource(iconSize.iconSizeResource())
+    val iconPixels = with(LocalDensity.current) { iconDimension.roundToPx() }
     val displayText = when (availability) {
         is FavoriteAvailability.Available -> availability.entry.label
         is FavoriteAvailability.Disabled -> entry?.let {
@@ -454,14 +457,14 @@ internal fun HomeFavoritePreviewContent(
             Icon(
                 painter = painterResource(R.drawable.ic_inventory_error),
                 contentDescription = null,
-                modifier = Modifier.size(iconSize),
+                modifier = Modifier.size(iconDimension),
                 tint = MaterialTheme.colorScheme.onBackground,
             )
         } else {
             val bitmap = entry.iconBitmap?.asImageBitmap() ?: remember(entry.icon, iconPixels) {
                 entry.icon.toBitmap(iconPixels, iconPixels).asImageBitmap()
             }
-            Image(bitmap = bitmap, contentDescription = null, modifier = Modifier.size(iconSize))
+            Image(bitmap = bitmap, contentDescription = null, modifier = Modifier.size(iconDimension))
         }
         Spacer(Modifier.width(dimensionResource(R.dimen.home_favorite_icon_label_gap)))
         Text(
@@ -470,8 +473,8 @@ internal fun HomeFavoritePreviewContent(
             color = MaterialTheme.colorScheme.onBackground,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            fontSize = dimensionResource(listSize.textSizeResource()).value.sp,
-            lineHeight = dimensionResource(listSize.lineHeightResource()).value.sp,
+            fontSize = dimensionResource(textSize.textSizeResource()).value.sp,
+            lineHeight = dimensionResource(textSize.lineHeightResource()).value.sp,
             style = LocalTextStyle.current.copy(shadow = drawerForegroundShadow()),
         )
     }

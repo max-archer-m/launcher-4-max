@@ -37,6 +37,8 @@ data class FavoriteContainer(
     val type: FavoriteContainerType,
     val identities: List<LaunchableIdentity>,
     val listSize: FavoriteListSize = FavoriteListSize.Medium,
+    val iconSize: FavoriteListSize = listSize,
+    val textSize: FavoriteListSize = listSize,
     val namePlacement: FavoriteNamePlacement = FavoriteNamePlacement.Right,
     val itemsPerRow: Int = 1,
 )

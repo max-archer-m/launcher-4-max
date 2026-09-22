@@ -4,15 +4,21 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -27,14 +33,15 @@ import com.maxarchm.launcher.FavoriteNamePlacement
 import com.maxarchm.launcher.OrderedFavoriteModule
 import com.maxarchm.launcher.OrderedFavoriteModuleType
 import com.maxarchm.launcher.R
-import com.maxarchm.launcher.iconSizeResource
 
 @Composable
 internal fun HomeModuleStylePanel(
     selectedModule: OrderedFavoriteModule?,
     enabled: Boolean,
     maximumHeight: Dp,
-    onChangeSize: (FavoriteListSize) -> Unit,
+    onPreviewSizes: (FavoriteListSize, FavoriteListSize) -> Unit,
+    onCommitIconSize: (FavoriteListSize) -> Unit,
+    onCommitTextSize: (FavoriteListSize) -> Unit,
     onChangeNamePlacement: (FavoriteNamePlacement) -> Unit,
     onChangeItemsPerRow: (Int) -> Unit,
 ) {
@@ -66,9 +73,12 @@ internal fun HomeModuleStylePanel(
                 onChangeCount = onChangeItemsPerRow,
             )
             HomeApplicationSizeRow(
-                selected = selectedModule.applicationSize,
+                iconSize = selectedModule.iconSize,
+                textSize = selectedModule.textSize,
                 enabled = enabled,
-                onSelect = onChangeSize,
+                onPreview = onPreviewSizes,
+                onCommitIconSize = onCommitIconSize,
+                onCommitTextSize = onCommitTextSize,
             )
         } else {
             HomeStylePanelRow(
@@ -101,29 +111,83 @@ private fun HomeStylePanelRow(label: String, value: String? = null) {
 
 @Composable
 private fun HomeApplicationSizeRow(
-    selected: FavoriteListSize,
+    iconSize: FavoriteListSize,
+    textSize: FavoriteListSize,
     enabled: Boolean,
-    onSelect: (FavoriteListSize) -> Unit,
+    onPreview: (FavoriteListSize, FavoriteListSize) -> Unit,
+    onCommitIconSize: (FavoriteListSize) -> Unit,
+    onCommitTextSize: (FavoriteListSize) -> Unit,
 ) {
     val options = FavoriteListSize.values()
-    StyleApplicationSizeBlock(
-        title = stringResource(id = R.string.home_application_size),
-        optionLabels = options.map { option ->
-            stringResource(
-                id = when (option) {
-                    FavoriteListSize.Large -> R.string.favorite_list_large
-                    FavoriteListSize.Medium -> R.string.favorite_list_medium
-                    FavoriteListSize.Small -> R.string.favorite_list_small
+    val labels = options.map { option ->
+        stringResource(
+            id = when (option) {
+                FavoriteListSize.Large -> R.string.favorite_list_large
+                FavoriteListSize.Medium -> R.string.favorite_list_medium
+                FavoriteListSize.Small -> R.string.favorite_list_small
+            },
+        )
+    }
+    val iconSelectedIndex = options.indexOf(iconSize)
+    val textSelectedIndex = options.indexOf(textSize)
+    var iconPreviewIndex by remember(iconSelectedIndex) { mutableIntStateOf(iconSelectedIndex) }
+    var textPreviewIndex by remember(textSelectedIndex) { mutableIntStateOf(textSelectedIndex) }
+    Column(
+        modifier = Modifier.fillMaxWidth().testTag("home_application_size_setting"),
+    ) {
+        StyleTitleLine(text = stringResource(id = R.string.home_application_size))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(dimensionResource(R.dimen.style_settings_application_size_line_height))
+                .padding(horizontal = dimensionResource(R.dimen.style_settings_panel_row_inset)),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            StyleTaperingSlider(
+                selectedStop = iconPreviewIndex,
+                stopLabels = labels,
+                label = stringResource(R.string.style_settings_application_icon_size),
+                increaseLabel = stringResource(
+                    R.string.style_settings_increase_application_icon_size,
+                ),
+                decreaseLabel = stringResource(
+                    R.string.style_settings_decrease_application_icon_size,
+                ),
+                onSelectStop = {
+                    iconPreviewIndex = it
+                    onPreview(options[it], options[textPreviewIndex])
                 },
+                onSelectStopFinished = {
+                    iconPreviewIndex = it
+                    onCommitIconSize(options[it])
+                },
+                enabled = enabled,
+                modifier = Modifier.weight(1f).testTag("home_application_size_icon_slider"),
             )
-        },
-        optionIconSizes = options.map { option ->
-            dimensionResource(id = option.iconSizeResource())
-        },
-        selectedIndex = options.indexOf(element = selected),
-        enabled = enabled,
-        onSelectIndex = { index -> onSelect(options[index]) },
-    )
+            Spacer(Modifier.width(dimensionResource(R.dimen.style_settings_tapering_slider_gap)))
+            StyleTaperingSlider(
+                selectedStop = textPreviewIndex,
+                stopLabels = labels,
+                label = stringResource(R.string.style_settings_application_text_size),
+                increaseLabel = stringResource(
+                    R.string.style_settings_increase_application_text_size,
+                ),
+                decreaseLabel = stringResource(
+                    R.string.style_settings_decrease_application_text_size,
+                ),
+                onSelectStop = {
+                    textPreviewIndex = it
+                    onPreview(options[iconPreviewIndex], options[it])
+                },
+                onSelectStopFinished = {
+                    textPreviewIndex = it
+                    onCommitTextSize(options[it])
+                },
+                enabled = enabled,
+                modifier = Modifier.weight(1f).testTag("home_application_size_text_slider"),
+            )
+        }
+    }
 }
 
 @Composable

@@ -145,6 +145,23 @@ class SettingsBackupJsonTest {
     }
 
     @Test
+    fun legacyFavoriteApplicationSizeBackfillsIndependentIconAndTextSizes() {
+        val document = validBackupDocument()
+        document
+            .getJSONObject("favorites")
+            .getJSONArray("modules")
+            .getJSONObject(0)
+            .remove("iconSize")
+            .remove("textSize")
+            .put("applicationSize", "small")
+
+        val parsed = SettingsBackupJson.parse(document.toString())
+
+        assertEquals(FavoriteListSize.Small, parsed?.aggregate?.modules?.first()?.iconSize)
+        assertEquals(FavoriteListSize.Small, parsed?.aggregate?.modules?.first()?.textSize)
+    }
+
+    @Test
     fun emptyBackupWithNoModulesIsValid() {
         val document = validBackupDocument()
             .put("favorites", JSONObject().put("modules", org.json.JSONArray()))
@@ -248,7 +265,8 @@ class SettingsBackupJsonTest {
                 id = "vertical-list-1",
                 type = OrderedFavoriteModuleType.Vertical,
                 identities = listOf(identity(1), identity(2)),
-                applicationSize = FavoriteListSize.Large,
+                iconSize = FavoriteListSize.Large,
+                textSize = FavoriteListSize.Small,
                 namePlacement = FavoriteNamePlacement.Below,
                 itemsPerRow = 3,
             ),

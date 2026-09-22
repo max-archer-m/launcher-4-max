@@ -82,12 +82,13 @@ internal fun HomeModuleAddFavoriteEntry(
 ) {
     val ribbon = module.type == OrderedFavoriteModuleType.Ribbon
     val below = !ribbon && module.namePlacement == FavoriteNamePlacement.Below
-    val size = if (ribbon) FavoriteListSize.Medium else module.applicationSize
-    val iconSlotSize = dimensionResource(id = size.iconSizeResource())
+    val iconSize = if (ribbon) FavoriteListSize.Medium else module.iconSize
+    val textSize = if (ribbon) FavoriteListSize.Medium else module.textSize
+    val iconSlotSize = dimensionResource(id = iconSize.iconSizeResource())
     val heightResource = when {
         ribbon -> R.dimen.home_favorite_bar_height
-        below -> size.belowItemHeightResource()
-        else -> size.rowHeightResource()
+        below -> iconSize.belowItemHeightResource()
+        else -> iconSize.rowHeightResource()
     }
     val surfaceModifier = modifier
         .height(height = dimensionResource(id = heightResource))
@@ -116,7 +117,10 @@ internal fun HomeModuleAddFavoriteEntry(
             HomeAddFavoriteIconSlot(size = iconSlotSize)
             Spacer(modifier = Modifier.height(height = dimensionResource(id = R.dimen.home_favorite_below_icon_label_gap)))
             HomeAddFavoriteLabel(
-                label = label, size = size, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center,
+                label = label,
+                size = textSize,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
             )
         }
     } else {
@@ -132,7 +136,11 @@ internal fun HomeModuleAddFavoriteEntry(
                     ),
                 ),
             )
-            HomeAddFavoriteLabel(label = label, size = size, modifier = Modifier.weight(weight = 1f))
+            HomeAddFavoriteLabel(
+                label = label,
+                size = textSize,
+                modifier = Modifier.weight(weight = 1f),
+            )
         }
     }
 }

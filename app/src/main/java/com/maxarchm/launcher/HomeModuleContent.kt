@@ -78,14 +78,17 @@ internal fun HomeOrderedModuleContent(
                             showRemove = applicationEditing,
                             removeEnabled = applicationMutationEnabled,
                             namePlacement = module.namePlacement,
-                            iconSize = dimensionResource(id = module.applicationSize.iconSizeResource()),
+                            iconSize = dimensionResource(
+                                id = module.iconSize.iconSizeResource(),
+                            ),
                             onRemove = { onRemoveFavorite(identity) },
                             content = {
                                 if (module.namePlacement == FavoriteNamePlacement.Below) {
                                     HomeFavoriteBelowItem(
                                         modifier = Modifier.fillMaxWidth(),
                                         availability = availability,
-                                        listSize = module.applicationSize,
+                                        iconSize = module.iconSize,
+                                        textSize = module.textSize,
                                         interactionEnabled = !editMode,
                                         onClick = { onLaunchFavorite(availability) },
                                         onLongClick = {
@@ -103,7 +106,8 @@ internal fun HomeOrderedModuleContent(
                                         editMode = false,
                                         interactionEnabled = !editMode,
                                         compact = false,
-                                        listSize = module.applicationSize,
+                                        iconSize = module.iconSize,
+                                        textSize = module.textSize,
                                         exchangeHighlight = false,
                                         onRowBoundsInWindow = { _, _ -> },
                                         onHandleBoundsInWindow = {},

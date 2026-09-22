@@ -73,14 +73,15 @@ import com.maxarchm.launcher.ui.drawer.drawerForegroundShadow
 internal fun HomeFavoriteBelowItem(
     modifier: Modifier,
     availability: FavoriteAvailability,
-    listSize: FavoriteListSize,
+    iconSize: FavoriteListSize,
+    textSize: FavoriteListSize,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     interactionEnabled: Boolean = true,
 ) {
     val entry = availability.presentationEntry
-    val iconSize = dimensionResource(listSize.iconSizeResource())
-    val iconPixels = with(LocalDensity.current) { iconSize.roundToPx() }
+    val iconDimension = dimensionResource(iconSize.iconSizeResource())
+    val iconPixels = with(LocalDensity.current) { iconDimension.roundToPx() }
     val disabledAlpha = integerResource(R.integer.disabled_content_alpha_percent) / 100f
     val interactionSource = remember(entry?.identity) { MutableInteractionSource() }
     val hapticFeedback = LocalHapticFeedback.current
@@ -101,7 +102,7 @@ internal fun HomeFavoriteBelowItem(
     }
     Column(
         modifier = modifier
-            .height(dimensionResource(listSize.belowItemHeightResource()))
+            .height(dimensionResource(iconSize.belowItemHeightResource()))
             .then(
                 other = if (interactionEnabled) Modifier.combinedClickable(
                     interactionSource = interactionSource,
@@ -130,7 +131,7 @@ internal fun HomeFavoriteBelowItem(
             Icon(
                 painter = painterResource(R.drawable.ic_inventory_error),
                 contentDescription = null,
-                modifier = Modifier.size(iconSize),
+                modifier = Modifier.size(iconDimension),
                 tint = MaterialTheme.colorScheme.onBackground,
             )
         } else {
@@ -138,7 +139,11 @@ internal fun HomeFavoriteBelowItem(
                 ?: remember(entry.icon, iconPixels) {
                     entry.icon.toBitmap(iconPixels, iconPixels).asImageBitmap()
                 }
-            Image(bitmap = bitmap, contentDescription = null, modifier = Modifier.size(iconSize))
+            Image(
+                bitmap = bitmap,
+                contentDescription = null,
+                modifier = Modifier.size(iconDimension),
+            )
         }
         Spacer(Modifier.height(dimensionResource(R.dimen.home_favorite_below_icon_label_gap)))
         Text(
@@ -148,8 +153,8 @@ internal fun HomeFavoriteBelowItem(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
-            fontSize = dimensionResource(listSize.textSizeResource()).value.sp,
-            lineHeight = dimensionResource(listSize.lineHeightResource()).value.sp,
+            fontSize = dimensionResource(textSize.textSizeResource()).value.sp,
+            lineHeight = dimensionResource(textSize.lineHeightResource()).value.sp,
             style = LocalTextStyle.current.copy(shadow = drawerForegroundShadow()),
         )
     }
@@ -167,19 +172,21 @@ internal fun HomeFavoriteRow(
     editMode: Boolean,
     compact: Boolean,
     listSize: FavoriteListSize? = null,
+    iconSize: FavoriteListSize? = listSize,
+    textSize: FavoriteListSize? = listSize,
     exchangeHighlight: Boolean,
     onRowBoundsInWindow: (Offset, IntSize) -> Unit,
     onHandleBoundsInWindow: (Rect) -> Unit,
     interactionEnabled: Boolean = true,
 ) {
     val entry = availability.presentationEntry
-    val iconSize = dimensionResource(
-        listSize?.iconSizeResource()
+    val iconDimension = dimensionResource(
+        iconSize?.iconSizeResource()
             ?: if (compact) R.dimen.home_companion_favorite_icon_size
             else R.dimen.home_favorite_icon_size,
     )
     val disabledAlpha = integerResource(R.integer.disabled_content_alpha_percent) / 100f
-    val iconPixels = with(LocalDensity.current) { iconSize.roundToPx() }
+    val iconPixels = with(LocalDensity.current) { iconDimension.roundToPx() }
     val interactionSource = remember(entry?.identity) { MutableInteractionSource() }
     val hapticFeedback = LocalHapticFeedback.current
     val handleTargetSize = dimensionResource(R.dimen.home_reorder_handle_target_size)
@@ -196,7 +203,7 @@ internal fun HomeFavoriteRow(
         modifier = modifier
             .fillMaxWidth()
             .then(
-                if (listSize == null) {
+                if (iconSize == null) {
                     Modifier.heightIn(
                         min = if (compact) {
                             dimensionResource(R.dimen.home_companion_favorite_row_min_height)
@@ -205,7 +212,7 @@ internal fun HomeFavoriteRow(
                         },
                     )
                 } else {
-                    Modifier.height(dimensionResource(listSize.rowHeightResource()))
+                    Modifier.height(dimensionResource(iconSize.rowHeightResource()))
                 },
             )
             .then(
@@ -288,14 +295,14 @@ internal fun HomeFavoriteRow(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(
-                modifier = Modifier.size(iconSize),
+                modifier = Modifier.size(iconDimension),
                 contentAlignment = Alignment.Center,
             ) {
                 if (entry == null) {
                     Icon(
                         painter = painterResource(R.drawable.ic_inventory_error),
                         contentDescription = null,
-                        modifier = Modifier.size(iconSize),
+                        modifier = Modifier.size(iconDimension),
                         tint = MaterialTheme.colorScheme.onBackground,
                     )
                 } else {
@@ -306,7 +313,7 @@ internal fun HomeFavoriteRow(
                     Image(
                         bitmap = bitmap,
                         contentDescription = null,
-                        modifier = Modifier.size(iconSize),
+                        modifier = Modifier.size(iconDimension),
                     )
                 }
             }
@@ -341,12 +348,12 @@ internal fun HomeFavoriteRow(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 fontSize = dimensionResource(
-                    listSize?.textSizeResource()
+                    textSize?.textSizeResource()
                         ?: if (compact) R.dimen.home_companion_favorite_text_size
                         else R.dimen.home_favorite_text_size,
                 ).value.sp,
                 lineHeight = dimensionResource(
-                    listSize?.lineHeightResource()
+                    textSize?.lineHeightResource()
                         ?: if (compact) R.dimen.home_companion_favorite_line_height
                         else R.dimen.home_favorite_line_height,
                 ).value.sp,
@@ -416,14 +423,16 @@ internal fun List<OrderedFavoriteModule>.withPresentationFrom(
         if (module.type != OrderedFavoriteModuleType.Vertical || container == null) {
             module
         } else if (
-            module.applicationSize == container.listSize &&
+            module.iconSize == container.iconSize &&
+            module.textSize == container.textSize &&
             module.namePlacement == container.namePlacement &&
             module.itemsPerRow == container.itemsPerRow
         ) {
             module
         } else {
             module.copy(
-                applicationSize = container.listSize,
+                iconSize = container.iconSize,
+                textSize = container.textSize,
                 namePlacement = container.namePlacement,
                 itemsPerRow = container.itemsPerRow,
             )

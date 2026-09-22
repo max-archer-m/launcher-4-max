@@ -59,7 +59,8 @@ class OrderedFavoriteRemovalTest {
                 id = "middle-list",
                 type = OrderedFavoriteModuleType.Vertical,
                 identities = listOf(removed, retained),
-                applicationSize = FavoriteListSize.Large,
+                iconSize = FavoriteListSize.Large,
+                textSize = FavoriteListSize.Large,
                 namePlacement = FavoriteNamePlacement.Below,
                 itemsPerRow = 2,
             )
@@ -103,7 +104,8 @@ class OrderedFavoriteRemovalTest {
                 id = "middle-list",
                 type = OrderedFavoriteModuleType.Vertical,
                 identities = listOf(identity(serial = 2), identity(serial = 3), identity(serial = 4)),
-                applicationSize = FavoriteListSize.Small,
+                iconSize = FavoriteListSize.Small,
+                textSize = FavoriteListSize.Small,
                 namePlacement = FavoriteNamePlacement.Below,
                 itemsPerRow = 3,
             )

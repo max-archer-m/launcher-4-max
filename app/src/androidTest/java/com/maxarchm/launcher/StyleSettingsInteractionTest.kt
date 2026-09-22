@@ -171,7 +171,9 @@ class StyleSettingsInteractionTest {
                     selectedModule = module,
                     enabled = true,
                     maximumHeight = 300.dp,
-                    onChangeSize = { module = module.copy(applicationSize = it) },
+                    onPreviewSizes = { _, _ -> },
+                    onCommitIconSize = { module = module.copy(iconSize = it) },
+                    onCommitTextSize = { module = module.copy(textSize = it) },
                     onChangeNamePlacement = { module = module.copy(namePlacement = it) },
                     onChangeItemsPerRow = { module = module.copy(itemsPerRow = it) },
                 )

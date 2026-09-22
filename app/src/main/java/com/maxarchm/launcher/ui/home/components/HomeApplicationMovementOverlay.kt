@@ -165,7 +165,8 @@ internal fun HomeApplicationMovementOverlay(
                     HomeFavoriteBelowItem(
                         modifier = Modifier.fillMaxWidth(),
                         availability = source.availability,
-                        listSize = source.module.applicationSize,
+                        iconSize = source.module.iconSize,
+                        textSize = source.module.textSize,
                         onClick = {},
                         onLongClick = {},
                         interactionEnabled = false,
@@ -174,7 +175,8 @@ internal fun HomeApplicationMovementOverlay(
                     HomeFavoriteRow(
                         modifier = Modifier.fillMaxWidth(),
                         availability = source.availability,
-                        listSize = source.module.applicationSize,
+                        iconSize = source.module.iconSize,
+                        textSize = source.module.textSize,
                         onClick = {},
                         onLongClick = {},
                         editMode = false,

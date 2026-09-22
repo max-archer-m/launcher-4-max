@@ -63,7 +63,7 @@ private const val BACKUP_TIMESTAMP_PATTERN = "yyyyMMddHHmm"
  * present section restores that field's default value.
  */
 internal object SettingsBackupJson {
-    const val BACKUP_SCHEMA_VERSION = 3
+    const val BACKUP_SCHEMA_VERSION = 4
 
     fun serialize(
         aggregate: OrderedFavoriteAggregate,
@@ -78,10 +78,8 @@ internal object SettingsBackupJson {
                         JSONObject()
                             .put("id", module.id)
                             .put("type", module.type.storageValue)
-                            .put(
-                                "applicationSize",
-                                module.applicationSize.storageValue,
-                            )
+                            .put("iconSize", module.iconSize.storageValue)
+                            .put("textSize", module.textSize.storageValue)
                             .put("namePlacement", module.namePlacement.storageValue)
                             .put("itemsPerRow", module.itemsPerRow)
                             .put(
@@ -182,9 +180,19 @@ internal object SettingsBackupJson {
                 name = "type",
                 default = OrderedFavoriteModuleType.Vertical,
             ) { value -> orderedFavoriteModuleTypeFromStorageValue(value) } ?: return null,
-            applicationSize = module.enumField(
-                name = "applicationSize",
-                default = FavoriteListSize.Medium,
+            iconSize = module.enumField(
+                name = "iconSize",
+                default = module.enumField(
+                    name = "applicationSize",
+                    default = FavoriteListSize.Medium,
+                ) { value -> favoriteListSizeFromStorageValue(value) } ?: return null,
+            ) { value -> favoriteListSizeFromStorageValue(value) } ?: return null,
+            textSize = module.enumField(
+                name = "textSize",
+                default = module.enumField(
+                    name = "applicationSize",
+                    default = FavoriteListSize.Medium,
+                ) { value -> favoriteListSizeFromStorageValue(value) } ?: return null,
             ) { value -> favoriteListSizeFromStorageValue(value) } ?: return null,
             namePlacement = module.enumField(
                 name = "namePlacement",
