@@ -52,8 +52,7 @@ class StyleSettingsInteractionTest {
         composeRule.onNodeWithTag("drawer_name_placement_1").performClick()
         composeRule.mainClock.advanceTimeByFrame()
         composeRule.mainClock.advanceTimeByFrame()
-        composeRule.onNodeWithTag("drawer_application_size_option_0").assertIsNotEnabled()
-            .performClick()
+        composeRule.onNodeWithTag("drawer_application_size_icon_slider").assertIsNotEnabled()
         composeRule.onNodeWithTag("drawer_items_per_row_increment").assertIsNotEnabled()
             .performClick()
         composeRule.runOnIdle { assertEquals(1, changes) }
@@ -134,7 +133,16 @@ class StyleSettingsInteractionTest {
         }
         composeRule.onNodeWithTag("drawer_name_placement_0").assertIsSelected()
             .assertIsEnabled()
-        composeRule.onNodeWithTag("drawer_application_size_option_1").assertIsSelected()
+        composeRule.onNodeWithTag("drawer_application_size_icon_slider")
+            .assertContentDescriptionEquals(
+                context.getString(R.string.style_settings_application_icon_size),
+            )
+            .assertHeightIsEqualTo(56.dp)
+        composeRule.onNodeWithTag("drawer_application_size_text_slider")
+            .assertContentDescriptionEquals(
+                context.getString(R.string.style_settings_application_text_size),
+            )
+            .assertHeightIsEqualTo(56.dp)
         composeRule.onNodeWithTag("drawer_items_per_row_decrement").assertIsNotEnabled()
             .assertContentDescriptionEquals(
                 context.getString(R.string.style_settings_decrease_items_per_row),

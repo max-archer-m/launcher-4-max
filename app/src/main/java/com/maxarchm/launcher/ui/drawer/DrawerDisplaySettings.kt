@@ -37,7 +37,8 @@ internal enum class DrawerSectionAnchorPresentation {
 }
 
 internal data class DrawerDisplaySettings(
-    val applicationSize: DrawerApplicationSize = DrawerApplicationSize.Medium,
+    val iconSize: DrawerApplicationSize = DrawerApplicationSize.Medium,
+    val textSize: DrawerApplicationSize = DrawerApplicationSize.Medium,
     val namePlacement: DrawerNamePlacement = DrawerNamePlacement.Right,
     val itemsPerRow: Int = 1,
     val sectionAnchorPresentation: DrawerSectionAnchorPresentation =
@@ -227,9 +228,12 @@ internal class DrawerDisplaySettingsStore internal constructor(
                 ::drawerNamePlacementFromStorageValue,
             ) ?: defaults.namePlacement
             val settings = DrawerDisplaySettings(
-                applicationSize = fields[FIELD_APPLICATION_SIZE]?.let(
-                    ::drawerApplicationSizeFromStorageValue,
-                ) ?: defaults.applicationSize,
+                iconSize = fields[FIELD_ICON_SIZE]?.let(::drawerApplicationSizeFromStorageValue)
+                    ?: fields[FIELD_APPLICATION_SIZE]?.let(::drawerApplicationSizeFromStorageValue)
+                    ?: defaults.iconSize,
+                textSize = fields[FIELD_TEXT_SIZE]?.let(::drawerApplicationSizeFromStorageValue)
+                    ?: fields[FIELD_APPLICATION_SIZE]?.let(::drawerApplicationSizeFromStorageValue)
+                    ?: defaults.textSize,
                 namePlacement = namePlacement,
                 itemsPerRow = fields[FIELD_ITEMS_PER_ROW]?.let { value ->
                     requireNotNull(value.toIntOrNull()) {
@@ -261,10 +265,8 @@ internal class DrawerDisplaySettingsStore internal constructor(
             output.writeInt(MAGIC)
             output.writeInt(SCHEMA_VERSION)
             output.writeInt(KNOWN_FIELDS.size)
-            output.writeField(
-                key = FIELD_APPLICATION_SIZE,
-                value = settings.applicationSize.storageValue,
-            )
+            output.writeField(key = FIELD_ICON_SIZE, value = settings.iconSize.storageValue)
+            output.writeField(key = FIELD_TEXT_SIZE, value = settings.textSize.storageValue)
             output.writeField(
                 key = FIELD_NAME_PLACEMENT,
                 value = settings.namePlacement.storageValue,
@@ -304,17 +306,20 @@ internal class DrawerDisplaySettingsStore internal constructor(
         const val BACKUP_SUFFIX = ".bak"
         const val MAGIC = 0x44525331
         const val MIN_READABLE_SCHEMA_VERSION = 1
-        const val SCHEMA_VERSION = 2
+        const val SCHEMA_VERSION = 3
         const val MAX_FIELD_COUNT = 64
 
         const val FIELD_APPLICATION_SIZE = "application_size"
+        const val FIELD_ICON_SIZE = "icon_size"
+        const val FIELD_TEXT_SIZE = "text_size"
         const val FIELD_NAME_PLACEMENT = "name_placement"
         const val FIELD_ITEMS_PER_ROW = "items_per_row"
         const val FIELD_SECTION_ANCHOR = "section_anchor"
         const val FIELD_BACKGROUND_OPACITY = "background_opacity"
 
         val KNOWN_FIELDS = setOf(
-            FIELD_APPLICATION_SIZE,
+            FIELD_ICON_SIZE,
+            FIELD_TEXT_SIZE,
             FIELD_NAME_PLACEMENT,
             FIELD_ITEMS_PER_ROW,
             FIELD_SECTION_ANCHOR,

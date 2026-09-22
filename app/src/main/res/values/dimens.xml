@@ -167,6 +167,7 @@
     <dimen name="style_settings_tapering_thumb_radius">2dp</dimen>
     <dimen name="style_settings_tapering_thumb_track_gap">6dp</dimen>
     <dimen name="style_settings_tapering_stop_target_size">40dp</dimen>
+    <dimen name="style_settings_tapering_slider_gap">16dp</dimen>
 
     <!-- Drawer / Transition gesture from Home -->
     <dimen name="drawer_entry_drag_threshold">120dp</dimen>

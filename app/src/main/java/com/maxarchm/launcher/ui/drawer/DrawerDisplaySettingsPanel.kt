@@ -9,11 +9,15 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -36,10 +40,10 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.stringResource
 import com.maxarchm.launcher.R
-import com.maxarchm.launcher.ui.style.StyleApplicationSizeBlock
 import com.maxarchm.launcher.ui.style.StyleArrangementBlock
 import com.maxarchm.launcher.ui.style.StyleBackgroundOpacityBlock
 import com.maxarchm.launcher.ui.style.StyleSelectorBlock
+import com.maxarchm.launcher.ui.style.StyleTaperingSlider
 import com.maxarchm.launcher.ui.style.styleSettingsPanelSurface
 
 @Composable
@@ -48,6 +52,7 @@ internal fun DrawerDisplaySettingsPanel(
     enabled: Boolean,
     onChangeSettings: (DrawerDisplaySettings) -> Unit,
     onPreviewOpacity: (Int?) -> Unit,
+    onPreviewApplicationSizes: (DrawerDisplaySettings?) -> Unit = {},
     onDismiss: () -> Unit,
 ) {
     DrawerPanelAppearance {
@@ -74,12 +79,16 @@ internal fun DrawerDisplaySettingsPanel(
             // Any removal before a release (dismiss, external hide, process end) reverts
             // the drag preview: the background and readout fall back to the persisted state
             // and nothing is committed.
-            onDispose { onPreviewOpacity(null) }
+            onDispose {
+                onPreviewOpacity(null)
+                onPreviewApplicationSizes(null)
+            }
         }
         var panelBounds by remember { mutableStateOf(Rect.Zero) }
         var modalRootOrigin by remember { mutableStateOf(Offset.Zero) }
         val selection = listOf(
-            settings.applicationSize,
+            settings.iconSize,
+            settings.textSize,
             settings.namePlacement,
             settings.sectionAnchorPresentation,
         )
@@ -114,7 +123,8 @@ internal fun DrawerDisplaySettingsPanel(
             if (!mutationAllowed() || candidate == settings) {
                 return
             }
-            if (candidate.applicationSize != settings.applicationSize ||
+            if (candidate.iconSize != settings.iconSize ||
+                candidate.textSize != settings.textSize ||
                 candidate.namePlacement != settings.namePlacement ||
                 candidate.sectionAnchorPresentation != settings.sectionAnchorPresentation
             ) {
@@ -247,33 +257,131 @@ internal fun DrawerDisplaySettingsPanel(
                         },
                         sliderTestTag = "drawer_background_opacity_slider",
                     )
-                    val options = DrawerApplicationSize.values()
-                    StyleApplicationSizeBlock(
+                    DrawerApplicationSizeSliders(
                         title = stringResource(id = R.string.drawer_application_size),
-                        optionLabels = options.map { option ->
-                            stringResource(
-                                id = when (option) {
-                                    DrawerApplicationSize.Large -> R.string.favorite_list_large
-                                    DrawerApplicationSize.Medium -> R.string.favorite_list_medium
-                                    DrawerApplicationSize.Small -> R.string.favorite_list_small
-                                },
-                            )
-                        },
-                        optionIconSizes = options.map { option ->
-                            dimensionResource(id = option.iconSizeResource())
-                        },
-                        selectedIndex = options.indexOf(element = settings.applicationSize),
+                        iconSize = settings.iconSize,
+                        textSize = settings.textSize,
                         enabled = mutationEnabled,
-                        onSelectIndex = { index ->
-                            changeSettings(
-                                settings.copy(applicationSize = options[index]),
-                            )
+                        onPreview = { iconSize, textSize ->
+                            onPreviewApplicationSizes(settings.copy(iconSize = iconSize, textSize = textSize))
                         },
-                        optionTestTagPrefix = "drawer_application_size_option",
+                        onCommitIconSize = { iconSize ->
+                            onPreviewApplicationSizes(null)
+                            changeSettings(settings.copy(iconSize = iconSize))
+                        },
+                        onCommitTextSize = { textSize ->
+                            onPreviewApplicationSizes(null)
+                            changeSettings(settings.copy(textSize = textSize))
+                        },
                         modifier = Modifier.testTag(tag = "drawer_application_size_setting"),
                     )
                 }
             }
         }
+    }
+}
+
+/**
+ * Each slider previews independently and commits only its corresponding persisted field on release.
+ */
+@Composable
+private fun DrawerApplicationSizeSliders(
+    title: String,
+    iconSize: DrawerApplicationSize,
+    textSize: DrawerApplicationSize,
+    enabled: Boolean,
+    onPreview: (DrawerApplicationSize, DrawerApplicationSize) -> Unit,
+    onCommitIconSize: (DrawerApplicationSize) -> Unit,
+    onCommitTextSize: (DrawerApplicationSize) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val options = DrawerApplicationSize.values()
+    val labels = options.map { option ->
+        stringResource(
+            id = when (option) {
+                DrawerApplicationSize.Large -> R.string.favorite_list_large
+                DrawerApplicationSize.Medium -> R.string.favorite_list_medium
+                DrawerApplicationSize.Small -> R.string.favorite_list_small
+            },
+        )
+    }
+    val iconSelectedIndex = options.indexOf(element = iconSize)
+    val textSelectedIndex = options.indexOf(element = textSize)
+    var iconPreviewIndex by remember(iconSelectedIndex) { mutableIntStateOf(iconSelectedIndex) }
+    var textPreviewIndex by remember(textSelectedIndex) { mutableIntStateOf(textSelectedIndex) }
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        StyleSettingsTitleLine(text = title)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(
+                    dimensionResource(R.dimen.style_settings_application_size_line_height),
+                )
+                .padding(
+                    horizontal = dimensionResource(R.dimen.style_settings_panel_row_inset),
+                ),
+        ) {
+            StyleTaperingSlider(
+                selectedStop = iconPreviewIndex,
+                stopLabels = labels,
+                label = stringResource(R.string.style_settings_application_icon_size),
+                increaseLabel = stringResource(R.string.style_settings_increase_application_icon_size),
+                decreaseLabel = stringResource(R.string.style_settings_decrease_application_icon_size),
+                onSelectStop = {
+                    iconPreviewIndex = it
+                    onPreview(options[it], options[textPreviewIndex])
+                },
+                onSelectStopFinished = {
+                    iconPreviewIndex = it
+                    onCommitIconSize(options[it])
+                },
+                enabled = enabled,
+                modifier = Modifier
+                    .weight(1f)
+                    .testTag("drawer_application_size_icon_slider"),
+            )
+            Spacer(
+                modifier = Modifier.width(
+                    dimensionResource(R.dimen.style_settings_tapering_slider_gap),
+                ),
+            )
+            StyleTaperingSlider(
+                selectedStop = textPreviewIndex,
+                stopLabels = labels,
+                label = stringResource(R.string.style_settings_application_text_size),
+                increaseLabel = stringResource(R.string.style_settings_increase_application_text_size),
+                decreaseLabel = stringResource(R.string.style_settings_decrease_application_text_size),
+                onSelectStop = {
+                    textPreviewIndex = it
+                    onPreview(options[iconPreviewIndex], options[it])
+                },
+                onSelectStopFinished = {
+                    textPreviewIndex = it
+                    onCommitTextSize(options[it])
+                },
+                enabled = enabled,
+                modifier = Modifier
+                    .weight(1f)
+                    .testTag("drawer_application_size_text_slider"),
+            )
+        }
+    }
+}
+
+@Composable
+private fun StyleSettingsTitleLine(text: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(dimensionResource(R.dimen.style_settings_title_line_height))
+        .padding(horizontal = dimensionResource(R.dimen.style_settings_panel_row_inset)),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        androidx.compose.material3.Text(
+            text = text,
+            color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
+        )
     }
 }

@@ -129,6 +129,22 @@ class SettingsBackupJsonTest {
     }
 
     @Test
+    fun legacyApplicationSizeBackfillsIndependentIconAndTextSizes() {
+        val displaySettings = validBackupDocument()
+            .getJSONObject("displaySettings")
+            .remove("iconSize")
+            .remove("textSize")
+            .put("applicationSize", "large")
+
+        val parsed = SettingsBackupJson.parse(
+            validBackupDocument().put("displaySettings", displaySettings).toString(),
+        )
+
+        assertEquals(DrawerApplicationSize.Large, parsed?.settings?.iconSize)
+        assertEquals(DrawerApplicationSize.Large, parsed?.settings?.textSize)
+    }
+
+    @Test
     fun emptyBackupWithNoModulesIsValid() {
         val document = validBackupDocument()
             .put("favorites", JSONObject().put("modules", org.json.JSONArray()))
@@ -245,7 +261,8 @@ class SettingsBackupJsonTest {
     )
 
     private fun testSettings() = DrawerDisplaySettings(
-        applicationSize = DrawerApplicationSize.Small,
+        iconSize = DrawerApplicationSize.Small,
+        textSize = DrawerApplicationSize.Large,
         namePlacement = DrawerNamePlacement.Below,
         itemsPerRow = 2,
         sectionAnchorPresentation = DrawerSectionAnchorPresentation.LeftSide,

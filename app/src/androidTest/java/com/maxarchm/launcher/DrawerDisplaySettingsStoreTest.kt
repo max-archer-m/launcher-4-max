@@ -83,7 +83,8 @@ class DrawerDisplaySettingsStoreTest {
         try {
             store.load()
             val candidate = DrawerDisplaySettings(
-                applicationSize = DrawerApplicationSize.Small,
+                iconSize = DrawerApplicationSize.Small,
+                textSize = DrawerApplicationSize.Large,
                 namePlacement = DrawerNamePlacement.Below,
                 itemsPerRow = 4,
                 sectionAnchorPresentation = DrawerSectionAnchorPresentation.LeftSide,
@@ -116,7 +117,8 @@ class DrawerDisplaySettingsStoreTest {
         try {
             store.load()
             val original = DrawerDisplaySettings(
-                applicationSize = DrawerApplicationSize.Large,
+                iconSize = DrawerApplicationSize.Large,
+                textSize = DrawerApplicationSize.Small,
                 namePlacement = DrawerNamePlacement.Below,
                 itemsPerRow = 3,
                 sectionAnchorPresentation = DrawerSectionAnchorPresentation.LeftSide,
@@ -160,7 +162,8 @@ class DrawerDisplaySettingsStoreTest {
     fun completeSettingsRoundTrip(): Unit = runBlocking {
         val file = temporarySettingsFile()
         val settings = DrawerDisplaySettings(
-            applicationSize = DrawerApplicationSize.Large,
+            iconSize = DrawerApplicationSize.Large,
+            textSize = DrawerApplicationSize.Small,
             namePlacement = DrawerNamePlacement.Below,
             itemsPerRow = 4,
             sectionAnchorPresentation = DrawerSectionAnchorPresentation.LeftSide,
@@ -195,7 +198,8 @@ class DrawerDisplaySettingsStoreTest {
         store.load()
 
         val expected = DrawerDisplaySettings(
-            applicationSize = DrawerApplicationSize.Large,
+            iconSize = DrawerApplicationSize.Large,
+            textSize = DrawerApplicationSize.Large,
             namePlacement = DrawerNamePlacement.Below,
             itemsPerRow = 1,
             sectionAnchorPresentation = DrawerSectionAnchorPresentation.Inline,
@@ -260,7 +264,7 @@ class DrawerDisplaySettingsStoreTest {
         store.load()
 
         val candidate = DrawerDisplaySettings(
-            applicationSize = DrawerApplicationSize.Small,
+            iconSize = DrawerApplicationSize.Small,
         )
         assertFalse(store.replace(settings = candidate))
         assertEquals(
@@ -278,7 +282,7 @@ class DrawerDisplaySettingsStoreTest {
         val store = DrawerDisplaySettingsStore(file = file)
         store.load()
         val candidates = listOf(
-            DrawerDisplaySettings(applicationSize = DrawerApplicationSize.Large),
+            DrawerDisplaySettings(iconSize = DrawerApplicationSize.Large),
             DrawerDisplaySettings(
                 namePlacement = DrawerNamePlacement.Below,
                 itemsPerRow = 3,
@@ -356,12 +360,32 @@ class DrawerDisplaySettingsStoreTest {
     }
 
     private fun completeRawFields(): List<Pair<String, String>> = listOf(
-        "application_size" to "medium",
+        "icon_size" to "medium",
+        "text_size" to "medium",
         "name_placement" to "right",
         "items_per_row" to "1",
         "section_anchor" to "inline",
         "background_opacity" to "50",
     )
+
+    @Test
+    fun legacyApplicationSizeBackfillsIndependentIconAndTextSizes(): Unit = runBlocking {
+        val file = temporarySettingsFile()
+        writeRawDocument(file = file, fields = listOf("application_size" to "small"))
+        val store = DrawerDisplaySettingsStore(file = file)
+
+        store.load()
+
+        val expected = DrawerDisplaySettings(
+            iconSize = DrawerApplicationSize.Small,
+            textSize = DrawerApplicationSize.Small,
+        )
+        assertEquals(DrawerDisplaySettingsReadState.Readable(expected), store.state.value)
+        val reloaded = DrawerDisplaySettingsStore(file = file)
+        reloaded.load()
+        assertEquals(DrawerDisplaySettingsReadState.Readable(expected), reloaded.state.value)
+        deleteSettingsFiles(file = file)
+    }
 
     @Test
     fun legacyBackgroundModeIsNotMappedAndMissingOpacityAdoptsTheDefault(): Unit = runBlocking {
@@ -380,7 +404,8 @@ class DrawerDisplaySettingsStoreTest {
         assertEquals(
             DrawerDisplaySettingsReadState.Readable(
                 settings = DrawerDisplaySettings(
-                    applicationSize = DrawerApplicationSize.Large,
+                    iconSize = DrawerApplicationSize.Large,
+                    textSize = DrawerApplicationSize.Large,
                     backgroundOpacity = DrawerDisplaySettings.DEFAULT_BACKGROUND_OPACITY,
                 ),
             ),

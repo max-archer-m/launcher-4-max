@@ -154,6 +154,8 @@ internal fun DrawerScreen(
     // Live drag preview of the background opacity; null means render the persisted value.
     // It never reaches the display-settings store: the release commits exactly one save.
     var backgroundOpacityPreview by remember { mutableStateOf<Int?>(null) }
+    var applicationSizesPreview by remember { mutableStateOf<DrawerDisplaySettings?>(null) }
+    val renderedDisplaySettings = applicationSizesPreview ?: displaySettings
     DrawerBackgroundSurface(
         opacity = backgroundOpacityPreview ?: displaySettings.backgroundOpacity,
     ) {
@@ -182,6 +184,7 @@ internal fun DrawerScreen(
         fun hideDisplaySettingsPanel() {
             displaySettingsPanelVisible = false
             backgroundOpacityPreview = null
+            applicationSizesPreview = null
         }
 
         LaunchedEffect(key1 = active) {
@@ -516,7 +519,7 @@ internal fun DrawerScreen(
                         modifier = modifier,
                         listState = listState,
                         sections = visibleSections,
-                        displaySettings = displaySettings,
+                        displaySettings = renderedDisplaySettings,
                         searchActive = searchActive,
                         searchQuery = searchQuery,
                         searchFocusRequester = searchFocusRequester,
@@ -587,6 +590,9 @@ internal fun DrawerScreen(
                             },
                             onPreviewOpacity = { previewOpacity ->
                                 backgroundOpacityPreview = previewOpacity
+                            },
+                            onPreviewApplicationSizes = { previewSettings ->
+                                applicationSizesPreview = previewSettings
                             },
                             onDismiss = {
                                 hideDisplaySettingsPanel()
@@ -957,12 +963,12 @@ internal fun DrawerFavoriteSelectionRow(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val applicationSize = displaySettings.applicationSize
+    val iconSize = displaySettings.iconSize
     val rowHeight = dimensionResource(
         id = if (displaySettings.namePlacement == DrawerNamePlacement.Right) {
-            applicationSize.rowHeightResource()
+            iconSize.rowHeightResource()
         } else {
-            applicationSize.belowRowHeightResource()
+            iconSize.belowRowHeightResource()
         },
     )
     val disabledAlpha = integerResource(R.integer.disabled_content_alpha_percent) / 100f
@@ -1373,12 +1379,12 @@ private fun DrawerApplicationRow(
     onDragToFavoriteEnd: (Offset?, Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val applicationSize = displaySettings.applicationSize
+    val iconSize = displaySettings.iconSize
     val rowHeight = dimensionResource(
         id = if (displaySettings.namePlacement == DrawerNamePlacement.Right) {
-            applicationSize.rowHeightResource()
+            iconSize.rowHeightResource()
         } else {
-            applicationSize.belowRowHeightResource()
+            iconSize.belowRowHeightResource()
         },
     )
     val hapticFeedback = LocalHapticFeedback.current
@@ -1475,8 +1481,7 @@ internal fun DrawerApplicationContent(
     searchQuery: String?,
     modifier: Modifier = Modifier,
 ) {
-    val applicationSize = displaySettings.applicationSize
-    val iconSize = dimensionResource(id = applicationSize.iconSizeResource())
+    val iconSize = dimensionResource(id = displaySettings.iconSize.iconSizeResource())
     val iconSizePixels = with(LocalDensity.current) { iconSize.roundToPx() }
     if (displaySettings.namePlacement == DrawerNamePlacement.Right) {
         Row(
@@ -1497,7 +1502,7 @@ internal fun DrawerApplicationContent(
             DrawerApplicationName(
                 label = entry.label,
                 searchQuery = searchQuery,
-                applicationSize = applicationSize,
+                textSize = displaySettings.textSize,
                 modifier = Modifier.weight(weight = 1f),
             )
         }
@@ -1527,7 +1532,7 @@ internal fun DrawerApplicationContent(
             DrawerApplicationName(
                 label = entry.label,
                 searchQuery = searchQuery,
-                applicationSize = applicationSize,
+                textSize = displaySettings.textSize,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             )
@@ -1546,7 +1551,7 @@ internal fun DrawerApplicationContent(
 private fun DrawerApplicationName(
     label: String,
     searchQuery: String?,
-    applicationSize: DrawerApplicationSize,
+    textSize: DrawerApplicationSize,
     modifier: Modifier = Modifier,
     textAlign: androidx.compose.ui.text.style.TextAlign? = null,
 ) {
@@ -1575,8 +1580,8 @@ private fun DrawerApplicationName(
         overflow = TextOverflow.Ellipsis,
         textAlign = textAlign,
         style = MaterialTheme.typography.bodyLarge.copy(
-            fontSize = dimensionResource(id = applicationSize.textSizeResource()).value.sp,
-            lineHeight = dimensionResource(id = applicationSize.lineHeightResource()).value.sp,
+            fontSize = dimensionResource(id = textSize.textSizeResource()).value.sp,
+            lineHeight = dimensionResource(id = textSize.lineHeightResource()).value.sp,
         ),
     )
 }

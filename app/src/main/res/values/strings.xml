@@ -7,6 +7,12 @@
     <string name="style_settings_items_per_row">Items per row</string>
     <string name="style_settings_decrease_items_per_row">Decrease items per row</string>
     <string name="style_settings_increase_items_per_row">Increase items per row</string>
+    <string name="style_settings_application_icon_size">Application size</string>
+    <string name="style_settings_application_text_size">Text size</string>
+    <string name="style_settings_increase_application_icon_size">Increase application size</string>
+    <string name="style_settings_decrease_application_icon_size">Decrease application size</string>
+    <string name="style_settings_increase_application_text_size">Increase text size</string>
+    <string name="style_settings_decrease_application_text_size">Decrease text size</string>
     <string name="app_name">Launcher4Max</string>
     <string name="clock_unavailable">Unable to open Clock</string>
     <string name="calendar_unavailable">Unable to open Calendar</string>
@@ -18,7 +24,7 @@
     <string name="drawer_search_cancel">Cancel</string>
     <string name="drawer_no_matching_apps">No matching apps</string>
     <string name="drawer_display_settings">Display settings</string>
-    <string name="drawer_application_size">Application size</string>
+    <string name="drawer_application_size">Application size · Text size</string>
     <string name="drawer_application_arrangement">Application arrangement</string>
     <string name="drawer_name_right">Right</string>
     <string name="drawer_name_below">Below</string>

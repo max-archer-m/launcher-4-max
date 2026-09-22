@@ -9,19 +9,24 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertHeightIsEqualTo
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.click
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import com.maxarchm.launcher.ui.drawer.DrawerApplicationSize
 import com.maxarchm.launcher.ui.drawer.DrawerDisplaySettings
 import com.maxarchm.launcher.ui.drawer.DrawerNamePlacement
 import com.maxarchm.launcher.ui.drawer.DrawerScreen
@@ -48,15 +53,17 @@ class DrawerDisplaySettingsUiTest {
     }
 
     @Test
-    fun applicationSizeSelectionImmediatelyUpdatesDrawerGeometry() {
+    fun applicationSizeSlidersPreviewIndependentlyAndCommitOnlyReleasedField() {
         composeRule.setContent {
             var settings by remember { mutableStateOf(DrawerDisplaySettings()) }
+            var changes = 0
             Launcher4MaxTheme {
                 DrawerScreen(
                     inventoryLoader = inventory(),
                     displaySettings = settings,
                     onChangeDisplaySettings = { candidateSettings ->
                         settings = candidateSettings
+                        changes++
                     },
                 )
             }
@@ -65,11 +72,64 @@ class DrawerDisplaySettingsUiTest {
         composeRule.onNodeWithTag(testTag = "drawer_application_row")
             .assertHeightIsEqualTo(expectedHeight = 56.dp)
         composeRule.onNodeWithTag(testTag = "drawer_display_settings_entry").performClick()
-        composeRule.onNodeWithTag(testTag = "drawer_application_size_option_0").performClick()
+        composeRule.onNodeWithTag(testTag = "drawer_application_size_text_slider")
+            .performSemanticsAction(SemanticsActions.SetProgress) { action -> action(2f) }
 
         composeRule.onNodeWithTag(testTag = "drawer_application_row")
-            .assertHeightIsEqualTo(expectedHeight = 64.dp)
+            .assertHeightIsEqualTo(expectedHeight = 56.dp)
         composeRule.onNodeWithTag(testTag = "drawer_display_settings_panel").assertIsDisplayed()
+        composeRule.runOnIdle {
+            assertEquals(1, changes)
+            assertEquals(DrawerApplicationSize.Medium, settings.iconSize)
+            assertEquals(DrawerApplicationSize.Small, settings.textSize)
+        }
+    }
+
+    @Test
+    fun sliderPreviewChangesOnlyTheTargetVisualDimension() {
+        composeRule.setContent {
+            Launcher4MaxTheme {
+                DrawerScreen(
+                    inventoryLoader = inventory(),
+                    displaySettings = DrawerDisplaySettings(),
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("drawer_display_settings_entry").performClick()
+        composeRule.onNodeWithTag("drawer_application_size_icon_slider")
+            .performTouchInput { swipeRight() }
+        composeRule.onNodeWithTag("drawer_application_row")
+            .assertHeightIsEqualTo(48.dp)
+        composeRule.onNodeWithText("Example application").assertTextEquals("Example application")
+    }
+
+    @Test
+    fun iconSizeCommitDoesNotChangeTextSize() {
+        composeRule.setContent {
+            var settings by remember { mutableStateOf(DrawerDisplaySettings()) }
+            var changes = 0
+            Launcher4MaxTheme {
+                DrawerScreen(
+                    inventoryLoader = inventory(),
+                    displaySettings = settings,
+                    onChangeDisplaySettings = { candidateSettings ->
+                        settings = candidateSettings
+                        changes++
+                    },
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag(testTag = "drawer_display_settings_entry").performClick()
+        composeRule.onNodeWithTag(testTag = "drawer_application_size_icon_slider")
+            .performSemanticsAction(SemanticsActions.SetProgress) { action -> action(0f) }
+
+        composeRule.runOnIdle {
+            assertEquals(1, changes)
+            assertEquals(DrawerApplicationSize.Large, settings.iconSize)
+            assertEquals(DrawerApplicationSize.Medium, settings.textSize)
+        }
     }
 
     @Test
@@ -101,7 +161,8 @@ class DrawerDisplaySettingsUiTest {
         }
 
         composeRule.onNodeWithTag(testTag = "drawer_display_settings_entry").performClick()
-        composeRule.onNodeWithTag(testTag = "drawer_application_size_option_0").performClick()
+        composeRule.onNodeWithTag(testTag = "drawer_application_size_icon_slider")
+            .assertIsNotEnabled()
 
         composeRule.runOnIdle { assertEquals(0, changeCount) }
     }

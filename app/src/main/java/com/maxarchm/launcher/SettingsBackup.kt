@@ -63,7 +63,7 @@ private const val BACKUP_TIMESTAMP_PATTERN = "yyyyMMddHHmm"
  * present section restores that field's default value.
  */
 internal object SettingsBackupJson {
-    const val BACKUP_SCHEMA_VERSION = 2
+    const val BACKUP_SCHEMA_VERSION = 3
 
     fun serialize(
         aggregate: OrderedFavoriteAggregate,
@@ -108,7 +108,8 @@ internal object SettingsBackupJson {
             },
         )
         val displaySettings = JSONObject()
-            .put("applicationSize", settings.applicationSize.storageValue)
+            .put("iconSize", settings.iconSize.storageValue)
+            .put("textSize", settings.textSize.storageValue)
             .put("namePlacement", settings.namePlacement.storageValue)
             .put("itemsPerRow", settings.itemsPerRow)
             .put(
@@ -218,9 +219,19 @@ internal object SettingsBackupJson {
         if (displaySettings == null) return defaults
         return try {
             DrawerDisplaySettings(
-                applicationSize = displaySettings.enumField(
-                    name = "applicationSize",
-                    default = defaults.applicationSize,
+                iconSize = displaySettings.enumField(
+                    name = "iconSize",
+                    default = displaySettings.enumField(
+                        name = "applicationSize",
+                        default = defaults.iconSize,
+                    ) { value -> drawerApplicationSizeFromStorageValue(value) } ?: return null,
+                ) { value -> drawerApplicationSizeFromStorageValue(value) } ?: return null,
+                textSize = displaySettings.enumField(
+                    name = "textSize",
+                    default = displaySettings.enumField(
+                        name = "applicationSize",
+                        default = defaults.textSize,
+                    ) { value -> drawerApplicationSizeFromStorageValue(value) } ?: return null,
                 ) { value -> drawerApplicationSizeFromStorageValue(value) } ?: return null,
                 namePlacement = displaySettings.enumField(
                     name = "namePlacement",

@@ -137,7 +137,8 @@ class DrawerSettingsIntegrationTest {
         val finished = CountDownLatch(1)
         var intercept = true
         val initial = DrawerDisplaySettings(
-            applicationSize = DrawerApplicationSize.Small,
+            iconSize = DrawerApplicationSize.Small,
+            textSize = DrawerApplicationSize.Small,
             namePlacement = DrawerNamePlacement.Below,
             itemsPerRow = 4,
             sectionAnchorPresentation = DrawerSectionAnchorPresentation.LeftSide,
@@ -192,7 +193,7 @@ class DrawerSettingsIntegrationTest {
                 dismissPanel(useBack)
                 composeRule.onNodeWithTag("drawer_display_settings_entry").performClick()
             }
-            for (tag in listOf("drawer_application_size_option_0", "drawer_name_placement_0",
+            for (tag in listOf("drawer_application_size_icon_slider", "drawer_name_placement_0",
                 "drawer_section_anchor_0", "drawer_items_per_row_decrement")) {
                 composeRule.onNodeWithTag(tag).assertIsNotEnabled()
             }
@@ -241,10 +242,10 @@ class DrawerSettingsIntegrationTest {
             }
             composeRule.waitUntil(5_000) { recreatedStore.state.value is DrawerDisplaySettingsReadState.Readable }
             openDrawerPanel()
-            for (tag in listOf("drawer_application_size_option_2", "drawer_name_placement_1",
-                "drawer_section_anchor_1")) {
+            for (tag in listOf("drawer_name_placement_1", "drawer_section_anchor_1")) {
                 composeRule.onNodeWithTag(tag).assertIsSelected()
             }
+            composeRule.onNodeWithTag("drawer_application_size_icon_slider").assertIsEnabled()
             assertEquals(DrawerDisplaySettingsReadState.Readable(candidate), recreatedStore.state.value)
         } finally {
             release.countDown()
