@@ -94,6 +94,7 @@ When a delivery record needs to explain a boundary, it should prefer positive se
 | 1.6.0 planned delivery | [`docs/delivery/1.6.0/delivery.md`](delivery/1.6.0/delivery.md) | [`docs/delivery/1.6.0/delivery.zh-CN.md`](delivery/1.6.0/delivery.zh-CN.md) | Delivery records | Plans the Settings local backup and restore journey through Iteration 29 |
 | Architecture decisions | [`docs/decisions/`](decisions/) | - | Decision rationale | Records consequential implemented and accepted architecture decisions; only an active ADR establishes its stated current architecture boundary |
 | License | [`LICENSE`](../LICENSE) | - | - | Contains the Apache License 2.0 text |
+| Third-party notices | [`THIRD-PARTY-NOTICES.md`](../THIRD-PARTY-NOTICES.md) | - | - | Lists the third-party components included in the application and the license of each |
 
 The current active architecture decisions are [ADR-0001](decisions/0001-establish-replaceable-launcher-icon-rendering.md), [ADR-0002](decisions/0002-use-versioned-atomic-file-for-favorites.md), [ADR-0003](decisions/0003-model-profile-completeness-for-favorite-reconciliation.md), and [ADR-0004](decisions/0004-purpose-limited-accessibility-service-for-double-tap-lock.md).
 

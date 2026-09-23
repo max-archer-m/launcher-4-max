@@ -94,6 +94,7 @@
 | 1.6.0 计划交付 | [`docs/delivery/1.6.0/delivery.md`](delivery/1.6.0/delivery.md) | [`docs/delivery/1.6.0/delivery.zh-CN.md`](delivery/1.6.0/delivery.zh-CN.md) | 交付记录 | 通过迭代 29 规划 Settings 本地备份与恢复旅程范围 |
 | 架构决定 | [`docs/decisions/`](decisions/) | - | 决策理由 | 记录重大、已实现且已接受的架构决定；只有 Active ADR 才建立其所述当前架构边界 |
 | 许可证 | [`LICENSE`](../LICENSE) | - | - | 包含 Apache License 2.0 原文 |
+| 第三方通知 | [`THIRD-PARTY-NOTICES.md`](../THIRD-PARTY-NOTICES.md) | - | - | 列出应用中包含的第三方组件及各自的许可证 |
 
 当前活跃架构决定是
 [ADR-0001](decisions/0001-establish-replaceable-launcher-icon-rendering.md)、

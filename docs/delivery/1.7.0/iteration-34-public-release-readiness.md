@@ -8,7 +8,7 @@ Bring the project to the state where the `Formal release artifact` gates of rele
 
 ## Product and version references
 
-- Product-contract baseline: `da22d3d1c4c3e22105a8d6f96256c1e6ffe626d4` — the current mainline head at planning time. This iteration's product-contract stage will produce a later accepted baseline; when the author accepts it, this contract records a material amendment with the new full 40-character commit ID before dependent operational work proceeds.
+- Product-contract baseline: `ce24ac3d9a9151d21f1df43043574d1c9728efac` — the product-contract stage accepted by the author on 2026-09-23, which records the public-GitHub-only distribution boundary, the primary-device performance expectation, the release-governance decisions, and the current privacy contact URL. It amends the planning baseline `da22d3d1c4c3e22105a8d6f96256c1e6ffe626d4` under this contract's amendment rule.
 - Applicable product documents:
   - [Product overview](../../../overview.md), distribution boundary
   - [Product foundation](../../requirements/product-foundation.md), performance expectation record
