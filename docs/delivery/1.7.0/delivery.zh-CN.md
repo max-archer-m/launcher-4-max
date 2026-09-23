@@ -14,7 +14,8 @@
 
 `Formal release artifact`（正式发布物），定义见[发布治理](../../release.md)。本版本适用该级别的全部门槛，并显式提升一项：正式发布密钥（release keystore）在首个正式产物打包前必须满足安全存储与两份独立加密备份要求。Git tag、GitHub Release 与任何对外发布仍是单独授权动作，不属于版本完成范围。
 
-应用身份为 `com.maxarchm.launcher`。`versionName` 为 `1.7.0`，`versionCode` `8` 按下一个未占用值分配，待标识符提升提交产生时记录。
+应用身份为 `com.maxarchm.launcher`。`versionName` 为 `1.7.0`。
+`versionCode` `8` 按下一个未占用值分配，记录于 `2374f60ff2d16f166a8078d6d1a20ee35d15912e`。
 
 ## 产品引用
 

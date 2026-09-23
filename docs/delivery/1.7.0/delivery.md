@@ -14,7 +14,8 @@ The author confirmed the scope rulings on 2026-09-17: the purpose-limited access
 
 `Formal release artifact`, as defined by [release governance](../../release.md). The version applies that level's gates plus the explicitly promoted gate that the release keystore satisfies the secure-storage and two-independent-encrypted-backups requirement before the first formal artifact is packaged. A Git tag, GitHub Release, and any outward publication remain separately authorized actions and are not part of version completion.
 
-The application identity is `com.maxarchm.launcher`. The `versionName` is `1.7.0`, and `versionCode` `8` is allocated as the next unused value, to be recorded at the identifier-bump commit when it exists.
+The application identity is `com.maxarchm.launcher`. The `versionName` is `1.7.0`.
+`versionCode` `8` is the next unused value, allocated at `2374f60ff2d16f166a8078d6d1a20ee35d15912e`.
 
 ## Product references
 
