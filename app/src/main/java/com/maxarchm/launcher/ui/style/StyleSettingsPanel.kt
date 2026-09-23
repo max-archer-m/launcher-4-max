@@ -215,7 +215,7 @@ internal fun StyleArrangementBlock(
     testTagPrefix: String,
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
 ) {
-    require(optionLabels.size == 2)
+    require(optionLabels.size in 2..3)
     require(selectedIndex in optionLabels.indices)
     require(value in minimum..maximum)
     Column(
@@ -321,10 +321,15 @@ private fun StyleTwoOptionSelector(
     val frameShape = RoundedCornerShape(
         size = dimensionResource(id = R.dimen.style_settings_selector_frame_radius),
     )
+    val selectorWidth = if (optionLabels.size == 2) {
+        dimensionResource(id = R.dimen.style_settings_selector_width)
+    } else {
+        dimensionResource(id = R.dimen.style_settings_three_option_selector_width)
+    }
     Box(
         modifier = Modifier
             .size(
-                width = dimensionResource(id = R.dimen.style_settings_selector_width),
+                width = selectorWidth,
                 height = dimensionResource(id = R.dimen.style_settings_stepper_target_size),
             ),
         contentAlignment = Alignment.Center,

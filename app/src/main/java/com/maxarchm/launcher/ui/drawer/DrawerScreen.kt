@@ -81,6 +81,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -1382,6 +1383,9 @@ private fun DrawerApplicationRow(
             .height(height = rowHeight)
             .onGloballyPositioned { rowCoordinates = it }
             .semantics {
+                if (displaySettings.namePlacement == DrawerNamePlacement.Hidden) {
+                    contentDescription = entry.label
+                }
                 customActions = listOf(
                     CustomAccessibilityAction(
                         label = openActionsLabel,
@@ -1499,7 +1503,7 @@ internal fun DrawerApplicationContent(
                 modifier = Modifier.weight(weight = 1f),
             )
         }
-    } else {
+    } else if (displaySettings.namePlacement == DrawerNamePlacement.Below) {
         Column(
             modifier = modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -1535,6 +1539,23 @@ internal fun DrawerApplicationContent(
                 ),
             )
         }
+    } else {
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(
+                    top = dimensionResource(R.dimen.drawer_application_below_vertical_inset),
+                    bottom = dimensionResource(R.dimen.drawer_application_bottom_inset),
+                ),
+            contentAlignment = Alignment.Center,
+        ) {
+            DrawerApplicationIcon(
+                preparedBitmap = entry.iconBitmap,
+                icon = entry.icon,
+                iconSize = iconSize,
+                iconSizePixels = iconSizePixels,
+            )
+        }
     }
 }
 
@@ -1549,6 +1570,7 @@ private fun drawerApplicationRowHeight(settings: DrawerDisplaySettings): Dp {
         DrawerNamePlacement.Below -> iconHeight + textLineHeight +
                 dimensionResource(R.dimen.drawer_application_icon_label_gap) +
                 topInset + bottomInset
+        DrawerNamePlacement.Hidden -> iconHeight + topInset + bottomInset
     }
 }
 

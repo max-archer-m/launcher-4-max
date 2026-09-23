@@ -29,6 +29,7 @@ internal enum class DrawerApplicationSize {
 internal enum class DrawerNamePlacement {
     Right,
     Below,
+    Hidden,
 }
 
 internal enum class DrawerSectionAnchorPresentation {
@@ -65,6 +66,7 @@ internal fun validItemsPerRowRange(
 ): IntRange = when (namePlacement) {
     DrawerNamePlacement.Right -> 1..2
     DrawerNamePlacement.Below -> 1..4
+    DrawerNamePlacement.Hidden -> 1..6
 }
 
 internal fun DrawerApplicationSize.iconSizeResource(): Int = when (this) {
@@ -348,6 +350,7 @@ private val DrawerNamePlacement.storageValue: String
     get() = when (this) {
         DrawerNamePlacement.Right -> "right"
         DrawerNamePlacement.Below -> "below"
+        DrawerNamePlacement.Hidden -> "hidden"
     }
 
 private fun drawerNamePlacementFromStorageValue(
@@ -355,6 +358,7 @@ private fun drawerNamePlacementFromStorageValue(
 ): DrawerNamePlacement = when (value) {
     "right" -> DrawerNamePlacement.Right
     "below" -> DrawerNamePlacement.Below
+    "hidden" -> DrawerNamePlacement.Hidden
     else -> throw IllegalArgumentException("Invalid Drawer name placement")
 }
 

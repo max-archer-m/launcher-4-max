@@ -243,6 +243,35 @@ class DrawerDisplaySettingsUiTest {
         }
     }
 
+    @Test
+    fun hiddenPlacementEnablesSixColumnsAndDisablesTextSize() {
+        var settings by mutableStateOf(DrawerDisplaySettings())
+        composeRule.setContent {
+            Launcher4MaxTheme {
+                DrawerScreen(
+                    inventoryLoader = inventory(),
+                    displaySettings = settings,
+                    onChangeDisplaySettings = { settings = it },
+                )
+            }
+        }
+
+        composeRule.onNodeWithTag("drawer_display_settings_entry").performClick()
+        composeRule.mainClock.autoAdvance = false
+        composeRule.mainClock.advanceTimeBy(500)
+        composeRule.mainClock.autoAdvance = true
+        composeRule.onNodeWithTag("drawer_name_placement_2").performClick()
+        repeat(5) {
+            composeRule.onNodeWithTag("drawer_items_per_row_increment").performClick()
+        }
+
+        composeRule.onNodeWithTag("drawer_application_size_text_slider").assertIsNotEnabled()
+        composeRule.runOnIdle {
+            assertEquals(DrawerNamePlacement.Hidden, settings.namePlacement)
+            assertEquals(6, settings.itemsPerRow)
+        }
+    }
+
     private fun inventory(): LaunchableInventoryLoader = LaunchableInventoryLoader {
         LaunchableInventorySnapshot(
             entries = listOf(

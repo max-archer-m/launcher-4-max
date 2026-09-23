@@ -67,7 +67,7 @@ internal fun HomeModuleStylePanel(
             HomeStyleArrangementRow(
                 placement = selectedModule.namePlacement,
                 value = selectedModule.itemsPerRow,
-                maximum = if (selectedModule.namePlacement == FavoriteNamePlacement.Right) 2 else 4,
+                maximum = homeItemsPerRowRange(selectedModule.namePlacement).last,
                 enabled = enabled,
                 onChangePlacement = onChangeNamePlacement,
                 onChangeCount = onChangeItemsPerRow,
@@ -75,7 +75,9 @@ internal fun HomeModuleStylePanel(
             HomeApplicationSizeRow(
                 iconSize = selectedModule.iconSize,
                 textSize = selectedModule.textSize,
-                enabled = enabled,
+                iconEnabled = enabled,
+                textEnabled = enabled &&
+                        selectedModule.namePlacement != FavoriteNamePlacement.Hidden,
                 onPreview = onPreviewSizes,
                 onCommitIconSize = onCommitIconSize,
                 onCommitTextSize = onCommitTextSize,
@@ -113,7 +115,8 @@ private fun HomeStylePanelRow(label: String, value: String? = null) {
 private fun HomeApplicationSizeRow(
     iconSize: FavoriteListSize,
     textSize: FavoriteListSize,
-    enabled: Boolean,
+    iconEnabled: Boolean,
+    textEnabled: Boolean,
     onPreview: (FavoriteListSize, FavoriteListSize) -> Unit,
     onCommitIconSize: (FavoriteListSize) -> Unit,
     onCommitTextSize: (FavoriteListSize) -> Unit,
@@ -161,7 +164,7 @@ private fun HomeApplicationSizeRow(
                     iconPreviewIndex = it
                     onCommitIconSize(options[it])
                 },
-                enabled = enabled,
+                enabled = iconEnabled,
                 modifier = Modifier.weight(1f).testTag("home_application_size_icon_slider"),
             )
             Spacer(Modifier.width(dimensionResource(R.dimen.style_settings_tapering_slider_gap)))
@@ -183,7 +186,7 @@ private fun HomeApplicationSizeRow(
                     textPreviewIndex = it
                     onCommitTextSize(options[it])
                 },
-                enabled = enabled,
+                enabled = textEnabled,
                 modifier = Modifier.weight(1f).testTag("home_application_size_text_slider"),
             )
         }
@@ -207,6 +210,7 @@ private fun HomeStyleArrangementRow(
                 id = when (option) {
                     FavoriteNamePlacement.Right -> R.string.home_name_right
                     FavoriteNamePlacement.Below -> R.string.home_name_below
+                    FavoriteNamePlacement.Hidden -> R.string.home_name_hidden
                 },
             )
         },
@@ -221,4 +225,10 @@ private fun HomeStyleArrangementRow(
         onChangeValue = onChangeCount,
         testTagPrefix = "home",
     )
+}
+
+private fun homeItemsPerRowRange(placement: FavoriteNamePlacement): IntRange = when (placement) {
+    FavoriteNamePlacement.Right -> 1..2
+    FavoriteNamePlacement.Below -> 1..4
+    FavoriteNamePlacement.Hidden -> 1..6
 }

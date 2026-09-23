@@ -2,6 +2,7 @@ package com.maxarchm.launcher.ui.home.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -47,6 +48,8 @@ import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
@@ -64,6 +67,7 @@ import com.maxarchm.launcher.OrderedFavoriteModuleType
 import com.maxarchm.launcher.R
 import com.maxarchm.launcher.belowItemHeightResource
 import com.maxarchm.launcher.iconSizeResource
+import com.maxarchm.launcher.homeFavoriteHiddenItemHeight
 import com.maxarchm.launcher.lineHeightResource
 import com.maxarchm.launcher.rowHeightResource
 import com.maxarchm.launcher.textSizeResource
@@ -178,6 +182,9 @@ internal fun HomeFavoriteRow(
     onRowBoundsInWindow: (Offset, IntSize) -> Unit,
     onHandleBoundsInWindow: (Rect) -> Unit,
     interactionEnabled: Boolean = true,
+    showName: Boolean = true,
+    centerIcon: Boolean = false,
+    hiddenNamePlacement: Boolean = false,
 ) {
     val entry = availability.presentationEntry
     val iconDimension = dimensionResource(
@@ -199,6 +206,21 @@ internal fun HomeFavoriteRow(
         dimensionResource(R.dimen.home_favorite_bar_corner_radius),
     )
     val removeInteractionSource = remember(entry?.identity) { MutableInteractionSource() }
+    val displayText = when (availability) {
+        is FavoriteAvailability.Available -> availability.entry.label
+        is FavoriteAvailability.Disabled -> entry?.let {
+            stringResource(R.string.favorite_disabled_format, it.label)
+        } ?: stringResource(R.string.favorite_application_disabled)
+
+        is FavoriteAvailability.TemporarilyUnavailable,
+        is FavoriteAvailability.Unknown,
+            -> entry?.let {
+            stringResource(R.string.favorite_unavailable_format, it.label)
+        } ?: stringResource(R.string.favorite_application_unavailable)
+
+        FavoriteAvailability.ConfirmedRemoved ->
+            stringResource(R.string.favorite_application_unavailable)
+    }
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -212,7 +234,13 @@ internal fun HomeFavoriteRow(
                         },
                     )
                 } else {
-                    Modifier.height(dimensionResource(iconSize.rowHeightResource()))
+                    Modifier.height(
+                        if (hiddenNamePlacement) {
+                            homeFavoriteHiddenItemHeight(checkNotNull(iconSize))
+                        } else {
+                            dimensionResource(checkNotNull(iconSize).rowHeightResource())
+                        },
+                    )
                 },
             )
             .then(
@@ -278,6 +306,9 @@ internal fun HomeFavoriteRow(
                     },
                 ) else Modifier
             )
+            .semantics {
+                if (!showName) contentDescription = displayText
+            }
             .alpha(if (availability is FavoriteAvailability.Available) 1f else disabledAlpha)
             .testTag("home_favorite_row"),
     ) {
@@ -285,14 +316,15 @@ internal fun HomeFavoriteRow(
             modifier = Modifier
                 .matchParentSize()
                 .padding(
-                    start = iconStartMargin,
+                    start = if (centerIcon) 0.dp else iconStartMargin,
                     end = when {
                         editMode -> handleTargetSize
                         compact -> dimensionResource(R.dimen.home_favorite_bar_item_inset)
                         else -> 0.dp
                     },
-                ),
+            ),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = if (centerIcon) Arrangement.Center else Arrangement.Start,
         ) {
             Box(
                 modifier = Modifier.size(iconDimension),
@@ -317,31 +349,18 @@ internal fun HomeFavoriteRow(
                     )
                 }
             }
-            Spacer(
-                Modifier.width(
-                    if (compact) {
-                        dimensionResource(R.dimen.home_favorite_bar_icon_label_gap)
-                    } else {
-                        dimensionResource(R.dimen.home_favorite_icon_label_gap)
-                    },
-                ),
-            )
-            val displayText = when (availability) {
-                is FavoriteAvailability.Available -> availability.entry.label
-                is FavoriteAvailability.Disabled -> entry?.let {
-                    stringResource(R.string.favorite_disabled_format, it.label)
-                } ?: stringResource(R.string.favorite_application_disabled)
-
-                is FavoriteAvailability.TemporarilyUnavailable,
-                is FavoriteAvailability.Unknown,
-                    -> entry?.let {
-                    stringResource(R.string.favorite_unavailable_format, it.label)
-                } ?: stringResource(R.string.favorite_application_unavailable)
-
-                FavoriteAvailability.ConfirmedRemoved ->
-                    stringResource(R.string.favorite_application_unavailable)
+            if (showName) {
+                Spacer(
+                    Modifier.width(
+                        if (compact) {
+                            dimensionResource(R.dimen.home_favorite_bar_icon_label_gap)
+                        } else {
+                            dimensionResource(R.dimen.home_favorite_icon_label_gap)
+                        },
+                    ),
+                )
             }
-            Text(
+            if (showName) Text(
                 text = displayText,
                 modifier = Modifier.weight(1f),
                 color = MaterialTheme.colorScheme.onBackground,

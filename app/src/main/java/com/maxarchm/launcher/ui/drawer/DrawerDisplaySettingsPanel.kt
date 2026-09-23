@@ -195,6 +195,7 @@ internal fun DrawerDisplaySettingsPanel(
                                 id = when (placement) {
                                     DrawerNamePlacement.Right -> R.string.drawer_name_right
                                     DrawerNamePlacement.Below -> R.string.drawer_name_below
+                                    DrawerNamePlacement.Hidden -> R.string.drawer_name_hidden
                                 },
                             )
                         },
@@ -261,7 +262,9 @@ internal fun DrawerDisplaySettingsPanel(
                         title = stringResource(id = R.string.drawer_application_size),
                         iconSize = settings.iconSize,
                         textSize = settings.textSize,
-                        enabled = mutationEnabled,
+                        iconEnabled = mutationEnabled,
+                        textEnabled = mutationEnabled &&
+                                settings.namePlacement != DrawerNamePlacement.Hidden,
                         onPreview = { iconSize, textSize ->
                             onPreviewApplicationSizes(settings.copy(iconSize = iconSize, textSize = textSize))
                         },
@@ -289,7 +292,8 @@ private fun DrawerApplicationSizeSliders(
     title: String,
     iconSize: DrawerApplicationSize,
     textSize: DrawerApplicationSize,
-    enabled: Boolean,
+    iconEnabled: Boolean,
+    textEnabled: Boolean,
     onPreview: (DrawerApplicationSize, DrawerApplicationSize) -> Unit,
     onCommitIconSize: (DrawerApplicationSize) -> Unit,
     onCommitTextSize: (DrawerApplicationSize) -> Unit,
@@ -336,7 +340,7 @@ private fun DrawerApplicationSizeSliders(
                     iconPreviewIndex = it
                     onCommitIconSize(options[it])
                 },
-                enabled = enabled,
+                enabled = iconEnabled,
                 modifier = Modifier
                     .weight(1f)
                     .testTag("drawer_application_size_icon_slider"),
@@ -360,7 +364,7 @@ private fun DrawerApplicationSizeSliders(
                     textPreviewIndex = it
                     onCommitTextSize(options[it])
                 },
-                enabled = enabled,
+                enabled = textEnabled,
                 modifier = Modifier
                     .weight(1f)
                     .testTag("drawer_application_size_text_slider"),

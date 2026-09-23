@@ -218,6 +218,21 @@ class SettingsBackupJsonTest {
     }
 
     @Test
+    fun hiddenPlacementAllowsUpToSixItemsPerRow() {
+        val modules = validBackupDocument()
+            .getJSONObject("favorites")
+            .getJSONArray("modules")
+        modules.getJSONObject(0)
+            .put("namePlacement", "hidden")
+            .put("itemsPerRow", 6)
+
+        val parsed = parseWithModules(modules)
+
+        assertEquals(FavoriteNamePlacement.Hidden, parsed?.aggregate?.modules?.first()?.namePlacement)
+        assertEquals(6, parsed?.aggregate?.modules?.first()?.itemsPerRow)
+    }
+
+    @Test
     fun fileNameUsesContractedPrefixVersionAndTimestamp() {
         val name = backupFileName(
             versionName = "1.5.0",

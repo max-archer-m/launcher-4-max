@@ -43,6 +43,7 @@ import com.maxarchm.launcher.OrderedFavoriteModuleType
 import com.maxarchm.launcher.R
 import com.maxarchm.launcher.belowItemHeightResource
 import com.maxarchm.launcher.iconSizeResource
+import com.maxarchm.launcher.homeFavoriteHiddenItemHeight
 import com.maxarchm.launcher.lineHeightResource
 import com.maxarchm.launcher.rowHeightResource
 import com.maxarchm.launcher.textSizeResource
@@ -82,16 +83,18 @@ internal fun HomeModuleAddFavoriteEntry(
 ) {
     val ribbon = module.type == OrderedFavoriteModuleType.Ribbon
     val below = !ribbon && module.namePlacement == FavoriteNamePlacement.Below
+    val hidden = !ribbon && module.namePlacement == FavoriteNamePlacement.Hidden
     val iconSize = if (ribbon) FavoriteListSize.Medium else module.iconSize
     val textSize = if (ribbon) FavoriteListSize.Medium else module.textSize
     val iconSlotSize = dimensionResource(id = iconSize.iconSizeResource())
-    val heightResource = when {
-        ribbon -> R.dimen.home_favorite_bar_height
-        below -> iconSize.belowItemHeightResource()
-        else -> iconSize.rowHeightResource()
+    val itemHeight = when {
+        ribbon -> dimensionResource(R.dimen.home_favorite_bar_height)
+        below -> dimensionResource(iconSize.belowItemHeightResource())
+        hidden -> homeFavoriteHiddenItemHeight(iconSize)
+        else -> dimensionResource(iconSize.rowHeightResource())
     }
     val surfaceModifier = modifier
-        .height(height = dimensionResource(id = heightResource))
+        .height(height = itemHeight)
         .alpha(alpha = addEntryAlpha(enabled = enabled))
         .then(
             other = if (ribbon) {
@@ -122,6 +125,13 @@ internal fun HomeModuleAddFavoriteEntry(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
             )
+        }
+    } else if (hidden) {
+        Box(
+            modifier = surfaceModifier,
+            contentAlignment = Alignment.Center,
+        ) {
+            HomeAddFavoriteIconSlot(size = iconSlotSize)
         }
     } else {
         Row(

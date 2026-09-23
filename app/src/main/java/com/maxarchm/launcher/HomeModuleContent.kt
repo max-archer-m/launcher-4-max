@@ -95,7 +95,7 @@ internal fun HomeOrderedModuleContent(
                                             availability.presentationEntry?.let(block = onLongPressFavorite)
                                         },
                                     )
-                                } else {
+                                } else if (module.namePlacement == FavoriteNamePlacement.Right) {
                                     HomeFavoriteRow(
                                         modifier = Modifier.fillMaxWidth(),
                                         availability = availability,
@@ -111,6 +111,26 @@ internal fun HomeOrderedModuleContent(
                                         exchangeHighlight = false,
                                         onRowBoundsInWindow = { _, _ -> },
                                         onHandleBoundsInWindow = {},
+                                    )
+                                } else {
+                                    HomeFavoriteRow(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        availability = availability,
+                                        onClick = { onLaunchFavorite(availability) },
+                                        onLongClick = {
+                                            availability.presentationEntry?.let(block = onLongPressFavorite)
+                                        },
+                                        editMode = false,
+                                        interactionEnabled = !editMode,
+                                        compact = false,
+                                        iconSize = module.iconSize,
+                                        textSize = null,
+                                        exchangeHighlight = false,
+                                        onRowBoundsInWindow = { _, _ -> },
+                                        onHandleBoundsInWindow = {},
+                                        showName = false,
+                                        centerIcon = true,
+                                        hiddenNamePlacement = true,
                                     )
                                 }
                             },

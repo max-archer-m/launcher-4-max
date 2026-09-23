@@ -594,6 +594,7 @@ internal fun isValidOrderedFavoriteAggregate(
                     module.itemsPerRow in when (module.namePlacement) {
                         FavoriteNamePlacement.Right -> 1..2
                         FavoriteNamePlacement.Below -> 1..4
+                        FavoriteNamePlacement.Hidden -> 1..6
                     }
                 OrderedFavoriteModuleType.Ribbon ->
                     module.iconSize == FavoriteListSize.Medium &&

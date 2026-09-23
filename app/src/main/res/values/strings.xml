@@ -28,6 +28,7 @@
     <string name="drawer_application_arrangement">Application arrangement</string>
     <string name="drawer_name_right">Right</string>
     <string name="drawer_name_below">Below</string>
+    <string name="drawer_name_hidden">Hidden</string>
     <string name="drawer_unable_to_save_display_settings">Unable to save display settings</string>
     <string name="retry">Retry</string>
     <string name="application_unable_to_open">Unable to open application</string>
@@ -98,6 +99,7 @@
     <string name="home_application_size">Application size · Text size</string>
     <string name="home_name_right">Right</string>
     <string name="home_name_below">Below</string>
+    <string name="home_name_hidden">Hidden</string>
     <string name="home_application_arrangement">Application arrangement</string>
     <string name="home_decrement_symbol">−</string>
     <string name="home_increment_symbol">＋</string>

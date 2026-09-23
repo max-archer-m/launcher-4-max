@@ -558,13 +558,13 @@ internal fun HomeScreen(
                                         ) { container ->
                                             container.copy(
                                                 namePlacement = placement,
-                                                itemsPerRow = if (
-                                                    placement == FavoriteNamePlacement.Right
-                                                ) {
-                                                    container.itemsPerRow.coerceAtMost(2)
-                                                } else {
-                                                    container.itemsPerRow
-                                                },
+                                                itemsPerRow = container.itemsPerRow.coerceIn(
+                                                    when (placement) {
+                                                        FavoriteNamePlacement.Right -> 1..2
+                                                        FavoriteNamePlacement.Below -> 1..4
+                                                        FavoriteNamePlacement.Hidden -> 1..6
+                                                    },
+                                                ),
                                             )
                                         }
                                     }

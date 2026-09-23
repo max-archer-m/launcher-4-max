@@ -318,6 +318,7 @@ internal object SettingsBackupJson {
         when (value) {
             "right" -> FavoriteNamePlacement.Right
             "below" -> FavoriteNamePlacement.Below
+            "hidden" -> FavoriteNamePlacement.Hidden
             else -> null
         }
 
@@ -339,6 +340,7 @@ internal object SettingsBackupJson {
         get() = when (this) {
             FavoriteNamePlacement.Right -> "right"
             FavoriteNamePlacement.Below -> "below"
+            FavoriteNamePlacement.Hidden -> "hidden"
         }
 
     private val OrderedFavoriteModuleType.storageValue: String
@@ -351,6 +353,7 @@ internal object SettingsBackupJson {
         get() = when (this) {
             DrawerNamePlacement.Right -> "right"
             DrawerNamePlacement.Below -> "below"
+            DrawerNamePlacement.Hidden -> "hidden"
         }
 
     private val DrawerSectionAnchorPresentation.storageValue: String
@@ -372,6 +375,7 @@ internal object SettingsBackupJson {
         when (value) {
             "right" -> DrawerNamePlacement.Right
             "below" -> DrawerNamePlacement.Below
+            "hidden" -> DrawerNamePlacement.Hidden
             else -> null
         }
 

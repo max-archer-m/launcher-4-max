@@ -28,6 +28,7 @@
     <string name="drawer_application_arrangement">应用排列</string>
     <string name="drawer_name_right">右侧</string>
     <string name="drawer_name_below">下方</string>
+    <string name="drawer_name_hidden">隐藏</string>
     <string name="drawer_unable_to_save_display_settings">无法保存显示设置</string>
     <string name="retry">重试</string>
     <string name="application_unable_to_open">无法打开应用</string>
@@ -97,6 +98,7 @@
     <string name="home_application_size">应用大小 · 文字大小</string>
     <string name="home_name_right">右侧</string>
     <string name="home_name_below">下方</string>
+    <string name="home_name_hidden">隐藏</string>
     <string name="home_application_arrangement">应用排列</string>
     <string name="home_decrement_symbol">−</string>
     <string name="home_increment_symbol">＋</string>

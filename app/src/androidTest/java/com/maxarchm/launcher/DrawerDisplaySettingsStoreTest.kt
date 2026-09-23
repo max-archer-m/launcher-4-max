@@ -305,6 +305,24 @@ class DrawerDisplaySettingsStoreTest {
     }
 
     @Test
+    fun hiddenPlacementWithSixItemsRoundTrips(): Unit = runBlocking {
+        val file = temporarySettingsFile()
+        val settings = DrawerDisplaySettings(
+            namePlacement = DrawerNamePlacement.Hidden,
+            itemsPerRow = 6,
+        )
+        val store = DrawerDisplaySettingsStore(file = file)
+        store.load()
+
+        assertTrue(store.replace(settings))
+        val reloadedStore = DrawerDisplaySettingsStore(file = file)
+        reloadedStore.load()
+
+        assertEquals(DrawerDisplaySettingsReadState.Readable(settings), reloadedStore.state.value)
+        deleteSettingsFiles(file = file)
+    }
+
+    @Test
     fun contextStoreUsesBackupExcludedFilesDirectory(): Unit = runBlocking {
         val application = ApplicationProvider.getApplicationContext<android.content.Context>()
         val isolatedDirectory = File(application.cacheDir, "drawer-context-${UUID.randomUUID()}")

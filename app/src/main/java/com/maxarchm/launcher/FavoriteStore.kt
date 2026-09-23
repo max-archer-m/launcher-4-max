@@ -30,6 +30,7 @@ enum class FavoriteListSize {
 enum class FavoriteNamePlacement {
     Right,
     Below,
+    Hidden,
 }
 
 data class FavoriteContainer(
@@ -678,6 +679,7 @@ internal fun isValidAggregate(aggregate: FavoriteAggregate): Boolean {
                         container.itemsPerRow in when (container.namePlacement) {
                             FavoriteNamePlacement.Right -> 1..2
                             FavoriteNamePlacement.Below -> 1..4
+                            FavoriteNamePlacement.Hidden -> 1..6
                         }
                 FavoriteContainerType.FavoriteBar ->
                     container.listSize == FavoriteListSize.Medium &&

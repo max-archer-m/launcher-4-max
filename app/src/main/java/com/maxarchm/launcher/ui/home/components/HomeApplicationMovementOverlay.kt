@@ -185,6 +185,11 @@ internal fun HomeApplicationMovementOverlay(
                         onRowBoundsInWindow = { _, _ -> },
                         onHandleBoundsInWindow = {},
                         interactionEnabled = false,
+                        showName = ribbon || source.module.namePlacement != FavoriteNamePlacement.Hidden,
+                        centerIcon = !ribbon &&
+                                source.module.namePlacement == FavoriteNamePlacement.Hidden,
+                        hiddenNamePlacement = !ribbon &&
+                                source.module.namePlacement == FavoriteNamePlacement.Hidden,
                     )
                 }
             },

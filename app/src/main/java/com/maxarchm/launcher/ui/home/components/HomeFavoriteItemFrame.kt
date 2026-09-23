@@ -66,10 +66,10 @@ internal fun HomeFavoriteItemFrame(
                         val origin = coordinates.positionInWindow()
                         val bounds = Rect(offset = origin, size = coordinates.size.toSize())
                         val remove = with(receiver = density, block = {
-                            val x = if (namePlacement == FavoriteNamePlacement.Below) {
+                            val x = if (namePlacement != FavoriteNamePlacement.Right) {
                                 bounds.center.x - iconSize.toPx() / 2 - iconInset.toPx()
                             } else bounds.left
-                            val y = if (namePlacement == FavoriteNamePlacement.Below) {
+                            val y = if (namePlacement != FavoriteNamePlacement.Right) {
                                 bounds.top + topInset.toPx() - iconInset.toPx()
                             } else bounds.top
                             Rect(left = x, top = y, right = x + targetSize.toPx(), bottom = y + targetSize.toPx())
@@ -92,7 +92,7 @@ internal fun HomeFavoriteItemFrame(
                         }
                     },
                 )
-                val placement = if (namePlacement == FavoriteNamePlacement.Below) {
+                val placement = if (namePlacement != FavoriteNamePlacement.Right) {
                     Modifier
                         .align(alignment = Alignment.TopCenter)
                         .offset(
