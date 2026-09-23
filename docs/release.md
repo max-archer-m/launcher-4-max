@@ -112,10 +112,17 @@ The completed version record must never contain a private signing key, keystore 
 
 ## APK artifact contract
 
-When a completed version APK is retained, store it outside this product repository under `../max-dev-context`. Its exact directory convention remains to be decided before the first retained artifact is archived. Artifact retention is optional for an author daily-use baseline unless its version contract requires it, and mandatory for a formal release artifact.
+When a completed version APK is retained, store it outside this product repository.
+The project author keeps the exact directory and may change it.
+This repository does not record that directory.
+The author accepted on 2026-09-23 that the chosen directory may also hold other private files.
+Author daily-use baseline retention is optional unless that version contract requires it.
+Retention is mandatory for a formal release artifact.
 
 - APK files must not be committed to the `launcher-4-max` Git repository.
-- Whether APK files are tracked by the `max-dev-context` repository is not decided by this document. Until explicitly decided, treat the location as external filesystem storage rather than authorization to commit binary artifacts.
+- Whether another repository tracks the retained APK files is not decided here.
+- Until that decision, the location is external storage, not authorization to commit the APK.
+- No synchronization or backup schedule is defined here.
 - Product-repository records use a stable relative or logical artifact location rather than a machine-specific absolute path.
 - The recorded SHA-256 digest must be computed from the exact archived APK and verified after copying it to the external location.
 - The artifact record must also identify the build time and the environment used to produce and validate the APK when that evidence becomes available.
@@ -128,7 +135,12 @@ Every formal release artifact must use one stable release-signing identity so su
 
 - The project author creates or explicitly authorizes creation of the release keystore and retains ownership and final control of it.
 - The release keystore, private key, passwords, and signing-property files must remain outside Git and outside authoritative project documentation.
-- Agents may recommend or assist with generation, build integration, fingerprint verification, and signing verification only with explicit author authorization. The author selects and retains the secrets and backup locations.
+- The project author retains the release keystore, its passwords, and its backups outside Git.
+- Those materials stay outside Git and outside authoritative documentation.
+- On 2026-09-23 the author chose to perform that custody and backup personally.
+- This repository records no locations, format, parameters, or procedure.
+- The two-independent-encrypted-backup requirement still applies before the first formal artifact.
+- Satisfying it is an author action, not a recorded procedure.
 - Each applicable completed version record stores only the release certificate's SHA-256 fingerprint, never private signing material.
 - Before the first formal release artifact, the project must establish secure storage and at least two independent, encrypted, author-controlled backups of the release keystore and required recovery information.
 - Loss, compromise, rotation, or platform-managed migration of the signing identity requires explicit author approval, an impact assessment, and a documented migration decision before another formal version is declared.
@@ -142,11 +154,24 @@ Application versions, Git tags, and GitHub Releases are separate records:
 - Every formal version retains a completed delivery record, but not every formal version receives a Git tag.
 - A tag is appropriate when accumulated related functionality or experience improvements establish an important, stable implementation baseline. For example, `1.0.0` may remain untagged while a later `1.3.0` becomes a tagged baseline.
 - Tag creation and the exact target commit require explicit project-author approval. Agents may recommend whether a version is worth tagging.
-- Tag naming remains to be decided before the first tag is created.
+- When a tag is created, its name is `v<MAJOR>.<MINOR>.<PATCH>`.
+- The name matches the accepted `versionName`, for example `v1.7.0`.
+- Prerelease suffixes are not used.
+- The tag is an annotated tag with the message `release: <tag>`.
+- Each released version has one tag, and it is never force-moved or recreated.
+- It points to the exact source commit represented by the accepted APK and is created on `main`.
+- Creating it does not change `versionName` or `versionCode`.
+- Creating the tag and pushing it with `git push origin <tag>` remain separately authorized.
+- If no prior release tag exists, the author chooses the release-notes comparison range.
+- That range is not assumed to be the whole history.
 - Creating a tag does not increment or otherwise change the accepted APK's `versionName` or `versionCode`. The tag must point to the exact source commit represented by that artifact.
 - Creating a tag does not require creating a GitHub Release.
 - A GitHub Release must reference an existing approved tag and requires separate explicit author approval.
-- No GitHub Release is required while the project has no public distribution line. A future release may attach the verified APK only when the author explicitly approves that distribution action and its security and validation gates are satisfied.
+- No GitHub Release is required for version completion.
+- The current distribution channel is the public GitHub repository only.
+- Attaching a verified APK to a GitHub Release requires separate author approval.
+- Using any other channel also requires separate author approval.
+- That approval also covers the applicable security and validation gates.
 - Neither this document nor a completed version record authorizes a tag, remote push, GitHub Release, or APK upload.
 
 For this project, a milestone exists only when the project author explicitly declares an important baseline and its approved Git tag exists. A GitHub Release is optional and requires separate approval when the author chooses outward-facing publication. A version or an approved tag not declared as a milestone is not a milestone automatically.
@@ -157,11 +182,17 @@ Product definition, technical research, architecture, and implementation must co
 
 ## Remaining implementation decisions
 
-The following operational details must be decided from the actual Android project and release environment before they become executable instructions:
+The following operational details remain undecided:
 
-- The exact APK directory beneath `../max-dev-context` and its retention, synchronization, backup, and Git-ignore policy
-- Release-keystore format, parameters, secure locations, backup procedure, and authorized signing workflow
 - Authoritative build, signing, digest, install, upgrade, and validation commands
-- The exact tag naming convention
-- Any future observability or crash-monitoring platform, its build-stage configuration, release-marking workflow, symbol or mapping-file custody, privacy disclosures, retention, and access controls
-- Any future distribution channel and its publication gates
+
+Decided on 2026-09-23:
+
+- Retained APKs stay outside this product repository, at a directory kept by the project author.
+- Tracking them elsewhere, and any synchronization or backup schedule, remain undecided.
+- Release-keystore custody and backup stay with the project author and are not recorded here.
+- A created tag uses `v<MAJOR>.<MINOR>.<PATCH>` as an annotated tag.
+- See Git tags and GitHub Releases.
+- This distribution stage uses no observability or crash-monitoring platform.
+- The distribution channel is the public GitHub repository only.
+- A GitHub Release, tag, or APK upload remains separately authorized.

@@ -63,7 +63,7 @@ Primary risks are: the backup schema extension must keep older backups importabl
 | --- | --- | --- | --- |
 | [Iteration 32: Quick Actions and Screen Locking](iteration-32-quick-actions-screen-locking.md) | `Completed` | 2026-09-20 | The project author accepted the observable quick-actions and screen-locking result on the primary physical device on 2026-09-20. |
 | [Iteration 33: Home and Drawer Contract Completion](iteration-33-home-drawer-contract-completion.md) | `Completed` | 2026-09-23 | The project author accepted the prompt, calibrated tapering sliders, independent icon/text tiers, and hidden-name placement on the primary physical device. |
-| [Iteration 34: Public Release Readiness](iteration-34-public-release-readiness.md) | `Planned` | 2026-09-17 | The author's 2026-09-17 version outline designates pre-release preparation as the third iteration; the author ruled the same day that the stale URL fix and the primary-device performance expectation belong to it. |
+| [Iteration 34: Public Release Readiness](iteration-34-public-release-readiness.md) | `In Progress` | 2026-09-23 | The author accepted the public-GitHub-only distribution boundary and the primary-device performance expectation on 2026-09-23, delivering this iteration's product-contract stage; the operational stage remains. |
 
 ## Iteration evidence and results
 
@@ -77,7 +77,7 @@ Primary risks are: the backup schema extension must keep older backups importabl
 
 ### Iteration 34
 
-[Contract](iteration-34-public-release-readiness.md). No evidence exists yet; the iteration is `Planned`.
+[Contract](iteration-34-public-release-readiness.md). `In Progress` as of 2026-09-23. The product-contract stage is delivered: the product overview and product foundation record the public-GitHub-only distribution boundary and the primary-device performance expectation, and the privacy contact resource points at the current repository in both languages. The operational stage remains open, including the authoritative release commands and the remaining release-operations decisions, the dependency and license inventory with its Third-party License presentation decision, the public repository presentation, the formal-artifact traceability record, and the release-APK verification on the primary device.
 
 ## Dependencies and sequence
 

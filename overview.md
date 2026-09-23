@@ -36,7 +36,7 @@ Provide a restrained Android home screen that helps users find and open what the
 - Product form: an Android launcher intended to act as the device's default home-screen application.
 - User-facing names: “Launcher4Max” in both English and Simplified Chinese.
 - Supported languages: English and Simplified Chinese.
-- Distribution boundary: maintained on GitHub for the author's daily use, with no public distribution or store-release requirement.
+- Distribution boundary: public distribution through the GitHub repository only. Application-store submission is out of scope, and creating a GitHub Release, tag, or APK upload remains a separately authorized action.
 - Platform baseline: ordinary Android phones in portrait orientation, with Android 12 (API 31) as the minimum supported version and Android 16–17 (API 36–37) as the primary physical-validation range.
 - Author-centered ergonomics: interaction and placement decisions primarily optimize for right-hand holding with right-thumb input and left-hand holding with right-hand tapping. Other postures remain usable where practical but are not equal product-optimization targets.
 - License: Apache License 2.0.

@@ -63,7 +63,7 @@
 | --- | --- | --- | --- |
 | [迭代 32：快捷操作与屏幕锁定](iteration-32-quick-actions-screen-locking.zh-CN.md) | `Completed` | 2026-09-20 | 项目作者于 2026-09-20 在主物理设备上接受了可观察的快捷操作与锁屏结果。 |
 | [迭代 33：Home 与抽屉契约补齐](iteration-33-home-drawer-contract-completion.zh-CN.md) | `Completed` | 2026-09-23 | 项目作者在主物理设备上接受了提示、校准后的渐缩滑杆、独立图标/文字档位与隐藏名称位置。 |
-| [迭代 34：公开发布就绪](iteration-34-public-release-readiness.zh-CN.md) | `Planned` | 2026-09-17 | 作者 2026-09-17 的版本大纲将发布前准备列为第三个迭代；作者同日裁决过期 URL 修复与主设备性能预期归属该迭代。 |
+| [迭代 34：公开发布就绪](iteration-34-public-release-readiness.zh-CN.md) | `In Progress` | 2026-09-23 | 作者于 2026-09-23 接受仅 GitHub 公开发布的边界与主设备性能预期，该迭代的产品契约阶段由此交付；操作阶段仍未完成。 |
 
 ## 迭代证据与结果
 
@@ -77,7 +77,7 @@
 
 ### 迭代 34
 
-[契约](iteration-34-public-release-readiness.zh-CN.md)。尚无证据；迭代处于 `Planned`。
+[契约](iteration-34-public-release-readiness.zh-CN.md)。自 2026-09-23 起为 `In Progress`。产品契约阶段已交付：产品概览与产品基础需求记录了仅 GitHub 公开发布的边界与主设备性能预期，隐私联系方式资源在中英文下均指向当前仓库。操作阶段仍未完成，包括权威发布命令与其余发布操作决定、依赖与许可证清单及其第三方 License 呈现决定、公开仓库呈现、正式制品追溯记录，以及主设备上的 release APK 验证。
 
 ## 依赖与顺序
 

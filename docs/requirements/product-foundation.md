@@ -59,8 +59,8 @@ The current scope covers utility, not mass-market suitability, extensive customi
 - Minimum-version validation environment: an Android 12/API 31 emulator unless a representative physical device becomes available.
 - Device scope: ordinary Android phones in portrait orientation only. Launcher4Max presents in portrait orientation only; rotation requests do not produce a landscape layout, and no surface defines landscape geometry.
 - Device exclusions: landscape, foldable, tablet, desktop-mode, and external-display adaptation. Landscape presentation remains excluded until explicitly adapted.
-- Distribution boundary: maintain the GitHub project for the author's daily use, with no application-store submission, GitHub Release APK, website APK, or other public distribution.
-- Store target-API, review, and data-disclosure requirements are not current delivery gates; review them if public distribution enters scope.
+- Distribution boundary: public distribution through the GitHub repository only. No application-store submission, website APK, or other distribution channel. Creating a GitHub Release, tag, or APK upload remains a separately authorized action.
+- Store target-API, review, and data-disclosure requirements are not current delivery gates, because no store distribution is in scope.
 
 The product compatibility boundary requires `minSdk` 31. Current configured `compileSdk`, `targetSdk`, and version values are maintained in the [development guide](../development.md); public-distribution target-API gates are maintained in [release governance](../release.md). This current product requirement does not preserve a historical version's SDK-selection instructions. Reviewed: 2026-08-28.
 
@@ -142,7 +142,7 @@ Detailed interaction outcomes and exact presentation values are acceptance requi
 - Current data remains local; no account, analytics, server, or cloud synchronization is introduced.
 - Validation claims must identify actual evidence and follow [the validation guide](../validation.md).
 
-Minimum acceptable performance, power, memory, and startup-response thresholds are `To be decided`. No separate quality-baseline document currently establishes numeric gates, so these thresholds are not product-level completion conditions unless an applicable delivery explicitly selects and evidences them.
+The performance expectation is that the author's primary physical device runs the accepted core journeys. No numeric performance, power, memory, or startup-response thresholds are pursued, and none is a product-level completion condition.
 
 ## Product-level acceptance criteria
 
