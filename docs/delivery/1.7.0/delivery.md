@@ -55,14 +55,14 @@ The repository holds the operational decisions release governance requires: the 
 
 Iterations 32 and 33 implement already-accepted contracts; development owns implementation details. Iteration 34 begins with an authorized product-contract change (the distribution boundary and the performance-expectation record) before its operational work, and its contract baseline moves through the amendment rule when the author accepts that change.
 
-Primary risks are: the backup schema extension must keep older backups importable under the directional compatibility rule; replacing the hard-coded double-tap and long-press gestures with slot resolution must not regress edit-mode entry or the failure toast; the accessibility service mainline move changes the release manifest and requires the ADR-0004 rewrite to the binding-driven trigger; the tapering-slider values are deliberately uncalibrated and need author-device calibration before the contract can be finalized; the parked Drawer test cluster centers on slider drag injection, so custom-slider automated coverage carries that known risk; and the release gates (keystore custody, digests, traceability) are process work that cannot be shortcut by code.
+Primary risks are: the backup schema extension must keep older backups importable under the directional compatibility rule; replacing the hard-coded double-tap and long-press gestures with slot resolution must not regress edit-mode entry or the failure toast; the accessibility service mainline move changes the release manifest and requires the ADR-0004 rewrite to the binding-driven trigger; the parked Drawer test cluster centers on slider drag injection, so custom-slider automated coverage carries that known risk; and the release gates (keystore custody, digests, traceability) are process work that cannot be shortcut by code.
 
 ## Included iterations
 
 | Iteration | Status | Updated | Basis |
 | --- | --- | --- | --- |
 | [Iteration 32: Quick Actions and Screen Locking](iteration-32-quick-actions-screen-locking.md) | `Completed` | 2026-09-20 | The project author accepted the observable quick-actions and screen-locking result on the primary physical device on 2026-09-20. |
-| [Iteration 33: Home and Drawer Contract Completion](iteration-33-home-drawer-contract-completion.md) | `In Progress` | 2026-09-20 | The project author authorized the first slice, the Home default-launcher prompt, on 2026-09-20. |
+| [Iteration 33: Home and Drawer Contract Completion](iteration-33-home-drawer-contract-completion.md) | `Completed` | 2026-09-23 | The project author accepted the prompt, calibrated tapering sliders, independent icon/text tiers, and hidden-name placement on the primary physical device. |
 | [Iteration 34: Public Release Readiness](iteration-34-public-release-readiness.md) | `Planned` | 2026-09-17 | The author's 2026-09-17 version outline designates pre-release preparation as the third iteration; the author ruled the same day that the stale URL fix and the primary-device performance expectation belong to it. |
 
 ## Iteration evidence and results
@@ -73,7 +73,7 @@ Primary risks are: the backup schema extension must keep older backups importabl
 
 ### Iteration 33
 
-[Contract](iteration-33-home-drawer-contract-completion.md). `In Progress` as of 2026-09-20. The prompt slice is delivered; the tapering-slider slice remains queued.
+[Contract](iteration-33-home-drawer-contract-completion.md). `Completed` on 2026-09-23. The delivered scope includes the Home default-launcher prompt; accepted glyph shadows on Home and Drawer application names, the Home edit-dock instruction, and the Drawer search hint; the calibrated dual tapering sliders; independent Home-module and Drawer icon/text tiers with local and backup compatibility; Drawer geometry that accounts for both tiers; and the `Hidden` name placement with one through six items per row, preserved accessibility names, disabled text-size sliders, and compatible Home/Drawer rendering paths. The author performed compilation, installation, and primary-device checks across the included journeys, reporting no obvious issue; this is author-reported acceptance evidence. The agent's static checks (`git diff --check` and changed Kotlin line-length sweeps) passed; the agent ran no Gradle build or test command (`Not run`). The accepted slider values are recorded in the shared style-settings-panel contract. Delivery commits are `27d7cc37657fb00c1f2d9e74fa11c6fcf3a41d66`, `823d76e1f2866cc38b40e42dedf55799042bf379`, `8a527046dea5ca1dd2fb4eb8ec30d9683aab66a8`, `680b323e1db8ea9d2a7050cc873cfc116c9d1e40`, and `1ab1d226a7f21732cf1d59a755771ea676372695`.
 
 ### Iteration 34
 
@@ -95,7 +95,6 @@ The accepted APK must retain `com.maxarchm.launcher`, use accepted `1.7.0`/`vers
 
 - Only one physical validation device exists; broader device, API, OEM, and locale coverage remains unknown until performed.
 - The parked Drawer automation cluster (slider drag injection and related suites) remains open from the post-1.6.0 restructure; it is not an included-path gate for this version but limits regression signal in that area.
-- The tapering-slider delivery values are `To be decided` until the Iteration 33 calibration is accepted and written back to the style-settings-panel contract.
 - Third-party License presentation stays `To be decided` until the Iteration 34 inventory and disposition are accepted.
 - Document-picker and OEM presentation variance accepted in earlier versions remains accepted variance.
 
