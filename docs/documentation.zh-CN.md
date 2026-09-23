@@ -95,6 +95,7 @@
 | 架构决定 | [`docs/decisions/`](decisions/) | - | 决策理由 | 记录重大、已实现且已接受的架构决定；只有 Active ADR 才建立其所述当前架构边界 |
 | 许可证 | [`LICENSE`](../LICENSE) | - | - | 包含 Apache License 2.0 原文 |
 | 第三方通知 | [`THIRD-PARTY-NOTICES.md`](../THIRD-PARTY-NOTICES.md) | - | - | 列出应用中包含的第三方组件及各自的许可证 |
+| 变更日志 | [`CHANGELOG.md`](../CHANGELOG.md) | - | - | 面向公开受众汇总各版本的用户可感知变更；已完成的交付记录仍为权威来源 |
 
 当前活跃架构决定是
 [ADR-0001](decisions/0001-establish-replaceable-launcher-icon-rendering.md)、
@@ -111,7 +112,6 @@
 | `docs/architecture.md` | 系统边界、组件、依赖、数据流和技术方向 | 技术栈或当前产品定义需要形成架构结论 | 默认英文；存在持续跨语言阅读需求时补充中文版本 |
 | `docs/security.md` | 安全模型、威胁、控制措施和响应流程 | 架构、权限、数据流或发行方式足以支持安全分析 | 默认英文；专业结论须复核，按需翻译 |
 | `docs/privacy.md` | 对数据清单、处理目的、保留方式和用户权利进行专业隐私评估；不同于当前产品 Privacy 契约 | 已确认的数据、权限、地区、分发或第三方处理需要超出 [`docs/product/features/privacy.zh-CN.md`](product/features/privacy.zh-CN.md) 的分析 | 默认英文；专业结论须复核，面向用户的版本按发行要求提供翻译 |
-| `CHANGELOG.md` | 面向外部仓库或发布受众的简明用户可感知变更时间线 | 公开或面向仓库的发布需要一份独立于受保护交付记录的摘要 | 英文公共语义源；按实际受众决定是否提供中文版本 |
 
 ## 产品文档职责
 

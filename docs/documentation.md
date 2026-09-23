@@ -95,6 +95,7 @@ When a delivery record needs to explain a boundary, it should prefer positive se
 | Architecture decisions | [`docs/decisions/`](decisions/) | - | Decision rationale | Records consequential implemented and accepted architecture decisions; only an active ADR establishes its stated current architecture boundary |
 | License | [`LICENSE`](../LICENSE) | - | - | Contains the Apache License 2.0 text |
 | Third-party notices | [`THIRD-PARTY-NOTICES.md`](../THIRD-PARTY-NOTICES.md) | - | - | Lists the third-party components included in the application and the license of each |
+| Changelog | [`CHANGELOG.md`](../CHANGELOG.md) | - | - | Summarizes the user-visible changes of each version for a public audience; the completed delivery records remain authoritative |
 
 The current active architecture decisions are [ADR-0001](decisions/0001-establish-replaceable-launcher-icon-rendering.md), [ADR-0002](decisions/0002-use-versioned-atomic-file-for-favorites.md), [ADR-0003](decisions/0003-model-profile-completeness-for-favorite-reconciliation.md), and [ADR-0004](decisions/0004-purpose-limited-accessibility-service-for-double-tap-lock.md).
 
@@ -107,7 +108,6 @@ Create the following documents only when real inputs exist:
 | `docs/architecture.md` | System boundaries, components, dependencies, data flows, and technical direction | The selected stack or current product definition requires architectural conclusions | English by default; add Chinese when a sustained cross-language need exists |
 | `docs/security.md` | Security model, threats, controls, and response process | Architecture, permissions, data flows, or distribution provide enough input for security analysis | English by default; specialist conclusions require review; translate when needed |
 | `docs/privacy.md` | Specialist privacy assessment of data inventory, processing purposes, retention, and user rights; distinct from the current product Privacy contract | Confirmed data, permissions, regions, distribution, or third-party processing require analysis beyond [`docs/product/features/privacy.md`](product/features/privacy.md) | English by default; specialist conclusions require review; translate user-facing material as distribution requires |
-| `CHANGELOG.md` | Concise chronological user-visible changes for an external repository or release audience | A public or repository-facing release needs a summary separate from protected delivery records | English public semantic source; add Chinese according to the actual audience |
 
 ## Product-document responsibilities
 
