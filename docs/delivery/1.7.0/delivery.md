@@ -89,7 +89,7 @@ The mandatory version environment is the author-designated primary physical devi
 
 ## Artifact and release requirements
 
-The accepted APK must retain `com.maxarchm.launcher`, use accepted `1.7.0`/`versionCode 8` identifiers, be traceable to one source commit and signing category, and support the required upgrade journey from the prior installed version. The release keystore must satisfy the secure-storage and two-independent-encrypted-backups requirement before the first formal artifact is packaged, and no private signing material may enter Git or the authoritative documents. Retained artifacts live outside the repository under the author-designated shared context with SHA-256 verification after copy. Tag creation, GitHub Release creation, and any upload remain separately authorized.
+The accepted APK must retain `com.maxarchm.launcher`, use accepted `1.7.0`/`versionCode 8` identifiers, and be traceable to one source commit and signing category. Because this application identity differs from the `com.avenor.launcher` identity of `1.0.0` through `1.6.0`, an in-place upgrade from those versions is not a supported path; the accepted migration path is recorded under Known limitations and legacy issues. The release keystore must satisfy the secure-storage and two-independent-encrypted-backups requirement before the first formal artifact is packaged, and no private signing material may enter Git or the authoritative documents. Retained artifacts live outside the repository under the author-designated shared context with SHA-256 verification after copy. Tag creation, GitHub Release creation, and any upload remain separately authorized.
 
 ## Known limitations and legacy issues
 
@@ -97,6 +97,7 @@ The accepted APK must retain `com.maxarchm.launcher`, use accepted `1.7.0`/`vers
 - The parked Drawer automation cluster (slider drag injection and related suites) remains open from the post-1.6.0 restructure; it is not an included-path gate for this version but limits regression signal in that area.
 - Third-party License presentation stays `To be decided` until the Iteration 34 inventory and disposition are accepted.
 - Document-picker and OEM presentation variance accepted in earlier versions remains accepted variance.
+- The application identity changed from `com.avenor.launcher` to `com.maxarchm.launcher`. `1.0.0` through `1.6.0` were author daily-use baselines with no public distribution, so no external installation exists that this version would update, and this version owes them no direct upgrade path; the direct-upgrade requirement of [release governance](../../release.md) applies from `1.7.0` forward. This identity discontinuity is recorded as an accepted compatibility exception for this version. On the author's own device the accepted migration path is: uninstall the earlier installation, install `1.7.0`, and restore favorites, Drawer display settings, and quick-action bindings from a Settings backup file.
 
 ## Completion criteria
 
