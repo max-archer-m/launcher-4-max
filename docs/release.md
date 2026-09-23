@@ -103,7 +103,7 @@ Each version uses one stable `docs/delivery/<version>/` directory from planning 
 - Migration or compatibility impact
 - Completed validation evidence and affected devices or environments
 - Known limitations, unresolved defects, and other legacy issues
-- Available APK or build identity, and external storage location when the APK is retained
+- Available APK or build identity
 - APK SHA-256 digest when required by the selected level
 - Signing-certificate SHA-256 fingerprint when a stable signing identity is part of the selected level
 - Related Git tag and GitHub Release when either exists
@@ -123,7 +123,6 @@ Retention is mandatory for a formal release artifact.
 - Whether another repository tracks the retained APK files is not decided here.
 - Until that decision, the location is external storage, not authorization to commit the APK.
 - No synchronization or backup schedule is defined here.
-- Product-repository records use a stable relative or logical artifact location rather than a machine-specific absolute path.
 - The recorded SHA-256 digest must be computed from the exact archived APK and verified after copying it to the external location.
 - The artifact record must also identify the build time and the environment used to produce and validate the APK when that evidence becomes available.
 
@@ -182,10 +181,6 @@ Product definition, technical research, architecture, and implementation must co
 
 ## Remaining implementation decisions
 
-The following operational details remain undecided:
-
-- Authoritative build, signing, digest, install, upgrade, and validation commands
-
 Decided on 2026-09-23:
 
 - Retained APKs stay outside this product repository, at a directory kept by the project author.
@@ -196,3 +191,4 @@ Decided on 2026-09-23:
 - This distribution stage uses no observability or crash-monitoring platform.
 - The distribution channel is the public GitHub repository only.
 - A GitHub Release, tag, or APK upload remains separately authorized.
+- The authoritative commands are: build and sign with `./gradlew assembleRelease`, which writes `app/build/outputs/apk/release/app-release.apk` and takes its signing configuration from the local `keystore.properties`; verify the artifact identity with `aapt2 dump badging <apk>`; verify the signing certificate with `apksigner verify --print-certs <apk>`; compute the digest with `shasum -a 256 <apk>` and recompute it after the copy to the retained location; and validate with `./gradlew lintRelease`, `./gradlew testDebugUnitTest`, and `./gradlew connectedDebugAndroidTest`. Device installation and upgrade are performed on the device by opening the APK, so no host-side install command is recorded.
