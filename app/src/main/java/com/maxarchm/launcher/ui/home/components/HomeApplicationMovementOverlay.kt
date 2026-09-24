@@ -158,12 +158,13 @@ internal fun HomeApplicationMovementOverlay(
                     shape = shape,
                     clip = false,
                 )
-                .clearAndSetSemantics(properties = {})
                 .testTag(tag = "home_application_movement_preview"),
             content = {
                 if (!ribbon && source.module.namePlacement == FavoriteNamePlacement.Below) {
                     HomeFavoriteBelowItem(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clearAndSetSemantics(properties = {}),
                         availability = source.availability,
                         iconSize = source.module.iconSize,
                         textSize = source.module.textSize,
@@ -173,7 +174,9 @@ internal fun HomeApplicationMovementOverlay(
                     )
                 } else {
                     HomeFavoriteRow(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clearAndSetSemantics(properties = {}),
                         availability = source.availability,
                         iconSize = source.module.iconSize,
                         textSize = source.module.textSize,

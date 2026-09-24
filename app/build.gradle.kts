@@ -76,6 +76,9 @@ android {
         // Portrait-only presentation is the current product contract, so the locked
         // orientation on the single activity is intentional rather than a defect.
         disable += "LockedOrientationActivity"
+        // Themed icons are out of scope. The launcher icon is an ordinary adaptive
+        // icon, so the missing monochrome layer is intentional.
+        disable += "MonochromeLauncherIcon"
         // Tool and dependency update notices are reviewed maintenance inputs, not
         // correctness failures for the currently selected platform baseline.
         disable += "AndroidGradlePluginVersion"

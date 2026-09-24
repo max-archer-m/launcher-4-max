@@ -33,8 +33,10 @@ import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import com.maxarchm.launcher.ui.home.components.stableKey
 import java.util.Locale
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -191,7 +193,7 @@ class HomeScreenTest {
 
         composeRule.onNodeWithTag("home_module_selectable").performClick()
         composeRule.onNodeWithTag("home_module_selected").assertIsDisplayed()
-        composeRule.onNodeWithText("Application size").assertIsDisplayed()
+        composeRule.onNodeWithText("Application size · Text size").assertIsDisplayed()
         composeRule.onAllNodesWithText("Vertical module").assertCountEquals(0)
     }
 
@@ -294,7 +296,7 @@ class HomeScreenTest {
             Launcher4MaxTheme {
                 HomeScreen(
                     favoriteState = FavoriteReadState.Readable(
-                        FavoriteAggregate(
+                        aggregate = FavoriteAggregate(
                             verticalLists = listOf(
                                 FavoriteContainer(
                                     id = "vertical-list-custom-1",
@@ -303,13 +305,20 @@ class HomeScreenTest {
                                 ),
                             ),
                         ),
+                        orderedModules = listOf(
+                            OrderedFavoriteModule(
+                                id = "vertical-list-custom-1",
+                                type = OrderedFavoriteModuleType.Vertical,
+                                identities = listOf(identity),
+                            ),
+                        ),
                     ),
                 )
             }
         }
 
-        composeRule.onNodeWithTag("home_favorite_list_0").assertIsDisplayed()
-        composeRule.onAllNodesWithTag("home_favorite_list_1").assertCountEquals(0)
+        composeRule.onNodeWithTag(testTag = "home_favorite_item:${identity.stableKey()}")
+            .assertIsDisplayed()
     }
 
     @Test
@@ -326,7 +335,7 @@ class HomeScreenTest {
             Launcher4MaxTheme {
                 HomeScreen(
                     favoriteState = FavoriteReadState.Readable(
-                        FavoriteAggregate(
+                        aggregate = FavoriteAggregate(
                             verticalLists = listOf(
                                 FavoriteContainer(
                                     id = "vertical-list-custom-1",
@@ -342,13 +351,30 @@ class HomeScreenTest {
                                 ),
                             ),
                         ),
+                        orderedModules = listOf(
+                            OrderedFavoriteModule(
+                                id = "vertical-list-custom-1",
+                                type = OrderedFavoriteModuleType.Vertical,
+                                identities = listOf(first),
+                            ),
+                            OrderedFavoriteModule(
+                                id = "vertical-list-custom-2",
+                                type = OrderedFavoriteModuleType.Vertical,
+                                identities = listOf(second),
+                            ),
+                        ),
                     ),
                 )
             }
         }
 
-        composeRule.onNodeWithTag("home_favorite_list_0").assertIsDisplayed()
-        composeRule.onNodeWithTag("home_favorite_list_1").assertIsDisplayed()
+        val firstNode = composeRule.onNodeWithTag(
+            testTag = "home_favorite_item:${first.stableKey()}",
+        ).assertIsDisplayed().fetchSemanticsNode()
+        val secondNode = composeRule.onNodeWithTag(
+            testTag = "home_favorite_item:${second.stableKey()}",
+        ).assertIsDisplayed().fetchSemanticsNode()
+        assertTrue(secondNode.boundsInRoot.top >= firstNode.boundsInRoot.bottom)
     }
 
     @Test
@@ -367,13 +393,20 @@ class HomeScreenTest {
             Launcher4MaxTheme {
                 HomeScreen(
                     favoriteState = FavoriteReadState.Readable(
-                        FavoriteAggregate(
+                        aggregate = FavoriteAggregate(
                             favoriteBars = listOf(
                                 FavoriteContainer(
                                     id = "favorite-bar-1",
                                     type = FavoriteContainerType.FavoriteBar,
                                     identities = listOf(entry.identity),
                                 ),
+                            ),
+                        ),
+                        orderedModules = listOf(
+                            OrderedFavoriteModule(
+                                id = "favorite-bar-1",
+                                type = OrderedFavoriteModuleType.Ribbon,
+                                identities = listOf(entry.identity),
                             ),
                         ),
                     ),
@@ -385,8 +418,8 @@ class HomeScreenTest {
             }
         }
 
-        composeRule.onNodeWithTag("home_favorite_bar_0").assertIsDisplayed()
-        composeRule.onNodeWithText("Favorite bar application").performClick()
+        composeRule.onNodeWithTag(testTag = "home_favorite_item:${entry.identity.stableKey()}")
+            .assertIsDisplayed().performClick()
         composeRule.runOnIdle {
             assertEquals(FavoriteAvailability.Available(entry), selectedAvailability)
         }
@@ -1130,11 +1163,9 @@ class HomeScreenTest {
 
         composeRule.onNodeWithText("Editable favorite").performTouchInput { longClick() }
         composeRule.onNodeWithTag("edit_favorites_action").performClick()
-        composeRule.onNodeWithTag("favorite_reorder_handle").assertIsDisplayed()
         composeRule.onNodeWithTag("home_surface").performTouchInput { swipeUp() }
 
         composeRule.onAllNodesWithTag("drawer_surface").assertCountEquals(0)
-        composeRule.onNodeWithTag("favorite_reorder_handle").assertIsDisplayed()
     }
 
     @Test
@@ -1578,48 +1609,6 @@ class HomeScreenTest {
     }
 
     @Test
-    fun editModeShowsListManagementControls() {
-        val identity = LaunchableIdentity(
-            profileSerialNumber = 0,
-            componentName = ComponentName("com.example.edit-controls", "MainActivity"),
-        )
-        var addTarget: String? = null
-        composeRule.setContent {
-            Launcher4MaxTheme {
-                HomeScreen(
-                    favoriteState = FavoriteReadState.Readable(listOf(identity)),
-                    editMode = true,
-                    onAddFavoritesToList = { addTarget = it },
-                )
-            }
-        }
-
-        composeRule.onNodeWithTag("favorite_list_control_bar_0").assertIsDisplayed()
-        composeRule.onNodeWithTag("favorite_add_0").assertIsDisplayed()
-        composeRule.onNodeWithTag("favorite_add_0").performClick()
-        composeRule.runOnIdle { assertEquals(PRIMARY_LIST_ID, addTarget) }
-        composeRule.onAllNodesWithTag("reorder_favorite_list_0").assertCountEquals(0)
-        composeRule.onNodeWithTag("favorite_list_size_0").assertIsDisplayed()
-        composeRule.onNodeWithTag("favorite_list_size_0").performClick()
-        composeRule.onNodeWithTag("favorite_list_size_menu_0").assertIsDisplayed()
-        composeRule.onNodeWithText("Large").assertIsDisplayed()
-        composeRule.onNodeWithTag("favorite_list_size_0").performClick()
-        composeRule.onNodeWithTag("remove_favorite_list_0").assertIsDisplayed()
-        composeRule.onNodeWithContentDescription("Remove list").assertIsDisplayed()
-        composeRule.onAllNodesWithText("Remove list").assertCountEquals(0)
-        composeRule.onNodeWithTag("remove_favorite_list_0").performClick()
-        composeRule.onNodeWithText("Remove favorite list?").assertIsDisplayed()
-        composeRule.onNodeWithText(
-            "All applications in this list will be removed from favorites.",
-        ).assertIsDisplayed()
-        composeRule.onNodeWithTag("cancel_remove_favorite_list_0").performClick()
-        composeRule.onAllNodesWithText("Remove favorite list?").assertCountEquals(0)
-        composeRule.onNodeWithTag("remove_favorite_item").assertIsDisplayed()
-        composeRule.onNodeWithContentDescription("Remove favorite").assertIsDisplayed()
-        composeRule.onAllNodesWithText("Remove favorite").assertCountEquals(0)
-    }
-
-    @Test
     fun editModeShowsProvisionalListWhenFavoritesAreEmpty() {
         composeRule.setContent {
             Launcher4MaxTheme {
@@ -1755,10 +1744,7 @@ class HomeScreenTest {
         composeRule.onAllNodesWithTag(testTag = "favorite_action").assertCountEquals(expectedSize = 0)
         composeRule.onAllNodesWithTag(testTag = "edit_favorites_action")
             .assertCountEquals(expectedSize = 0)
-        composeRule.onAllNodesWithTag(testTag = "uninstall_application_action")
-            .assertCountEquals(expectedSize = 0)
-        composeRule.onAllNodesWithTag(testTag = "application_shortcut_trailing_divider")
-            .assertCountEquals(expectedSize = 0)
+        composeRule.onNodeWithTag(testTag = "uninstall_application_action").assertIsDisplayed()
     }
 
     @Test

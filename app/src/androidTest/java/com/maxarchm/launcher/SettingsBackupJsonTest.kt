@@ -132,9 +132,9 @@ class SettingsBackupJsonTest {
     fun legacyApplicationSizeBackfillsIndependentIconAndTextSizes() {
         val displaySettings = validBackupDocument()
             .getJSONObject("displaySettings")
-            .remove("iconSize")
-            .remove("textSize")
-            .put("applicationSize", "large")
+        displaySettings.remove("iconSize")
+        displaySettings.remove("textSize")
+        displaySettings.put("applicationSize", "large")
 
         val parsed = SettingsBackupJson.parse(
             validBackupDocument().put("displaySettings", displaySettings).toString(),
@@ -147,13 +147,13 @@ class SettingsBackupJsonTest {
     @Test
     fun legacyFavoriteApplicationSizeBackfillsIndependentIconAndTextSizes() {
         val document = validBackupDocument()
-        document
+        val favorite = document
             .getJSONObject("favorites")
             .getJSONArray("modules")
             .getJSONObject(0)
-            .remove("iconSize")
-            .remove("textSize")
-            .put("applicationSize", "small")
+        favorite.remove("iconSize")
+        favorite.remove("textSize")
+        favorite.put("applicationSize", "small")
 
         val parsed = SettingsBackupJson.parse(document.toString())
 

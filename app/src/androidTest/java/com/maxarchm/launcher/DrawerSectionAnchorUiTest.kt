@@ -53,8 +53,10 @@ class DrawerSectionAnchorUiTest {
             .fetchSemanticsNode().boundsInRoot.left
         assertEquals(anchorRight, applicationLeft, 1f)
 
-        val rowHeight = context.resources.getDimensionPixelSize(R.dimen.home_favorite_row_min_height)
-        scrollTo(39, rowHeight - 10)
+        // The row is the rendered application height, not the old favorite minimum.
+        val rowHeight = composeRule.onAllNodesWithTag("drawer_application_row")[0]
+            .fetchSemanticsNode().boundsInRoot.height
+        scrollTo(39, (rowHeight - 10f).toInt())
         val leaving = composeRule.onNodeWithTag("drawer_section_A").fetchSemanticsNode().boundsInRoot
         val arriving = composeRule.onNodeWithTag("drawer_section_B").fetchSemanticsNode().boundsInRoot
         assertTrue(leaving.bottom <= listTop + 11f)

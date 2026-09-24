@@ -89,7 +89,7 @@ class DrawerSettingsIntegrationTest {
             val slider = composeRule.onNodeWithTag("drawer_background_opacity_slider")
             slider.assertIsDisplayed()
             slider.assertIsEnabled()
-            slider.performTouchInput { swipeRight() }
+            slider.performTouchInput { swipeRight(startX = center.x) }
             awaitSavingState()
             assertTrue(entered.await(5, TimeUnit.SECONDS))
             composeRule.activityRule.scenario.recreate()
@@ -185,7 +185,7 @@ class DrawerSettingsIntegrationTest {
             // otherwise a swipe cannot start the release-committed save.
             slider.assertIsDisplayed()
             slider.assertIsEnabled()
-            slider.performTouchInput { swipeRight() }
+            slider.performTouchInput { swipeRight(startX = center.x) }
             awaitSavingState()
             assertTrue(entered.await(5, TimeUnit.SECONDS))
             composeRule.onNodeWithTag("drawer_background_opacity_slider").assertIsNotEnabled()
@@ -213,7 +213,7 @@ class DrawerSettingsIntegrationTest {
                 assertEquals(1, failureNotifications.get())
                 assertEquals(DrawerDisplaySettingsReadState.Readable(initial), store.state.value)
                 composeRule.onNodeWithTag("drawer_background_opacity_slider")
-                    .performTouchInput { swipeRight() }
+                    .performTouchInput { swipeRight(startX = center.x) }
             } else {
                 composeRule.waitUntil(5_000) {
                     (store.state.value as? DrawerDisplaySettingsReadState.Readable)

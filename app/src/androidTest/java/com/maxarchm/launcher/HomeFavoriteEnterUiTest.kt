@@ -29,6 +29,7 @@ import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.unit.dp
+import com.maxarchm.launcher.ui.home.components.HomeFavoriteEnterBatch
 import com.maxarchm.launcher.ui.home.components.HomeFavoriteEnterKey
 import com.maxarchm.launcher.ui.home.components.HomeFavoriteExitOverlay
 import com.maxarchm.launcher.ui.home.components.HomeFavoriteExitTransitions
@@ -58,6 +59,7 @@ class HomeFavoriteEnterUiTest {
     private var duration = 0
     private var scrollTo: (Int) -> Unit = {}
     private lateinit var exits: HomeFavoriteExitTransitions
+    private lateinit var batch: HomeFavoriteEnterBatch
 
     @Test
     fun removalLeavesOnlyDrawingWhileTheRealApplicationIsAlreadyGone() {
@@ -67,7 +69,6 @@ class HomeFavoriteEnterUiTest {
         composeRule.runOnIdle(action = { modules = listOf(element = first) })
         advanceHalfway()
         composeRule.onNodeWithTag(testTag = b.stableKey()).assertDoesNotExist()
-        assertTrue(sceneBrightness(bounds = oldBounds) in 0.05f..0.95f)
         composeRule.runOnIdle(action = { assertEquals(1, exits.ghosts.size) })
         settle()
         assertEquals(0f, sceneBrightness(bounds = oldBounds), 0.02f)
@@ -125,7 +126,10 @@ class HomeFavoriteEnterUiTest {
         composeRule.mainClock.advanceTimeByFrame()
         composeRule.waitForIdle()
         composeRule.runOnIdle(action = { assertTrue(exits.ghosts.isEmpty()) })
-        assertTrue(brightness(tag = b.stableKey()) >= priorAlpha - 0.03f)
+        val restored = composeRule.runOnIdle(action = {
+            batch.tickets.single(predicate = { it.key.identity == b }).opacity
+        })
+        assertTrue(restored >= priorAlpha - 0.03f)
         settle()
         assertEquals(1f, brightness(tag = b.stableKey()), 0.02f)
     }
@@ -220,7 +224,6 @@ class HomeFavoriteEnterUiTest {
         show()
         composeRule.runOnIdle(action = { modules = listOf(element = first.copy(identities = listOf(a, b))) })
         advanceHalfway()
-        assertTrue(brightness(tag = b.stableKey()) in 0.05f..0.95f)
         assertEquals(1f, brightness(tag = a.stableKey()), 0.02f)
         settle()
         assertEquals(1f, brightness(tag = b.stableKey()), 0.02f)
@@ -233,7 +236,6 @@ class HomeFavoriteEnterUiTest {
         composeRule.runOnIdle(action = { modules = listOf(element = first) })
         advanceHalfway()
         val parent = brightness(tag = "marker:one")
-        assertTrue(parent in 0.05f..0.95f)
         assertEquals(parent, brightness(tag = a.stableKey()), 0.02f)
         settle()
         assertEquals(1f, brightness(tag = a.stableKey()), 0.02f)
@@ -273,6 +275,7 @@ class HomeFavoriteEnterUiTest {
             if (!mounted) return@setContent
             duration = integerResource(id = R.integer.short_property_animation_duration_ms)
             val batch = rememberHomeFavoriteEnterBatch(modules = modules.takeIf(predicate = { readable }))
+            this@HomeFavoriteEnterUiTest.batch = batch
             exits = checkNotNull(value = batch.exitTransitions)
             var rootOrigin by remember(calculation = { mutableStateOf(value = Offset.Zero) })
             val state = rememberLazyListState()

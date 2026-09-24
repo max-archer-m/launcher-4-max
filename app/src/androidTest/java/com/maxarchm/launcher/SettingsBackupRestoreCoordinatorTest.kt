@@ -11,7 +11,7 @@ import com.maxarchm.launcher.ui.drawer.DrawerDisplaySettings
 class SettingsBackupRestoreCoordinatorTest {
     @Test
     fun successfulRestoreReplacesFavoritesAndDisplaySettings() = runBlocking {
-        val favorites = FakeFavoritesAccess(null)
+        val favorites = FakeFavoritesAccess(initial = aggregateWithIdentity(serial = 1))
         val settings = FakeSettingsAccess()
         val bindings = FakeBindingsAccess()
         val coordinator = SettingsBackupRestoreCoordinator(
