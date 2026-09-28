@@ -120,6 +120,11 @@ Launcher4Max 使用项目自定义的 `MAJOR.MINOR.PATCH` 数字版本格式。�
 - APK 文件不得提交到 `launcher-4-max` Git 仓库。
 - 本文不决定其他仓库是否跟踪这些 APK。在获得明确决定前，该位置只表示外部文件系统存储，不构成提交二进制产物的授权。
 - 本文不定义同步或备份周期。
+- 为保持外部归档命名一致，使用
+  `<product>-v<versionName>-vc<versionCode>-<stage>-<shortCommit>.apk` 格式，
+  例如 `launcher4max-v1.7.0-vc8-release-8523e0f.apk`。
+- 文件名仅用于身份识别和归档辅助，不替代 APK 的 `applicationId`、
+  `versionName`、`versionCode`、完整源码 commit、SHA-256 摘要或适用的签名证据。
 - 记录的 SHA-256 必须由准确的归档 APK 计算，并在复制到外部位置后再次验证。
 - 当相关证据可用时，产物记录还必须标识生成并验证 APK 的构建时间与环境。
 

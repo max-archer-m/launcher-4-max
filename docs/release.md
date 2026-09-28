@@ -123,6 +123,12 @@ Retention is mandatory for a formal release artifact.
 - Whether another repository tracks the retained APK files is not decided here.
 - Until that decision, the location is external storage, not authorization to commit the APK.
 - No synchronization or backup schedule is defined here.
+- For consistent external archiving, use the filename pattern
+  `<product>-v<versionName>-vc<versionCode>-<stage>-<shortCommit>.apk`, for example
+  `launcher4max-v1.7.0-vc8-release-8523e0f.apk`.
+- The filename is an identification and archival aid only. It does not replace the
+  APK's `applicationId`, `versionName`, `versionCode`, full source commit, SHA-256
+  digest, or applicable signing evidence.
 - The recorded SHA-256 digest must be computed from the exact archived APK and verified after copying it to the external location.
 - The artifact record must also identify the build time and the environment used to produce and validate the APK when that evidence becomes available.
 
