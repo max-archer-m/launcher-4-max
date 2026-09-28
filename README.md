@@ -12,6 +12,12 @@ The product prioritizes direct access, restrained defaults, user control, and pr
 
 See the [project overview](overview.md) for confirmed intent, boundaries, and unresolved scope. A [Simplified Chinese counterpart](overview.zh-CN.md) is also available.
 
+## Screens
+
+| Home | Drawer | Settings |
+| --- | --- | --- |
+| ![Launcher4Max Home](docs/screenshots/Screenshot_home.png) | ![Launcher4Max Drawer](docs/screenshots/Screenshot_drawer.png) | ![Launcher4Max Settings](docs/screenshots/Screenshot_setting.png) |
+
 ## Requirements
 
 - Android 12 (API 31) or later.

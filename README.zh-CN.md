@@ -12,6 +12,12 @@ Launcher4Max 的目标是作为 Android 设备的默认主屏幕应用。产品�
 
 已确认的产品意图、边界和待解决范围见[项目概览](overview.zh-CN.md)，其[英文语义源](overview.md)亦可查阅。
 
+## 界面
+
+| 主屏幕 | 应用抽屉 | 设置 |
+| --- | --- | --- |
+| ![Launcher4Max 主屏幕](docs/screenshots/Screenshot_home.png) | ![Launcher4Max 应用抽屉](docs/screenshots/Screenshot_drawer.png) | ![Launcher4Max 设置](docs/screenshots/Screenshot_setting.png) |
+
 ## 运行要求
 
 - Android 12（API 31）或更高版本。
