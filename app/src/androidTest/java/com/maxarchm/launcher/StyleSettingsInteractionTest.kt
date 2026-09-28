@@ -109,12 +109,14 @@ class StyleSettingsInteractionTest {
         composeRule.mainClock.advanceTimeByFrame()
         composeRule.onNodeWithTag("drawer_display_settings_modal")
             .performTouchInput { click(Offset(center.x, 1f)) }
+        // The unresolved save keeps mutation controls disabled while the panel is still
+        // present. Host removal happens only after the exit animation.
+        composeRule.onNodeWithTag("drawer_items_per_row_increment").assertIsNotEnabled()
+        finishSelectionAnimation()
         composeRule.runOnIdle {
             assertEquals(1, dismissals)
             assertEquals(DrawerNamePlacement.Below, settings.namePlacement)
         }
-        finishSelectionAnimation()
-        composeRule.onNodeWithTag("drawer_items_per_row_increment").assertIsNotEnabled()
     }
 
     @Test

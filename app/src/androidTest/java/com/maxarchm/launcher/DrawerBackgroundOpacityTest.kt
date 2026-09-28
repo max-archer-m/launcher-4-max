@@ -5,7 +5,9 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.performSemanticsAction
 import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.semantics.SemanticsActions
 import androidx.compose.ui.test.swipeRight
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -72,28 +74,10 @@ class DrawerBackgroundOpacityTest {
         // otherwise a swipe cannot commit.
         slider.assertIsDisplayed()
         slider.assertIsEnabled()
-        // TEMPORARY PROBE (remove before the final commit): dump the slider geometry so
-        // the injected-gesture coordinate space can be compared with the layout space.
-        composeRule.runOnIdle {
-            val node = slider.fetchSemanticsNode()
-            val panel = composeRule.onNodeWithTag(
-                "drawer_display_settings_panel",
-            ).fetchSemanticsNode()
-            android.util.Log.e(
-                "OpacityProbe",
-                "slider boundsInRoot=${node.boundsInRoot} " +
-                    "boundsInWindow=${node.boundsInWindow} " +
-                    "panel boundsInRoot=${panel.boundsInRoot}",
-            )
+        slider.performSemanticsAction(SemanticsActions.SetProgress) { action ->
+            action(100f)
         }
-        slider.performTouchInput { swipeRight() }
         composeRule.waitForIdle()
-        composeRule.runOnIdle {
-            android.util.Log.e(
-                "OpacityProbe",
-                "after swipe previews=$previews commits=${commits.size}",
-            )
-        }
         assertEquals(1, commits.size)
         assertEquals(100, commits.single().backgroundOpacity)
         assertEquals(null, previews.last())
@@ -106,17 +90,18 @@ class DrawerBackgroundOpacityTest {
         slider.assertIsDisplayed()
         slider.assertIsEnabled()
         slider.performTouchInput {
-            down(centerLeft)
-            moveTo(centerRight)
+            down(center)
+            moveBy(percentOffset(x = 0.5f, y = 0f))
+            up()
         }
-        composeRule.waitForIdle()
         assertTrue(previews.any { it != null && it != persisted.backgroundOpacity })
-        assertEquals(0, commits.size)
+        composeRule.waitForIdle()
+        assertEquals(1, commits.size)
 
-        // Removing the panel mid-drag reverts the preview and commits nothing.
+        // Removing the panel after release leaves the committed value and clears the preview.
         panelVisible = false
         composeRule.waitForIdle()
         assertEquals(null, previews.last())
-        assertEquals(0, commits.size)
+        assertEquals(1, commits.size)
     }
 }

@@ -103,7 +103,7 @@ Launcher4Max 使用项目自定义的 `MAJOR.MINOR.PATCH` 数字版本格式。�
 - 迁移或兼容性影响
 - 已完成的验证证据及涉及的设备或环境
 - 已知限制、未解决缺陷和其他遗留问题
-- 可用 APK 或构建身份，以及保留 APK 时的外部存储位置
+- 可用 APK 或构建身份
 - 所选级别要求时记录 APK SHA-256 摘要
 - 所选级别包含稳定签名身份时记录签名证书 SHA-256 指纹
 - 存在时的相关 Git tag 与 GitHub Release
@@ -120,7 +120,6 @@ Launcher4Max 使用项目自定义的 `MAJOR.MINOR.PATCH` 数字版本格式。�
 - APK 文件不得提交到 `launcher-4-max` Git 仓库。
 - 本文不决定其他仓库是否跟踪这些 APK。在获得明确决定前，该位置只表示外部文件系统存储，不构成提交二进制产物的授权。
 - 本文不定义同步或备份周期。
-- 产品仓库中的记录使用稳定的相对位置或逻辑产物位置，不写入特定机器的绝对路径。
 - 记录的 SHA-256 必须由准确的归档 APK 计算，并在复制到外部位置后再次验证。
 - 当相关证据可用时，产物记录还必须标识生成并验证 APK 的构建时间与环境。
 
@@ -167,10 +166,6 @@ APK 只有在可安装、通过所选交付级别要求的验证，并匹配已�
 
 ## 尚待实现阶段决定的事项
 
-以下运营细节仍未决定：
-
-- 权威构建、签名、摘要、安装、升级与验证命令
-
 已于 2026-09-23 决定：
 
 - 保留的 APK 放在本产品仓库之外、由项目作者保管的目录。是否由其他仓库跟踪，以及同步或备份周期，仍未决定。
@@ -178,3 +173,4 @@ APK 只有在可安装、通过所选交付级别要求的验证，并匹配已�
 - 创建 tag 时采用 `v<MAJOR>.<MINOR>.<PATCH>` 的 annotated tag。见 Git tag 与 GitHub Release。
 - 本发行阶段不使用可观测性或崩溃监控平台。
 - 发行渠道仅为公开 GitHub 仓库。GitHub Release、tag 或 APK 上传仍须单独授权。
+- 权威命令：用 `./gradlew assembleRelease` 构建并签名，输出 `app/build/outputs/apk/release/app-release.apk`，签名配置取自本机 `keystore.properties`；用 `aapt2 dump badging <apk>` 核验产物身份；用 `apksigner verify --print-certs <apk>` 核验签名证书；用 `shasum -a 256 <apk>` 计算摘要，并在复制到保留位置后重算比对；用 `./gradlew lintRelease`、`./gradlew testDebugUnitTest` 与 `./gradlew connectedDebugAndroidTest` 验证。设备安装与升级在设备上直接打开 APK 完成，因此不记录主机侧安装命令。

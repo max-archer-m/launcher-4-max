@@ -16,7 +16,7 @@ import org.junit.Test
 
 class OrderedFavoriteModuleStoreTest {
     @Test
-    fun cleanLoadCreatesOneReadableEmptyOrderedModel() = runBlocking {
+    fun cleanLoadCreatesOneReadableEmptyOrderedModel(): Unit = runBlocking {
         val file = temporaryFile()
         val store = OrderedFavoriteModuleStore(file)
 
@@ -31,7 +31,7 @@ class OrderedFavoriteModuleStoreTest {
     }
 
     @Test
-    fun unreadableOrderedDataRemainsFailureAndIsNotReplaced() = runBlocking {
+    fun unreadableOrderedDataRemainsFailureAndIsNotReplaced(): Unit = runBlocking {
         val file = temporaryFile()
         val unreadableBytes = byteArrayOf(0x01, 0x02, 0x03)
         file.writeBytes(unreadableBytes)
@@ -45,7 +45,7 @@ class OrderedFavoriteModuleStoreTest {
     }
 
     @Test
-    fun readableLegacyFavoritesAreAdoptedAsEmptyWithoutChangingLegacyData() = runBlocking {
+    fun readableLegacyFavoritesAreAdoptedAsEmptyWithoutChangingLegacyData(): Unit = runBlocking {
         val file = temporaryFile()
         val legacyFile = temporaryFile()
         val identity = LaunchableIdentity(
@@ -78,7 +78,7 @@ class OrderedFavoriteModuleStoreTest {
     }
 
     @Test
-    fun unreadableLegacyFavoritesRemainFailureAndAreNotReplaced() = runBlocking {
+    fun unreadableLegacyFavoritesRemainFailureAndAreNotReplaced(): Unit = runBlocking {
         val file = temporaryFile()
         val legacyFile = temporaryFile()
         DataOutputStream(legacyFile.outputStream()).use { output ->
@@ -98,7 +98,7 @@ class OrderedFavoriteModuleStoreTest {
     }
 
     @Test
-    fun recoverableLegacyBackupIsReadBeforeAdoption() = runBlocking {
+    fun recoverableLegacyBackupIsReadBeforeAdoption(): Unit = runBlocking {
         val file = temporaryFile()
         val legacyFile = temporaryFile()
         val legacyBackup = File(legacyFile.path + ".bak")
@@ -126,7 +126,7 @@ class OrderedFavoriteModuleStoreTest {
     }
 
     @Test
-    fun invalidLegacyAggregateDoesNotCreateOrderedState() = runBlocking {
+    fun invalidLegacyAggregateDoesNotCreateOrderedState(): Unit = runBlocking {
         val file = temporaryFile()
         val legacyFile = temporaryFile()
         val identity = LaunchableIdentity(1, ComponentName("com.example", "Main"))
@@ -153,7 +153,7 @@ class OrderedFavoriteModuleStoreTest {
     }
 
     @Test
-    fun orderedModulesRoundTripInModuleAndIdentityOrder() = runBlocking {
+    fun orderedModulesRoundTripInModuleAndIdentityOrder(): Unit = runBlocking {
         val file = temporaryFile()
         val first = LaunchableIdentity(1, ComponentName("com.example.first", "Main"))
         val second = LaunchableIdentity(2, ComponentName("com.example.second", "Main"))
@@ -191,7 +191,7 @@ class OrderedFavoriteModuleStoreTest {
     }
 
     @Test
-    fun versionOneOrderedModuleLoadsWithCurrentVerticalDefaults() = runBlocking {
+    fun versionOneOrderedModuleLoadsWithCurrentVerticalDefaults(): Unit = runBlocking {
         val file = temporaryFile()
         val identity = LaunchableIdentity(1, ComponentName("com.example", "Main"))
         DataOutputStream(file.outputStream()).use { output ->
@@ -226,7 +226,7 @@ class OrderedFavoriteModuleStoreTest {
     }
 
     @Test
-    fun recoverableOrderedBackupIsReadInsteadOfTriggeringLegacyAdoption() = runBlocking {
+    fun recoverableOrderedBackupIsReadInsteadOfTriggeringLegacyAdoption(): Unit = runBlocking {
         val file = temporaryFile()
         val identity = LaunchableIdentity(1, ComponentName("com.example", "Main"))
         val aggregate = OrderedFavoriteAggregate(
@@ -280,7 +280,7 @@ class OrderedFavoriteModuleStoreTest {
     }
 
     @Test
-    fun aggregateUpdateCanDeleteTheLastModule() = runBlocking {
+    fun aggregateUpdateCanDeleteTheLastModule(): Unit = runBlocking {
         val file = temporaryFile()
         val identity = LaunchableIdentity(1, ComponentName("com.example", "Main"))
         val adapter = OrderedFavoriteStoreAdapter(file)
@@ -309,7 +309,7 @@ class OrderedFavoriteModuleStoreTest {
     }
 
     @Test
-    fun genericAddPreservesAnExistingModule() = runBlocking {
+    fun genericAddPreservesAnExistingModule(): Unit = runBlocking {
         val file = temporaryFile()
         val ribbonIdentity = LaunchableIdentity(1, ComponentName("com.ribbon", "Main"))
         val addedIdentity = LaunchableIdentity(1, ComponentName("com.vertical", "Main"))
@@ -332,13 +332,19 @@ class OrderedFavoriteModuleStoreTest {
         assertTrue(adapter.add(addedIdentity))
 
         val readable = adapter.state.value as FavoriteReadState.Readable
-        assertEquals(listOf(ribbonIdentity, addedIdentity), readable.identities)
-        assertEquals(2, readable.orderedModules?.size)
+        val modules = checkNotNull(readable.orderedModules)
+        assertEquals(
+            listOf(ribbonIdentity, addedIdentity),
+            modules.flatMap { module -> module.identities },
+        )
+        assertEquals(2, modules.size)
+        assertEquals(OrderedFavoriteModuleType.Ribbon, modules.first().type)
+        assertEquals(OrderedFavoriteModuleType.Vertical, modules.last().type)
         file.delete()
     }
 
     @Test
-    fun styleUpdatePreservesUnchangedModuleInstances() = runBlocking {
+    fun styleUpdatePreservesUnchangedModuleInstances(): Unit = runBlocking {
         val file = temporaryFile()
         val firstIdentity = LaunchableIdentity(1, ComponentName("com.first", "Main"))
         val secondIdentity = LaunchableIdentity(2, ComponentName("com.second", "Main"))
@@ -380,7 +386,7 @@ class OrderedFavoriteModuleStoreTest {
     }
 
     @Test
-    fun moduleOrderReplacementPersistsTheExactRequestedOrder() = runBlocking {
+    fun moduleOrderReplacementPersistsTheExactRequestedOrder(): Unit = runBlocking {
         val file = temporaryFile()
         val first = LaunchableIdentity(1, ComponentName("com.first", "Main"))
         val second = LaunchableIdentity(2, ComponentName("com.second", "Main"))
@@ -417,7 +423,7 @@ class OrderedFavoriteModuleStoreTest {
     }
 
     @Test
-    fun moduleOrderReplacementRejectsMissingOrUnknownModuleIds() = runBlocking {
+    fun moduleOrderReplacementRejectsMissingOrUnknownModuleIds(): Unit = runBlocking {
         val file = temporaryFile()
         val identity = LaunchableIdentity(1, ComponentName("com.example", "Main"))
         val adapter = OrderedFavoriteStoreAdapter(file)
@@ -448,7 +454,7 @@ class OrderedFavoriteModuleStoreTest {
     }
 
     @Test
-    fun concurrentAddsAreSerializedWithoutLosingIdentities() = runBlocking {
+    fun concurrentAddsAreSerializedWithoutLosingIdentities(): Unit = runBlocking {
         val file = temporaryFile()
         val identities = (1L..12L).map { serial ->
             LaunchableIdentity(serial, ComponentName("com.example.$serial", "Main"))

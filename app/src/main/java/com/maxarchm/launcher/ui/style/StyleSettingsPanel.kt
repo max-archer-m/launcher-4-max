@@ -31,6 +31,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -218,6 +219,13 @@ internal fun StyleArrangementBlock(
     require(optionLabels.size in 2..3)
     require(selectedIndex in optionLabels.indices)
     require(value in minimum..maximum)
+    val selectorWidth = dimensionResource(
+        id = if (optionLabels.size == 2) {
+            R.dimen.style_settings_selector_width
+        } else {
+            R.dimen.style_settings_three_option_selector_width
+        },
+    )
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -239,30 +247,33 @@ internal fun StyleArrangementBlock(
                     .horizontalScroll(state = rememberScrollState()),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                StyleTwoOptionSelector(
-                    title = title,
-                    optionLabels = optionLabels,
-                    selectedIndex = selectedIndex,
-                    enabled = enabled,
-                    onSelectIndex = onSelectIndex,
-                    testTagPrefix = "${testTagPrefix}_name_placement",
-                )
-                Spacer(
-                    modifier = Modifier.width(
-                        width = dimensionResource(id = R.dimen.style_settings_control_gap),
-                    ),
-                )
-                StyleItemsPerRowStepper(
-                    value = value,
-                    minimum = minimum,
-                    maximum = maximum,
-                    decrementLabel = decrementLabel,
-                    incrementLabel = incrementLabel,
-                    enabled = enabled,
-                    onChangeValue = onChangeValue,
-                    testTagPrefix = "${testTagPrefix}_items_per_row",
-                )
+                Box(modifier = Modifier.width(width = selectorWidth)) {
+                    StyleTwoOptionSelector(
+                        title = title,
+                        optionLabels = optionLabels,
+                        selectedIndex = selectedIndex,
+                        selectorWidth = selectorWidth,
+                        enabled = enabled,
+                        onSelectIndex = onSelectIndex,
+                        testTagPrefix = "${testTagPrefix}_name_placement",
+                    )
+                }
             }
+            Spacer(
+                modifier = Modifier.width(
+                    width = dimensionResource(id = R.dimen.style_settings_control_gap),
+                ),
+            )
+            StyleItemsPerRowStepper(
+                value = value,
+                minimum = minimum,
+                maximum = maximum,
+                decrementLabel = decrementLabel,
+                incrementLabel = incrementLabel,
+                enabled = enabled,
+                onChangeValue = onChangeValue,
+                testTagPrefix = "${testTagPrefix}_items_per_row",
+            )
         }
     }
 }
@@ -297,6 +308,7 @@ internal fun StyleSelectorBlock(
                     title = title,
                     optionLabels = optionLabels,
                     selectedIndex = selectedIndex,
+                    selectorWidth = dimensionResource(id = R.dimen.style_settings_selector_width),
                     enabled = enabled,
                     onSelectIndex = onSelectIndex,
                     testTagPrefix = testTagPrefix,
@@ -311,6 +323,7 @@ private fun StyleTwoOptionSelector(
     title: String,
     optionLabels: List<String>,
     selectedIndex: Int,
+    selectorWidth: Dp,
     enabled: Boolean,
     onSelectIndex: (Int) -> Unit,
     testTagPrefix: String,
@@ -321,11 +334,6 @@ private fun StyleTwoOptionSelector(
     val frameShape = RoundedCornerShape(
         size = dimensionResource(id = R.dimen.style_settings_selector_frame_radius),
     )
-    val selectorWidth = if (optionLabels.size == 2) {
-        dimensionResource(id = R.dimen.style_settings_selector_width)
-    } else {
-        dimensionResource(id = R.dimen.style_settings_three_option_selector_width)
-    }
     Box(
         modifier = Modifier
             .size(
@@ -441,13 +449,13 @@ private fun StyleItemsPerRowStepper(
         )
         Box(
             modifier = Modifier
+                .testTag(tag = "${testTagPrefix}_value")
                 .size(size = dimensionResource(id = R.dimen.style_settings_stepper_target_size))
                 .clearAndSetSemantics {
                     contentDescription = valueLabel
                     stateDescription = value.toString()
                     if (!enabled) disabled()
-                }
-                .testTag(tag = "${testTagPrefix}_value"),
+                },
             contentAlignment = Alignment.Center,
         ) {
             Box(
@@ -592,6 +600,11 @@ internal fun StyleBackgroundOpacityBlock(
             .toDp()
     }
     var lastTickedOpacity by remember { mutableIntStateOf(value = opacity) }
+    var latestOpacity by remember { mutableIntStateOf(value = opacity) }
+    val opacityActive = remember { booleanArrayOf(true) }
+    DisposableEffect(Unit) {
+        onDispose { opacityActive[0] = false }
+    }
     Column(modifier = modifier.fillMaxWidth()) {
         StyleTitleLine(text = title)
         Row(
@@ -622,6 +635,7 @@ internal fun StyleBackgroundOpacityBlock(
                 onValueChange = { value ->
                     // The slider exposes the contracted 0..100 percentage range directly.
                     val rounded = value.roundToInt()
+                    latestOpacity = rounded
                     if (rounded != opacity) {
                         onOpacityChange(rounded)
                         if (rounded != lastTickedOpacity) {
@@ -632,8 +646,10 @@ internal fun StyleBackgroundOpacityBlock(
                     }
                 },
                 onValueChangeFinished = {
-                    lastTickedOpacity = opacity
-                    onOpacityChangeFinished(opacity)
+                    if (!opacityActive[0]) return@Slider
+                    val released = latestOpacity
+                    lastTickedOpacity = released
+                    onOpacityChangeFinished(released)
                 },
                 valueRange = 0f..DrawerDisplaySettings.BACKGROUND_OPACITY_RANGE.last.toFloat(),
                 enabled = enabled,

@@ -70,6 +70,12 @@ internal class AndroidSettingsPlatform(context: Context) : SettingsPlatform {
 }
 
 internal fun readLicense(context: Context): String =
-    context.resources.openRawResource(R.raw.launcher4max_license)
+    readRawText(context = context, resourceId = R.raw.launcher4max_license)
+
+internal fun readThirdPartyNotices(context: Context): String =
+    readRawText(context = context, resourceId = R.raw.third_party_notices)
+
+private fun readRawText(context: Context, resourceId: Int): String =
+    context.resources.openRawResource(resourceId)
         .bufferedReader(Charsets.UTF_8)
         .use { reader -> reader.readText() }

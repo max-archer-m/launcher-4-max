@@ -50,7 +50,7 @@ This heading organizes the behavior contract and is not a visible Settings group
 
 - **Privacy:** Opens the local Privacy Bottom Sheet defined by [privacy.md](../features/privacy.md).
 - **Launcher4Max License:** Opens the local Launcher4Max License Bottom Sheet; the English label uses `License`.
-- **Third-party License:** Its applicability to the current dependency set is `To be decided` pending a complete dependency-and-license inventory and any qualified review that inventory requires. The entry remains absent until the project author accepts both the inventory result and the exact local offline-readable notice content. Absence of the entry is not a claim that no third-party obligation exists.
+- **Third-party notices:** Opens a separate local Bottom Sheet. The sheet lists the components shipped in the release application and states that each is covered by the Apache License 2.0. Its body is the offline text in `res/raw/third_party_notices.txt`. Development-only and test-only components are not included. The entry stays separate from Launcher4Max License.
 - **Project repository:** Opens the configured repository URL through an implicit system browser action.
 - **Version information:** Displays `v<version-name>(<version-code>)`, for example `v1.6.0(7)`. It is not interactive and cannot be copied.
 
@@ -70,7 +70,7 @@ Complex logs, update checks, backup, cloud synchronization, diagnostic export, a
 
 ## License presentation
 
-- Launcher4Max License and an author-accepted Third-party License, when applicable, are separate Settings entries.
+- Launcher4Max License and Third-party notices are separate Settings entries.
 - Each opens a dark, local, offline-readable presentation. Long content scrolls vertically.
 - Their exterior shell, fixed title, and scrolling body follow the [Settings presentation specification](../presentation/settings.md#informational-bottom-sheets).
 - Their modal dismissal and Settings-position restoration match the Privacy Bottom Sheet.
@@ -84,7 +84,7 @@ Complex logs, update checks, backup, cloud synchronization, diagnostic export, a
 
 ### Secondary information items
 
-- Privacy, Launcher4Max License, Third-party License, Project repository, and Version information use the secondary presentation.
+- Privacy, Launcher4Max License, Third-party notices, Project repository, and Version information use the secondary presentation.
 - They do not show a trailing arrow. Clickable entries remain clickable despite the intentionally secondary presentation; Version information is not clickable.
 - Secondary item typography, color roles, row geometry, and alignment belong to the Settings presentation specification.
 

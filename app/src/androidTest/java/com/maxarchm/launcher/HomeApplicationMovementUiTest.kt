@@ -195,7 +195,12 @@ class HomeApplicationMovementUiTest {
             composeRule.onNodeWithTag(testTag = "home_module_creation_drop_outline").assertIsDisplayed()
         }
         composeRule.runOnIdle(action = { assertNull(change) })
-        root.performTouchInput(block = { if (cancelMovement) cancel() else up() })
+        root.performTouchInput(block = {
+            // Negative coordinates are still inside the module viewport, so they resolve
+            // as an end insertion. Release below the list instead.
+            if (cancelMovement) moveTo(position = Offset(x = center.x, y = bottom + 1f))
+            up()
+        })
         composeRule.runOnIdle(action = {
             if (cancelMovement || unchangedRelease || invalidSourceDrop) {
                 assertNull(change)

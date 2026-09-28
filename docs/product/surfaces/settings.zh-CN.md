@@ -50,7 +50,7 @@
 
 - **隐私：** 打开 [privacy.zh-CN.md](../features/privacy.zh-CN.md) 定义的本地隐私 Bottom Sheet。
 - **Launcher4Max License：** 打开本地 Launcher4Max License Bottom Sheet；英文统一使用 `License`。
-- **第三方 License：** 当前依赖集合是否适用该入口为 `To be decided`，需要先完成完整依赖与许可证盘点，并在盘点需要时取得专业复核。项目作者接受盘点结果和准确的本地离线可读通知正文前，该入口保持不显示。入口缺失不表示不存在第三方义务。
+- **第三方声明：** 打开独立的本地 Bottom Sheet。面板列出随 release 应用分发的组件，并说明它们均适用 Apache License 2.0。正文是 `res/raw/third_party_notices.txt` 中的离线文本。仅用于开发和测试的组件不包含在内。该入口与 Launcher4Max License 保持独立。
 - **项目仓库：** 通过隐式系统浏览器调用打开已配置的项目仓库链接。
 - **版本信息：** 使用 `v<版本名称>(<versionCode>)` 格式，例如 `v1.6.0(7)`；不可点击，也不支持复制。
 
@@ -70,7 +70,7 @@
 
 ## License 呈现
 
-- Launcher4Max License 与适用时经过作者接受的第三方 License 是两个独立 Settings 入口。
+- Launcher4Max License 与第三方声明是两个独立的 Settings 入口。
 - 两者均打开深色、本地且可离线阅读的内容；长内容可以纵向滚动。
 - 两者的外框、固定标题和可滚动正文遵循 [Settings 表现规范](../presentation/settings.zh-CN.md#信息-bottom-sheet)。
 - 模态关闭方式和 Settings 位置恢复行为与隐私 Bottom Sheet 一致。
@@ -84,7 +84,7 @@
 
 ### 次要信息项
 
-- 隐私、Launcher4Max License、第三方 License、项目仓库和版本信息使用次要呈现。
+- 隐私、Launcher4Max License、第三方声明、项目仓库和版本信息使用次要呈现。
 - 次要项不显示右侧箭头。可点击入口仍然可以点击；版本信息不可点击。
 - 次要项的字体、颜色角色、行几何和对齐由 Settings 表现规范定义。
 

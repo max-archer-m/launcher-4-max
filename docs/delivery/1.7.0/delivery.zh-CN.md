@@ -14,7 +14,8 @@
 
 `Formal release artifact`（正式发布物），定义见[发布治理](../../release.md)。本版本适用该级别的全部门槛，并显式提升一项：正式发布密钥（release keystore）在首个正式产物打包前必须满足安全存储与两份独立加密备份要求。Git tag、GitHub Release 与任何对外发布仍是单独授权动作，不属于版本完成范围。
 
-应用身份为 `com.maxarchm.launcher`。`versionName` 为 `1.7.0`，`versionCode` `8` 按下一个未占用值分配，待标识符提升提交产生时记录。
+应用身份为 `com.maxarchm.launcher`。`versionName` 为 `1.7.0`。
+`versionCode` `8` 按下一个未占用值分配，记录于 `2374f60ff2d16f166a8078d6d1a20ee35d15912e`。
 
 ## 产品引用
 
@@ -63,7 +64,7 @@
 | --- | --- | --- | --- |
 | [迭代 32：快捷操作与屏幕锁定](iteration-32-quick-actions-screen-locking.zh-CN.md) | `Completed` | 2026-09-20 | 项目作者于 2026-09-20 在主物理设备上接受了可观察的快捷操作与锁屏结果。 |
 | [迭代 33：Home 与抽屉契约补齐](iteration-33-home-drawer-contract-completion.zh-CN.md) | `Completed` | 2026-09-23 | 项目作者在主物理设备上接受了提示、校准后的渐缩滑杆、独立图标/文字档位与隐藏名称位置。 |
-| [迭代 34：公开发布就绪](iteration-34-public-release-readiness.zh-CN.md) | `In Progress` | 2026-09-23 | 作者于 2026-09-23 接受仅 GitHub 公开发布的边界与主设备性能预期，该迭代的产品契约阶段由此交付；操作阶段仍未完成。 |
+| [迭代 34：公开发布就绪](iteration-34-public-release-readiness.zh-CN.md) | `Completed` | 2026-09-28 | 作者于 2026-09-28 验收重新打包的 release APK，确认可以正常使用。 |
 
 ## 迭代证据与结果
 
@@ -77,7 +78,7 @@
 
 ### 迭代 34
 
-[契约](iteration-34-public-release-readiness.zh-CN.md)。自 2026-09-23 起为 `In Progress`。产品契约阶段已交付：产品概览与产品基础需求记录了仅 GitHub 公开发布的边界与主设备性能预期，隐私联系方式资源在中英文下均指向当前仓库。操作阶段仍未完成，包括权威发布命令与其余发布操作决定、依赖与许可证清单及其第三方 License 呈现决定、公开仓库呈现、正式制品追溯记录，以及主设备上的 release APK 验证。
+[契约](iteration-34-public-release-readiness.zh-CN.md)。于 2026-09-28 `Completed`。产品契约阶段已交付。已验收的 release APK 由作者于 2026-09-28 16:07:24 +0800 生成，对应源提交 `8523e0f852b4cdd176764f31db390b97e1fb4a4f`。其身份为 `com.maxarchm.launcher`、`versionName` `1.7.0`、`versionCode` `8`。签名类别为 release，证书 SHA-256 为 `68577525f59cb5482e1cbbf9951faeb37cafe3512a782d5a8bcb9a65179552af`。APK SHA-256 为 `ac173116fe211055af4d9330fafb7554ddeac5cdaab7095252da03ac2c8494fc`。APK 保留在本仓库之外，本记录不写明其位置。作者验收该重新打包的 APK 可以正常使用。已验收范围包括核心功能、绑定锁屏手势、升级旅程和独立的 Settings 第三方声明入口。面向公众的 README 展示 `docs/screenshots/` 中的 Home、Drawer 和 Settings 截图。并入 `main`、tag、GitHub Release、上传和公开发布仍需单独授权。版本 1.7.0 仍未关闭。
 
 ## 依赖与顺序
 
@@ -89,14 +90,15 @@
 
 ## 产物与发布要求
 
-验收 APK 必须保留 `com.maxarchm.launcher`，使用已验收的 `1.7.0`/`versionCode 8` 标识，可追溯到唯一源提交与签名类别，并支持自先前已安装版本所需的升级旅程。正式签名密钥在首个正式产物打包前必须满足安全存储与两份独立加密备份要求，任何私有签名材料不得进入 Git 或权威文档。保留产物存放于仓库之外作者指定的共享上下文中，复制后做 SHA-256 校验。打 tag、创建 GitHub Release 与任何上传仍是单独授权动作。
+验收 APK 必须保留 `com.maxarchm.launcher`，使用已验收的 `1.7.0`/`versionCode 8` 标识，并可追溯到唯一源提交与签名类别。由于该应用身份不同于 `1.0.0` 至 `1.6.0` 的 `com.avenor.launcher`，自这些版本的就地升级不属于受支持路径；由此产生的全新安装行为与受支持的迁移路径由[发布治理](../../release.zh-CN.md)负责。正式签名密钥在首个正式产物打包前必须满足安全存储与两份独立加密备份要求，任何私有签名材料不得进入 Git 或权威文档。打 tag、创建 GitHub Release 与任何上传仍是单独授权动作。
 
 ## 已知局限与遗留问题
 
 - 仅有一台物理验证设备；更广的设备、API、OEM 与语言覆盖在执行前保持未知。
 - 1.6.0 重构后遗留的被搁置抽屉自动化测试簇（滑杆拖拽注入等）仍未解决；它不是本版本的纳入路径门槛，但限制了该区域的回归信号。
-- 第三方 License 呈现在迭代 34 的清单与处置被验收之前保持 `To be decided`。
+- 第三方声明是独立的 Settings 入口。该入口复用 Launcher4Max License 的本地 Bottom Sheet，并离线展示随应用分发的组件清单。作者已验收该入口。面向公众的 README 已链接 Home、Drawer 和 Settings 截图。
 - 此前版本已接受的文档选择器与 OEM 呈现差异仍是可接受差异。
+- 应用身份已从 `com.avenor.launcher` 改为 `com.maxarchm.launcher`；由此产生的全新安装行为与受支持的迁移路径由[发布治理](../../release.zh-CN.md)负责。`1.0.0` 至 `1.6.0` 是未对外发布的作者日常使用基线，不存在本版本会去更新的外部安装。
 
 ## 完成标准
 

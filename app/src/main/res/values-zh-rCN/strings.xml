@@ -122,6 +122,8 @@
     <string name="launcher4max_is_not_default_launcher">未设为默认启动器</string>
     <string name="launcher4max_license">Launcher4Max 许可证</string>
     <string name="launcher4max_license_title">Launcher4Max 许可证</string>
+    <string name="third_party_notices">第三方声明</string>
+    <string name="third_party_notices_title">第三方声明</string>
     <string name="project_repository">项目仓库</string>
     <string name="unable_to_open_project_link">无法打开项目链接</string>
     <string name="settings_data_backup">备份收藏与设置</string>

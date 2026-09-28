@@ -394,7 +394,9 @@ internal fun HomeScreen(
         val committed = orchestration.editTransaction.committedAggregate ?: return@LaunchedEffect
         if (editMode &&
             readable.aggregate != committed &&
-            orchestration.editMutationJob?.isActive != true
+            orchestration.editMutationJob?.isActive != true &&
+            // The saved application order is the pending handoff, not an external edit.
+            orderedApplicationMovement.pendingChange == null
         ) {
             orchestration.cancelActiveDragSessions()
             if (orchestration.editTransaction.reconcileExternal(readable.aggregate)) {

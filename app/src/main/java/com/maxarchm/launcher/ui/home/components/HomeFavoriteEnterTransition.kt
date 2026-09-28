@@ -77,6 +77,7 @@ internal class HomeFavoriteEnterBatch(
     private val owner: HomeFavoriteEnterTransitions? = null,
 ) {
     val exitTransitions: HomeFavoriteExitTransitions? get() = owner?.exits
+    val tickets = mutableListOf<HomeFavoriteEnterTicket>()
     private val unclaimed = keys.toMutableSet()
     var open: Boolean = keys.isNotEmpty()
         private set
@@ -96,7 +97,9 @@ internal class HomeFavoriteEnterBatch(
     fun claim(key: HomeFavoriteEnterKey): HomeFavoriteEnterTicket? {
         if (!open || key !in unclaimed) return null
         if (key.identity != null && moduleFades.containsKey(key = key.moduleId)) return null
-        return HomeFavoriteEnterTicket(batch = this, key = key)
+        val ticket = HomeFavoriteEnterTicket(batch = this, key = key)
+        tickets.add(element = ticket)
+        return ticket
     }
 
     fun attach(ticket: HomeFavoriteEnterTicket) {
@@ -114,6 +117,7 @@ internal class HomeFavoriteEnterBatch(
 
 internal class HomeFavoriteEnterTicket(val batch: HomeFavoriteEnterBatch, val key: HomeFavoriteEnterKey) {
     var placed = false
+    var opacity = 1f
 }
 
 @Composable
@@ -145,6 +149,7 @@ internal fun Modifier.homeFavoriteEnter(
     // never acquire a fresh ticket just because their data, edit controls, or parent updated.
     val ticket = remember(key1 = key, calculation = { batch?.claim(key = key) })
     val alpha = remember(key1 = ticket, calculation = { Animatable(initialValue = 1f) })
+    SideEffect(effect = { ticket?.opacity = alpha.value })
     var finished by remember(key1 = ticket, calculation = { mutableStateOf(value = false) })
     if (ticket == null || finished) {
         return homeFavoriteExitCapture(
