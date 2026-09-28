@@ -2,7 +2,7 @@
 
 > 语义源：英文。中文对应文档：本文件与 [delivery.md](delivery.md)。
 >
-> 本记录定义 1.7.0 的计划交付边界。它本身不授权生产实现、提交、推送、打 tag、产物移动、发布或公开发行；这些动作仍需单独授权。
+> 本记录定义 1.7.0 的交付边界与当前完成状态。它本身不授权生产实现、提交、推送、打 tag、产物移动、发布或公开发行；这些动作仍需单独授权。
 
 ## 版本意图
 
@@ -78,7 +78,7 @@
 
 ### 迭代 34
 
-[契约](iteration-34-public-release-readiness.zh-CN.md)。于 2026-09-28 `Completed`。产品契约阶段已交付。已验收的 release APK 由作者于 2026-09-28 16:07:24 +0800 生成，对应源提交 `8523e0f852b4cdd176764f31db390b97e1fb4a4f`。其身份为 `com.maxarchm.launcher`、`versionName` `1.7.0`、`versionCode` `8`。签名类别为 release，证书 SHA-256 为 `68577525f59cb5482e1cbbf9951faeb37cafe3512a782d5a8bcb9a65179552af`。APK SHA-256 为 `ac173116fe211055af4d9330fafb7554ddeac5cdaab7095252da03ac2c8494fc`。APK 保留在本仓库之外，本记录不写明其位置。作者验收该重新打包的 APK 可以正常使用。已验收范围包括核心功能、绑定锁屏手势、升级旅程和独立的 Settings 第三方声明入口。面向公众的 README 展示 `docs/screenshots/` 中的 Home、Drawer 和 Settings 截图。并入 `main`、tag、GitHub Release、上传和公开发布仍需单独授权。版本 1.7.0 仍未关闭。
+[契约](iteration-34-public-release-readiness.zh-CN.md)。于 2026-09-28 `Completed`。产品契约阶段已交付。已验收的 release APK 由作者于 2026-09-28 16:07:24 +0800 生成，对应源提交 `8523e0f852b4cdd176764f31db390b97e1fb4a4f`。其身份为 `com.maxarchm.launcher`、`versionName` `1.7.0`、`versionCode` `8`。签名类别为 release，证书 SHA-256 为 `68577525f59cb5482e1cbbf9951faeb37cafe3512a782d5a8bcb9a65179552af`。APK SHA-256 为 `ac173116fe211055af4d9330fafb7554ddeac5cdaab7095252da03ac2c8494fc`。APK 保留在本仓库之外，本记录不写明其位置。作者验收该重新打包的 APK 可以正常使用。已验收范围包括核心功能、绑定锁屏手势、升级旅程和独立的 Settings 第三方声明入口。面向公众的 README 展示 `docs/screenshots/` 中的 Home、Drawer 和 Settings 截图。并入 `main`、tag、GitHub Release、上传和公开发布仍需单独授权。本迭代已完成；版本级正式发布物收尾仍等待“完成结果”列出的证据。
 
 ## 依赖与顺序
 
@@ -109,4 +109,6 @@
 
 ## 完成结果
 
-尚无最终结果。本版本截至 2026-09-17 处于规划状态。
+三个纳入迭代均已完成并合入 `main`；迭代 34 已由作者通过上述 release APK 于 2026-09-28 验收。作者已确认正式签名密钥的安全存储与两份独立加密作者自控备份、主兼容环境（Samsung `SM_S9180` / Android 16）以及所需 Gradle 验证结果。已重新读取当前保留的 APK 并重新计算 SHA-256，结果为 `ac173116fe211055af4d9330fafb7554ddeac5cdaab7095252da03ac2c8494fc`，与产物记录一致。已发布构建的安全与隐私评审按作者决定记录为 `Unknown`，暂不处理。版本级 `Formal release artifact` 尚未宣告完成，当前还需将 APK 上传到作者批准的 GitHub 发布位置并完成上传后的摘要复核。
+
+作者确认剩余产物证据后，才可将本节修订为事实性的版本完成结果。计划发布顺序为：在 APK 对应的精确源提交 `8523e0f852b4cdd176764f31db390b97e1fb4a4f` 上创建经批准的附注 tag `v1.7.0`，推送该 tag，创建引用 `v1.7.0` 的 GitHub Release，将 APK 上传到该 Release，并重新核对上传后制品摘要。创建 tag、推送 tag、创建 GitHub Release、上传 APK 与修改仓库可见性仍是作者分别授权的发布动作。
