@@ -135,8 +135,11 @@ class HomeApplicationPendingMovementTest {
 
     private fun movement(): HomeApplicationMovement = HomeApplicationMovement().apply(block = {
         updateModules(current = listOf(element = source))
-        updateViewport(bounds = viewport)
-        updateCreationTarget(type = OrderedFavoriteModuleType.Vertical, bounds = creation)
+        updateViewport(bounds = this@HomeApplicationPendingMovementTest.viewport)
+        updateCreationTarget(
+            type = OrderedFavoriteModuleType.Vertical,
+            bounds = this@HomeApplicationPendingMovementTest.creation,
+        )
     })
 
     private fun lift(movement: HomeApplicationMovement) {

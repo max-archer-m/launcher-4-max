@@ -58,7 +58,7 @@ class SettingsBackupJsonTest {
     @Test
     fun missingQuickActionBindingsSectionRestoresNoActionDefaults() {
         val document = validBackupDocument()
-            .remove("quickActionBindings")
+        document.remove("quickActionBindings")
 
         val parsed = SettingsBackupJson.parse(document.toString())
 
@@ -70,7 +70,7 @@ class SettingsBackupJsonTest {
     fun schemaVersionOneWithoutBindingsImportsAsNoActionDefaults() {
         val document = validBackupDocument()
             .put("schemaVersion", 1)
-            .remove("quickActionBindings")
+        document.remove("quickActionBindings")
 
         val parsed = SettingsBackupJson.parse(document.toString())
 
@@ -80,11 +80,9 @@ class SettingsBackupJsonTest {
 
     @Test
     fun unrecognizedBindingValueFails() {
-        val bindings = validBackupDocument()
-            .getJSONObject("quickActionBindings")
-            .put("doubleTap", "launch_camera")
         val document = validBackupDocument()
-            .put("quickActionBindings", bindings)
+        document.getJSONObject("quickActionBindings")
+            .put("doubleTap", "launch_camera")
 
         assertNull(SettingsBackupJson.parse(document.toString()))
     }
@@ -92,7 +90,7 @@ class SettingsBackupJsonTest {
     @Test
     fun missingFavoritesSectionRestoresAnEmptyFavoriteState() {
         val document = validBackupDocument()
-            .remove("favorites")
+        document.remove("favorites")
 
         val parsed = SettingsBackupJson.parse(document.toString())
 
@@ -103,7 +101,7 @@ class SettingsBackupJsonTest {
     @Test
     fun missingDisplaySettingsSectionRestoresDefaultSettings() {
         val document = validBackupDocument()
-            .remove("displaySettings")
+        document.remove("displaySettings")
 
         val parsed = SettingsBackupJson.parse(document.toString())
 
@@ -115,7 +113,7 @@ class SettingsBackupJsonTest {
     fun missingFieldInsidePresentSectionRestoresThatFieldDefault() {
         val displaySettings = validBackupDocument()
             .getJSONObject("displaySettings")
-            .remove("backgroundOpacity")
+        displaySettings.remove("backgroundOpacity")
         val document = validBackupDocument()
             .put("displaySettings", displaySettings)
 
