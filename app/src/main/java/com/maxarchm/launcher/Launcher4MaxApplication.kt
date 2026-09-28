@@ -5,6 +5,7 @@ import android.content.Context
 import com.maxarchm.launcher.ui.drawer.DrawerDisplaySettingsStore
 import com.maxarchm.launcher.ui.settings.AndroidSettingsPlatform
 import com.maxarchm.launcher.ui.settings.readLicense
+import com.maxarchm.launcher.ui.settings.readThirdPartyNotices
 
 /**
  * Process-wide owner of the stores and platform adapters [Launcher4MaxApp] consumes. Holding
@@ -38,6 +39,7 @@ internal class AppGraph(context: Context) {
     val settingsPlatform: AndroidSettingsPlatform =
         AndroidSettingsPlatform(context = context)
     val licenseText: String = readLicense(context = context)
+    val thirdPartyNoticesText: String = readThirdPartyNotices(context = context)
     val accessibilityLockController: AccessibilityLockController =
         AndroidAccessibilityLockController(
             context = context,

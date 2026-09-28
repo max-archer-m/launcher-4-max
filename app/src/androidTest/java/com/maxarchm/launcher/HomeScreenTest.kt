@@ -1947,6 +1947,7 @@ class HomeScreenTest {
                 SettingsScreen(
                     platform = platform,
                     licenseText = "Apache License test content",
+                    thirdPartyNoticesText = "Third-party notice test content",
                     onBack = { backRequested = true },
                 )
             }
@@ -1967,6 +1968,10 @@ class HomeScreenTest {
         composeRule.onNodeWithTag("settings_license").performClick()
         composeRule.onNodeWithTag("launcher4max_license_sheet").assertIsDisplayed()
         composeRule.onNodeWithText("Apache License test content").assertIsDisplayed()
+
+        composeRule.onNodeWithTag("settings_third_party_notices").performClick()
+        composeRule.onNodeWithTag("third_party_notices_sheet").assertIsDisplayed()
+        composeRule.onNodeWithText("Third-party notice test content").assertIsDisplayed()
     }
 
     @Test

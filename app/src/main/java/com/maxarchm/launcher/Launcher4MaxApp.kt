@@ -137,6 +137,7 @@ internal fun Launcher4MaxApp(systemHomeEvents: MutableSharedFlow<Unit>? = null) 
         shortcutController = graph.shortcutController,
         settingsPlatform = graph.settingsPlatform,
         licenseText = graph.licenseText,
+        thirdPartyNoticesText = graph.thirdPartyNoticesText,
         accessibilityLockController = graph.accessibilityLockController,
     )
 }
@@ -156,6 +157,7 @@ internal fun Launcher4MaxApp(
     shortcutController: ApplicationShortcutController = EmptyApplicationShortcutController,
     settingsPlatform: SettingsPlatform = EmptySettingsPlatform,
     licenseText: String = "",
+    thirdPartyNoticesText: String = "",
     accessibilityLockController: AccessibilityLockController = EmptyAccessibilityLockController,
 ) {
     val androidContext = LocalContext.current
@@ -1367,6 +1369,7 @@ internal fun Launcher4MaxApp(
             SettingsScreen(
                 platform = settingsPlatform,
                 licenseText = licenseText,
+                thirdPartyNoticesText = thirdPartyNoticesText,
                 accessibilityLockController = accessibilityLockController,
                 backupController = settingsBackupController,
                 bindings = quickActionBindings,

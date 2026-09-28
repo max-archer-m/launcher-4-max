@@ -84,6 +84,7 @@ import kotlinx.coroutines.launch
 internal fun SettingsScreen(
     platform: SettingsPlatform,
     licenseText: String,
+    thirdPartyNoticesText: String = "",
     accessibilityLockController: AccessibilityLockController = EmptyAccessibilityLockController,
     backupController: SettingsBackupControl? = null,
     bindings: QuickActionBindings = QuickActionBindings(),
@@ -97,6 +98,7 @@ internal fun SettingsScreen(
     val scope = rememberCoroutineScope()
     var isDefaultHome by remember(platform) { mutableStateOf(platform.isDefaultHome()) }
     var showLicense by remember { mutableStateOf(false) }
+    var showThirdPartyNotices by remember { mutableStateOf(false) }
     var showPrivacy by remember { mutableStateOf(false) }
     var showScreenLockExplanation by remember { mutableStateOf(false) }
     var popupSlot by remember { mutableStateOf<QuickActionSlot?>(null) }
@@ -265,6 +267,13 @@ internal fun SettingsScreen(
                         testTag = "settings_license",
                     )
                 }
+                item(key = "third-party-notices") {
+                    SecondarySettingsItem(
+                        text = stringResource(R.string.third_party_notices),
+                        onClick = { showThirdPartyNotices = true },
+                        testTag = "settings_third_party_notices",
+                    )
+                }
                 item(key = "repository") {
                     SecondarySettingsItem(
                         text = stringResource(R.string.project_repository),
@@ -316,8 +325,21 @@ internal fun SettingsScreen(
 
     if (showLicense) {
         LicenseBottomSheet(
-            licenseText = licenseText,
+            title = stringResource(R.string.launcher4max_license_title),
+            body = licenseText,
+            sheetTag = "launcher4max_license_sheet",
+            bodyTag = "launcher4max_license_text",
             onDismiss = { showLicense = false },
+        )
+    }
+
+    if (showThirdPartyNotices) {
+        LicenseBottomSheet(
+            title = stringResource(R.string.third_party_notices_title),
+            body = thirdPartyNoticesText,
+            sheetTag = "third_party_notices_sheet",
+            bodyTag = "third_party_notices_text",
+            onDismiss = { showThirdPartyNotices = false },
         )
     }
 
@@ -670,7 +692,10 @@ private fun SettingsModalDragHandle() {
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun LicenseBottomSheet(
-    licenseText: String,
+    title: String,
+    body: String,
+    sheetTag: String,
+    bodyTag: String,
     onDismiss: () -> Unit,
 ) {
     ModalBottomSheet(
@@ -694,10 +719,10 @@ private fun LicenseBottomSheet(
                     ),
             )
         },
-        modifier = Modifier.testTag("launcher4max_license_sheet"),
+        modifier = Modifier.testTag(sheetTag),
     ) {
         Text(
-            text = stringResource(R.string.launcher4max_license_title),
+            text = title,
             modifier = Modifier.padding(
                 horizontal = dimensionResource(R.dimen.settings_horizontal_padding),
                 vertical = dimensionResource(R.dimen.settings_license_title_vertical_padding),
@@ -706,13 +731,13 @@ private fun LicenseBottomSheet(
         )
         HorizontalDivider(color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text(
-            text = licenseText,
+            text = body,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f, fill = false)
                 .verticalScroll(rememberScrollState())
                 .padding(dimensionResource(R.dimen.settings_horizontal_padding))
-                .testTag("launcher4max_license_text"),
+                .testTag(bodyTag),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodySmall,
         )

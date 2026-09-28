@@ -78,7 +78,7 @@
 
 ### 迭代 34
 
-[契约](iteration-34-public-release-readiness.zh-CN.md)。自 2026-09-23 起为 `In Progress`。产品契约阶段已交付：产品概览与产品基础需求记录了仅 GitHub 公开发布的边界与主设备性能预期，隐私联系方式资源在中英文下均指向当前仓库。操作阶段仍未完成，包括权威发布命令与其余发布操作决定、依赖与许可证清单及其第三方 License 呈现决定、公开仓库呈现、正式制品追溯记录，以及主设备上的 release APK 验证。
+[契约](iteration-34-public-release-readiness.zh-CN.md)。截至 2026-09-28 仍为 `In Progress`。产品契约阶段已交付。当前 release APK 由作者于 2026-09-28 11:23:06 +0800 生成，对应源提交 `d82fdde6cbf26f2e35a6f62399e3f5554fc73c1a`。其身份为 `com.maxarchm.launcher`、`versionName` `1.7.0`、`versionCode` `8`。签名类别为 release，证书 SHA-256 为 `68577525f59cb5482e1cbbf9951faeb37cafe3512a782d5a8bcb9a65179552af`。APK SHA-256 为 `a3aacda3c715ed0dfcb3b664d212982947cca3b142bb6d2fcbc5614eadc7bd8d`。APK 保留在本仓库之外，本记录不写明其位置。作者将其安装到主设备三星 SM-S9180，并验收了核心功能、绑定锁屏手势和升级旅程。作者随后验收了独立的 Settings 第三方声明入口及其本地声明面板。截图仍延后，不阻碍本迭代。该已验收入口尚未包含在上述 APK 中。tag、GitHub Release、上传和公开发布均未授权。
 
 ## 依赖与顺序
 
@@ -96,7 +96,7 @@
 
 - 仅有一台物理验证设备；更广的设备、API、OEM 与语言覆盖在执行前保持未知。
 - 1.6.0 重构后遗留的被搁置抽屉自动化测试簇（滑杆拖拽注入等）仍未解决；它不是本版本的纳入路径门槛，但限制了该区域的回归信号。
-- 第三方 License 呈现在迭代 34 的清单与处置被验收之前保持 `To be decided`。
+- 第三方声明是独立的 Settings 入口。该入口复用 Launcher4Max License 的本地 Bottom Sheet，并离线展示随应用分发的组件清单。作者已验收该入口。截图仍延后。
 - 此前版本已接受的文档选择器与 OEM 呈现差异仍是可接受差异。
 - 应用身份已从 `com.avenor.launcher` 改为 `com.maxarchm.launcher`；由此产生的全新安装行为与受支持的迁移路径由[发布治理](../../release.zh-CN.md)负责。`1.0.0` 至 `1.6.0` 是未对外发布的作者日常使用基线，不存在本版本会去更新的外部安装。
 
