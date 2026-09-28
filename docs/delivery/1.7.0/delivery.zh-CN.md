@@ -64,7 +64,7 @@
 | --- | --- | --- | --- |
 | [迭代 32：快捷操作与屏幕锁定](iteration-32-quick-actions-screen-locking.zh-CN.md) | `Completed` | 2026-09-20 | 项目作者于 2026-09-20 在主物理设备上接受了可观察的快捷操作与锁屏结果。 |
 | [迭代 33：Home 与抽屉契约补齐](iteration-33-home-drawer-contract-completion.zh-CN.md) | `Completed` | 2026-09-23 | 项目作者在主物理设备上接受了提示、校准后的渐缩滑杆、独立图标/文字档位与隐藏名称位置。 |
-| [迭代 34：公开发布就绪](iteration-34-public-release-readiness.zh-CN.md) | `In Progress` | 2026-09-23 | 作者于 2026-09-23 接受仅 GitHub 公开发布的边界与主设备性能预期，该迭代的产品契约阶段由此交付；操作阶段仍未完成。 |
+| [迭代 34：公开发布就绪](iteration-34-public-release-readiness.zh-CN.md) | `Completed` | 2026-09-28 | 作者于 2026-09-28 验收重新打包的 release APK，确认可以正常使用。 |
 
 ## 迭代证据与结果
 
@@ -78,7 +78,7 @@
 
 ### 迭代 34
 
-[契约](iteration-34-public-release-readiness.zh-CN.md)。截至 2026-09-28 仍为 `In Progress`。产品契约阶段已交付。当前 release APK 由作者于 2026-09-28 11:23:06 +0800 生成，对应源提交 `d82fdde6cbf26f2e35a6f62399e3f5554fc73c1a`。其身份为 `com.maxarchm.launcher`、`versionName` `1.7.0`、`versionCode` `8`。签名类别为 release，证书 SHA-256 为 `68577525f59cb5482e1cbbf9951faeb37cafe3512a782d5a8bcb9a65179552af`。APK SHA-256 为 `a3aacda3c715ed0dfcb3b664d212982947cca3b142bb6d2fcbc5614eadc7bd8d`。APK 保留在本仓库之外，本记录不写明其位置。作者将其安装到主设备三星 SM-S9180，并验收了核心功能、绑定锁屏手势和升级旅程。作者随后验收了独立的 Settings 第三方声明入口及其本地声明面板。面向公众的 README 现已展示 `docs/screenshots/` 中的 Home、Drawer 和 Settings 截图。该已验收入口及 Settings 截图尚未包含在上述 APK 中。tag、GitHub Release、上传和公开发布均未授权。
+[契约](iteration-34-public-release-readiness.zh-CN.md)。于 2026-09-28 `Completed`。产品契约阶段已交付。已验收的 release APK 由作者于 2026-09-28 16:07:24 +0800 生成，对应源提交 `8523e0f852b4cdd176764f31db390b97e1fb4a4f`。其身份为 `com.maxarchm.launcher`、`versionName` `1.7.0`、`versionCode` `8`。签名类别为 release，证书 SHA-256 为 `68577525f59cb5482e1cbbf9951faeb37cafe3512a782d5a8bcb9a65179552af`。APK SHA-256 为 `ac173116fe211055af4d9330fafb7554ddeac5cdaab7095252da03ac2c8494fc`。APK 保留在本仓库之外，本记录不写明其位置。作者验收该重新打包的 APK 可以正常使用。已验收范围包括核心功能、绑定锁屏手势、升级旅程和独立的 Settings 第三方声明入口。面向公众的 README 展示 `docs/screenshots/` 中的 Home、Drawer 和 Settings 截图。并入 `main`、tag、GitHub Release、上传和公开发布仍需单独授权。版本 1.7.0 仍未关闭。
 
 ## 依赖与顺序
 
