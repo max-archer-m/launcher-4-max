@@ -21,6 +21,10 @@ import androidx.core.content.getSystemService
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
+import com.maxarchm.launcher.platform.icons.LauncherIconAppearance
+import com.maxarchm.launcher.platform.icons.LauncherIconRenderer
+import com.maxarchm.launcher.platform.icons.LauncherIconShape
+import com.maxarchm.launcher.platform.icons.SystemLauncherIconRenderer
 import com.maxarchm.launcher.ui.drawer.DrawerSection
 import com.maxarchm.launcher.ui.drawer.buildDrawerSections
 import kotlinx.coroutines.Dispatchers

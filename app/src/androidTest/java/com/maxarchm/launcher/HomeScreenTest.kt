@@ -3,7 +3,6 @@ package com.maxarchm.launcher
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.ApplicationInfo
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Process
@@ -1505,27 +1504,6 @@ class HomeScreenTest {
             DrawerRestorationTarget(itemIndex = 1, scrollOffset = 0),
             resolveDrawerRestorationTarget(position, updatedSections),
         )
-    }
-
-    @Test
-    fun legacyIconBackgroundUsesItsDominantEdgeColor() {
-        val icon = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888).apply {
-            eraseColor(Color.BLUE)
-        }
-
-        assertEquals(Color.rgb(8, 8, 248), icon.inferLegacyBackgroundColor())
-    }
-
-    @Test
-    fun transparentLegacyIconUsesSafeFallbackBackground() {
-        val icon = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888).apply {
-            eraseColor(Color.TRANSPARENT)
-            for (y in 20 until 80) {
-                for (x in 20 until 80) setPixel(x, y, Color.BLUE)
-            }
-        }
-
-        assertEquals(Color.WHITE, icon.inferLegacyBackgroundColor())
     }
 
     @Test

@@ -6,7 +6,14 @@ Launcher4Max was named Avenor Launcher before `1.7.0`. Versions `1.0.0` through 
 
 ## Unreleased
 
-### 1.7.0
+### 1.7.1
+
+- Normalize application icons through one device-mask path, removing the legacy-icon wrapper
+  heuristics and improving Drawer scrolling responsiveness on the author's primary device.
+- Move the platform icon renderer into `platform/icons` and retain the replaceable rendering
+  boundary for future custom icon shapes.
+
+## 1.7.0 — 2026-09-29
 
 - Bind the two Home basic-information gestures, double tap and long press, to No action, Edit mode, or Screen lock on a new Quick action settings page. Both slots default to No action.
 - Screen locking is triggered by the gesture you bind and now ships in every build type. The Quick action settings page carries the always-visible screen-lock service state row and the accessibility authorization flow.
