@@ -29,6 +29,23 @@ docs/delivery/<version>/
 - Every iteration has a separate contract beside `delivery.md`, uses the project-wide identifier sequence, and links to the version document without duplicating version-wide rules or execution state.
 - Create a separate technical assessment only when an independent technical review is genuinely needed. It is supporting analysis, not a mandatory layer. After the issue is resolved, place durable conclusions in the applicable product, architecture, development, validation, release, decision, or delivery source; do not maintain duplicate conclusions indefinitely.
 
+## Version closure planning
+
+When drafting a version delivery and its iterations, assess whether the version
+needs a final closure scope. A closure iteration may cover version and artifact
+identity checks, integration regression, necessary fixes discovered during
+validation that do not change the approved scope, and final delivery evidence.
+When that work is substantial and independently reviewable, it may be defined
+as the version's final iteration. When it is small, the version delivery
+document may carry it directly through its validation, artifact, and completion
+sections instead.
+
+Closure planning is a recommendation, not a mandatory extra iteration for
+every version. A closure iteration must not silently absorb new features,
+unassigned legacy issues, or UI changes that alter the accepted outcome.
+Those items return to their owning iteration or require a separately authorized
+scope and destination.
+
 ## Version document format
 
 ```markdown
