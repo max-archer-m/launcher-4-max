@@ -4,14 +4,30 @@
 
 ## Responsibility
 
-This document is the single presentation source for the visual surface, setting rows, selectors, steppers, and application-size controls shared by the Drawer and Home style settings panels. [Drawer presentation](drawer.md#display-settings) and [Home presentation](home.md#edit-dock-and-style-settings-panel) own only their host-specific placement, modality, height, content, and surrounding layout. Their behavior specifications continue to own state and action results.
+This document is the single presentation source for the visual surface, setting rows,
+selectors, steppers, and application-size controls shared by the Drawer and Home style
+settings panels. It also owns the shared edge treatment reused by the Quick action
+selection popup. That popup's other geometry remains in the
+[Settings presentation](settings.md#quick-action-settings-page-and-selection-dialog).
+[Drawer presentation](drawer.md#display-settings) and
+[Home presentation](home.md#edit-dock-and-style-settings-panel) own only their host-specific
+placement, modality, height, content, and surrounding layout. Their behavior
+specifications continue to own state and action results.
 
 This shared product contract requires one observably identical panel treatment; it does not prescribe a source-code class, framework abstraction, or implementation component boundary.
 
 ## Shared panel surface
 
 - The style settings panel uses one resource-backed `darkSurfaceBaseColor` surface with exactly `12dp` corners. Drawer and Home use the same surface color, corner radius, horizontal outer margin, and border without host-specific visual substitutions.
-- The panel edge treatment is one `1dp` border in `#6E6E73`, drawn along the panel corner radius. These are the author-accepted current delivery values of 2026-09-09; device comparison may amend them through author acceptance and an update to this specification.
+- The panel edge treatment is one `1dp` border in `#5A5A60`, drawn along the
+  panel corner radius, with an approximately `3dp` non-uniform dark transition
+  extending inward from the border's inner edge. The transition remains
+  perceptibly close to the border, approaches the `darkSurfaceBaseColor` surface
+  quickly toward the panel interior, does not form a uniform grey ring, and does
+  not extend into the surrounding page background. The `12dp` corner radius
+  remains unchanged. This edge treatment is shared by Drawer and Home and is
+  reused by the Quick action selection popup.
+- The edge treatment uses no shadow, elevation, glow, blur, or glass effect.
 - The panel surface has `0dp` general container padding. Every setting block consists of one non-interactive title line and one content line. A title line is exactly `32dp` high. Standard content lines are exactly `48dp` high; the application-size block is an accepted `56dp` exception. Lines occupy the complete inner panel width, use `12dp` start and end content insets, and vertically center their contents. A read-only informational row (for example the selection prompt or the fixed-style message) is a single `48dp` row.
 - Each host owns its setting-block order.
 - The shared panel surface does not itself define a Scrim, modal input blocking, outside-click behavior, bottom margin, maximum height, internal scrolling, or attachment to another control. Each host owns those rules.

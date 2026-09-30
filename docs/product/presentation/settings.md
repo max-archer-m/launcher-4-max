@@ -29,7 +29,14 @@ This document owns exact Settings typography and row geometry. [Settings behavio
 - The `Quick action settings` page reuses the Settings top app bar and the primary-item row geometry defined above. Its title is `Quick action settings` and each row carries a title plus supporting text.
 - Every row on the page carries the standard trailing arrow of the primary-item treatment, matching the Settings page. The two slot rows carry it as well even though they open a local selection popup rather than another destination.
 - The selection popup is one anchored dark popup presenting a single vertical sequence of option rows. The specification describes the observable result only and does not prescribe a container type.
-- The popup uses the shared `darkSurfaceBaseColor` background with exactly `12dp` corners. Each option row is `48dp` high with `16dp` horizontal padding and contains one leading `20dp` radio single-selection indicator followed by the action label with `12dp` between them. The radio and the label both use `primaryTextColor`, and the label uses the shared `primaryTextFontSize`. The current binding is marked in its radio.
+- The popup uses the shared `darkSurfaceBaseColor` background with exactly `12dp`
+  corners and reuses the shared edge treatment defined in the
+  [style settings panel presentation](style-settings-panel.md#shared-panel-surface).
+  Each option row is `48dp` high with `16dp` horizontal padding and contains one
+  leading `20dp` radio single-selection indicator followed by the action label
+  with `12dp` between them. The radio and the label both use `primaryTextColor`,
+  and the label uses the shared `primaryTextFontSize`. The current binding is
+  marked in its radio.
 - Each option row provides the shared Material ripple, clipped so no ripple extends beyond the popup's rounded corners; the top and bottom rows therefore follow the popup's `12dp` corners.
 - The popup presents no scrim and does not dim the page. It is anchored to the tapped row rather than centered on the screen: its top edge aligns with the vertical midpoint of that row, and its trailing edge sits `16dp` from the safe trailing screen edge. Because the option list is short, no bottom-edge alignment or bottom clamping is defined.
 - The popup width wraps its content. Together with its fixed trailing `16dp` inset, the popup remains inside the safe screen area and never forces its own horizontal scrolling.
