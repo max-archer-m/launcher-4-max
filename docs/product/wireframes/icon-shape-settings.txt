@@ -1,0 +1,50 @@
++------------------------------------------------------------------------------+
+|                    ICON SHAPE SETTINGS / LOW FIDELITY                        |
+|                                                                              |
+|  [BACK]  ICON SHAPE                                                          |
+|                                                                              |
+|------------------------------------------------------------------------------|
+|                                                                              |
+|  +------------------------------------------------------------------------+  |
+|  |                LIVE PREVIEW WINDOW / ROUNDED RECTANGLE                 |  |
+|  |                                                                        |  |
+|  |           PRESENTS THE CURRENT REAL WALLPAPER                          |  |
+|  |           (THE ONLY WALLPAPER-EXPOSING REGION OF SETTINGS)             |  |
+|  |                                                                        |  |
+|  |           EXPANDS TO FILL ALL REMAINING VERTICAL SPACE                 |  |
+|  |           BETWEEN THE APP BAR AND THE SETTINGS BLOCK                   |  |
+|  |                                                                        |  |
+|  |                                                                        |  |
+|  |                  [DEFAULT APP ICON / LARGE STOP]                       |  |
+|  |                                                                        |  |
+|  |                  [DEFAULT APP ICON / MEDIUM STOP]                      |  |
+|  |                                                                        |  |
+|  |                  [DEFAULT APP ICON / SMALL STOP]                       |  |
+|  |                                                                        |  |
+|  |           ICON GROUP CENTERED IN THE WINDOW                            |  |
+|  |           (HORIZONTALLY AND VERTICALLY)                                |  |
+|  |                                                                        |  |
+|  |                                                                        |  |
+|  |                                                                        |  |
+|  +------------------------------------------------------------------------+  |
+|                                                                              |
+|  +------------------------------------------------------------------------+  |
+|  |               SETTINGS BLOCK / SHARED STYLE-PANEL LANGUAGE             |  |
+|  |                                                                        |  |
+|  |  CLIP MODE                                                             |  |
+|  |  +----------------------------------------------+                         |
+|  |  |   [ OEM CLIP ]      |      FREEFORM CLIP     |                      |  |
+|  |  +----------------------------------------------+                      |  |
+|  |                                                                        |  |
+|  |  SELECTOR START-ALIGNED IN THE CONTENT ROW                             |  |
+|  |  WIDTH FITS FOUR-CJK-CHARACTER OPTIONS WITH                            |  |
+|  |  HORIZONTAL PADDING; EXACT WIDTH DECIDED LATER                         |  |
+|  |                                                                        |  |
+|  |  CORNER RADIUS                                                         |  |
+|  |  [ 50% ]  [--------------------------O-------------------------]       |  |
+|  |                                                                        |  |
+|  +------------------------------------------------------------------------+  |
+|                                                                              |
+|                               BOTTOM SAFE AREA                               |
+|                                                                              |
++------------------------------------------------------------------------------+

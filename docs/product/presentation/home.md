@@ -4,7 +4,7 @@
 
 ## Responsibility
 
-This document owns exact Home layout, typography, component geometry, and visual states. [Home behavior](../surfaces/home.md) owns state and action results; [design foundations](../design-foundations.md) owns shared principles and reusable tokens; the [style settings panel presentation](style-settings-panel.md) owns the panel surface and controls shared with Drawer.
+This document owns exact Home layout, typography, component geometry, and visual states. [Home behavior](../surfaces/home.md) owns state and action results; [design foundations](../design-foundations.md) owns shared principles and reusable tokens; the [style settings panel presentation](style-settings-panel.md) owns the panel surface and controls shared with Drawer; the [icon shape contract](../features/icon-shape.md) owns the application-icon clip mode and corner-radius proportion.
 
 ## Surface and basic information
 

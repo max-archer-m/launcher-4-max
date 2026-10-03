@@ -73,9 +73,10 @@ The product compatibility boundary requires `minSdk` 31. Current configured `com
 - Favorite editing: explicit add, remove, move, reorder, resize, confirmation, cancellation, latest-removal Undo, and Drawer drag-to-favorite behavior defined by the Home and Drawer contracts.
 - Screen locking: an optional, purpose-limited accessibility-service capability for eligible blank Home space, triggered by the quick-action slot the user binds to it. It does not gate independent Launcher paths.
 - Quick actions: two user-configurable Home basic-information blank-space slots, each bound to `No action`, `Edit mode`, or `Screen lock`, defaulting to `No action`.
+- Icon shape: one global icon-clipping preference — `OEM clip` or one freeform corner-radius proportion from `0` through `100` — applied to Home vertical-module icons, ribbon icons, and Drawer icons, managed by a dedicated Settings page with a live wallpaper preview.
 - Drawer: every launchable entry successfully read from Android-exposed sources, including cloned and work-profile entries when available, with ordinary-mode local application-name search and a user-selected background opacity from `0` (clear wallpaper) through `100` (solid surface color). A fresh configuration defaults to `50`. An isolated non-current-profile read failure does not block usable entries from other profiles.
 - Application actions: application information and platform shortcuts on Home or Drawer; Home additionally provides remove-favorite, edit, and uninstall when the platform can safely address the selected identity, and Drawer provides uninstall under the same platform constraints.
-- Settings: default-Launcher state and system destination, quick-action settings including the screen-lock authorization entry and its disclosure, Privacy, licenses, repository link, and version information as applicable; plus local manual backup and restore of favorites, quick-action bindings, and Drawer display settings through the system document picker.
+- Settings: default-Launcher state and system destination, quick-action settings including the screen-lock authorization entry and its disclosure, the icon-shape settings page, Privacy, licenses, repository link, and version information as applicable; plus local manual backup and restore of favorites, quick-action bindings, the icon-shape preference, and Drawer display settings through the system document picker.
 - English and Simplified Chinese resources selected from system locale, with English fallback.
 - Offline availability for core tasks, local core-data storage, and only permissions traceable to necessary core capabilities.
 
@@ -114,6 +115,7 @@ An additive capability does not enter current scope merely because it can be bui
 | Cross-surface gestures, transitions, and system-return behavior | [Navigation](../product/navigation.md) |
 | Screen-lock disclosure, permission boundary, and denial behavior | [Screen locking](../product/features/double-tap-lock.md) |
 | Configurable Home basic-information gesture bindings and their defaults | [Quick actions](../product/features/quick-actions.md) |
+| Icon-shape modes, proportion semantics, preview window, and settings-page behavior | [Icon shape](../product/features/icon-shape.md) |
 | User-visible privacy and data-handling statement | [Privacy and data handling](../product/features/privacy.md) |
 | Spatial hierarchy and major content-order sketches | [Low-fidelity wireframes](../product/low-fidelity-wireframes.md) |
 
@@ -127,7 +129,8 @@ An additive capability does not enter current scope merely because it can be bui
 - Drawer presents, locally searches, and launches the reliable inventory available within Launcher4Max's Android role and least-privilege boundary.
 - Inventory refresh, partial-source failure, permanent disappearance, Loading, and Error behavior preserve usable paths and do not convert uncertain data into destructive conclusions.
 - Application actions and Settings open only destinations valid for the selected identity and report defined local failures without corrupting favorite state.
-- Launcher4Max can back up the complete favorite-module, Drawer display-setting, and quick-action-binding state to one user-chosen local file and restore it through a confirmed atomic replacement without network access or automatic backup.
+- Launcher4Max can back up the complete favorite-module, Drawer display-setting, quick-action-binding, and icon-shape preference state to one user-chosen local file and restore it through a confirmed atomic replacement without network access or automatic backup.
+- The icon-shape preference is one global setting that applies `OEM clip` or one freeform corner-radius proportion to Home vertical-module, ribbon, and Drawer icons, takes effect immediately without a confirmation step, and renders the same relative corner shape at every icon size.
 - Screen locking requests the system lock action only after the user binds a quick-action slot to it, enables the applicable accessibility service, and performs the bound gesture in an eligible area.
 - English and Simplified Chinese are complete supported resource sets; unsupported locales fall back to English without a manual in-app language selector.
 - Core Home, Drawer, application launch, and Settings tasks remain usable offline.
@@ -155,7 +158,8 @@ The performance expectation is that the author's primary physical device runs th
 - Favorite identity, module destination, application order, applicable vertical-module style, and module order survive applicable recreation without unexpected loss, duplication, or reassignment.
 - Failed or uncertain reads remain distinguishable from valid empty data and do not overwrite the last reliable favorite state.
 - Permission denial or revocation affects only the dependent capability and leaves independent Launcher paths available.
-- Local backup and restore preserve and restore the complete favorite, display-setting, and quick-action-binding state without network access, automatic backup, or loss of unrelated configuration.
+- Local backup and restore preserve and restore the complete favorite, display-setting, quick-action-binding, and icon-shape preference state without network access, automatic backup, or loss of unrelated configuration.
+- The icon-shape preference applies immediately, survives applicable recreation, and in `Freeform clip` mode renders the same relative corner shape across large, medium, and small icon sizes; platform shortcut icons in the application action sheet keep their own rendering.
 - English, Simplified Chinese, and English fallback resolve according to system locale.
 - Applicable surface behavior and presentation contracts are satisfied for the delivery's explicitly selected scope and evidence baseline.
 - Results intended as daily-use acceptance are observed on the author's applicable physical devices; implementation completion alone is insufficient.
@@ -166,19 +170,19 @@ Core success means that Home, Drawer, and Settings form a reliable minimum utili
 
 ## User control
 
-The product lets users maintain Home favorites and use individual Settings entries. It provides manual local backup and restore of favorites, quick-action bindings, and Drawer display settings through the system document picker; it does not provide one-action clearing, cloud deletion, automatic backup, or cloud restoration of all configuration. Users can clear application data through Android system settings. Favorite changes result from explicit user actions, and language follows system locale rather than observed behavior.
+The product lets users maintain Home favorites and use individual Settings entries. It provides manual local backup and restore of favorites, quick-action bindings, the icon-shape preference, and Drawer display settings through the system document picker; it does not provide one-action clearing, cloud deletion, automatic backup, or cloud restoration of all configuration. Users can clear application data through Android system settings. Favorite changes result from explicit user actions, and language follows system locale rather than observed behavior.
 
 ## Local data boundary
 
 - Durable user-content data consists of ordered favorite modules, module type, stable favorite identity and position, and applicable vertical-module size, name placement, and items-per-row values. A stable identity has one module destination and cannot be duplicated across modules.
-- Durable local configuration also includes the selected Drawer application icon size, application name size, name placement, items-per-row count, section-anchor presentation, background-opacity percentage, and the quick-action binding of each Home basic-information slot. Each valid change is saved as one complete configuration state.
+- Durable local configuration also includes the selected Drawer application icon size, application name size, name placement, items-per-row count, section-anchor presentation, background-opacity percentage, the quick-action binding of each Home basic-information slot, and the icon-shape preference (clip mode and saved freeform proportion). Each valid change is saved as one complete configuration state.
 - Primary, cloned, and work-profile identities must remain distinguishable and must not be stored or deduplicated solely by package name.
 - The latest eligible application-removal snapshot is transient Undo state, not durable undo history.
 - The local date on which the user last dismissed the Home default-Launcher prompt is durable presentation state. It is user-controlled, is not application-usage history, and is not part of the backup file.
 - Time and date come from the device system and are not retained historically.
 - Launcher4Max does not collect or store accessibility window content or events, notifications, contacts, location, clipboard content, files, photos, stable device identifiers, application-usage history, or analytics events.
 - Launcher4Max has no account, cloud synchronization, server, cloud backup, or cross-device backup. Android cloud backup and device-to-device transfer backup remain disabled for Launcher4Max-owned favorite and display-setting data; only the user-initiated local backup described below is provided.
-- A user-initiated local backup writes one schema-versioned JSON file containing the complete favorite-module, Drawer display-setting, and quick-action-binding state to a location the user chooses through the system document picker. The file is user-managed, stays outside Launcher4Max's app-private storage, and is never uploaded or written automatically.
+- A user-initiated local backup writes one schema-versioned JSON file containing the complete favorite-module, Drawer display-setting, quick-action-binding, and icon-shape preference state to a location the user chooses through the system document picker. The file is user-managed, stays outside Launcher4Max's app-private storage, and is never uploaded or written automatically.
 
 ## Dependencies and risks
 

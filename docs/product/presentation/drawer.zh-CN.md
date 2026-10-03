@@ -4,7 +4,7 @@
 
 ## 职责
 
-本文档负责 Drawer 精确布局、字体、组件几何和视觉状态数值。[Drawer 行为](../surfaces/drawer.zh-CN.md)负责应用清单、排序、状态、选择与操作结果；[导航](../navigation.zh-CN.md)负责转换阈值；[设计基础](../design-foundations.zh-CN.md)负责共享颜色与字号 token；[样式设置面板表现](style-settings-panel.zh-CN.md)负责与 Home 共用的面板表面和控件。
+本文档负责 Drawer 精确布局、字体、组件几何和视觉状态数值。[Drawer 行为](../surfaces/drawer.zh-CN.md)负责应用清单、排序、状态、选择与操作结果；[导航](../navigation.zh-CN.md)负责转换阈值；[设计基础](../design-foundations.zh-CN.md)负责共享颜色与字号 token；[样式设置面板表现](style-settings-panel.zh-CN.md)负责与 Home 共用的面板表面和控件；[图标形状](../features/icon-shape.zh-CN.md)负责应用图标的剪裁模式与圆角比例。
 
 ## 界面与应用内容
 

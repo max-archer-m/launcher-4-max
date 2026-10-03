@@ -4,7 +4,7 @@
 
 ## 职责
 
-本文档负责 Home 精确布局、字体、组件几何与视觉状态。[Home 行为](../surfaces/home.zh-CN.md)负责状态和操作结果；[设计基础](../design-foundations.zh-CN.md)负责共享原则与可复用 token；[样式设置面板表现](style-settings-panel.zh-CN.md)负责与 Drawer 共用的面板表面和控件。
+本文档负责 Home 精确布局、字体、组件几何与视觉状态。[Home 行为](../surfaces/home.zh-CN.md)负责状态和操作结果；[设计基础](../design-foundations.zh-CN.md)负责共享原则与可复用 token；[样式设置面板表现](style-settings-panel.zh-CN.md)负责与 Drawer 共用的面板表面和控件；[图标形状](../features/icon-shape.zh-CN.md)负责应用图标的剪裁模式与圆角比例。
 
 ## 界面与基础信息
 

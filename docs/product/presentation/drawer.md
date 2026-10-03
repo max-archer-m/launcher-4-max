@@ -4,7 +4,7 @@
 
 ## Responsibility
 
-This document owns exact Drawer layout, typography, component geometry, and visual-state values. [Drawer behavior](../surfaces/drawer.md) owns inventory, sorting, state, selection, and action results; [navigation](../navigation.md) owns transition thresholds; [design foundations](../design-foundations.md) owns shared color and text-size tokens; the [style settings panel presentation](style-settings-panel.md) owns the panel surface and controls shared with Home.
+This document owns exact Drawer layout, typography, component geometry, and visual-state values. [Drawer behavior](../surfaces/drawer.md) owns inventory, sorting, state, selection, and action results; [navigation](../navigation.md) owns transition thresholds; [design foundations](../design-foundations.md) owns shared color and text-size tokens; the [style settings panel presentation](style-settings-panel.md) owns the panel surface and controls shared with Home; the [icon shape contract](../features/icon-shape.md) owns the application-icon clip mode and corner-radius proportion.
 
 ## Surface and application content
 
