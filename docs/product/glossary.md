@@ -14,7 +14,9 @@
 | Favorite main list | 收藏主列表 | The one full-width, vertically scrolling ordered sequence of peer vertical favorite modules and horizontal favorite ribbons below Home basic information |
 | Favorite module | 收藏模块 | One persisted vertical favorite module or horizontal favorite ribbon containing at least one favorite |
 | Vertical favorite module | 纵向收藏模块 | A full-width module whose naturally expanded entries share one module-level size, name placement, and items-per-row style |
-| Horizontal favorite ribbon | 横向收藏织带 | A full-width, single-row module of fixed-style, content-measured favorite entries that scrolls horizontally only on overflow |
+| Horizontal favorite ribbon | 横向收藏织带 | Full-width fixed-style module using Ribbon or Flow |
+| Ribbon layout | 织带布局 | One-row horizontal mode; scrolls horizontally only on overflow |
+| Flow layout | 流式布局 | Multi-row mode; wraps within module width without horizontal scrolling |
 | Add-favorite entry | 新增收藏入口 | A non-persisted favorite-main-list or in-module entry in Home edit mode whose position alone determines whether it creates a module or adds to an existing one |
 | Edit dock | 编辑坞 | The fixed bottom Home edit region that remains visible in both panel states and contains the affordance that expands or collapses the non-modal Home style settings panel |
 | Style settings panel | 样式设置面板 | The shared rounded settings-panel presentation used by Drawer display settings and the expandable Home module-style editor; each host separately defines its content, modality, placement, and behavior |
@@ -47,6 +49,8 @@ Specification terms and user-facing interface labels are separate. Interface lab
 | --- | --- | --- |
 | Vertical favorite module | 收藏列表 | Favorite list |
 | Horizontal favorite ribbon | 收藏织带 | Favorite ribbon |
+| Ribbon layout | 织带 | Ribbon |
+| Flow layout | 流式布局 | Flow |
 | Quick actions | 快捷操作设置 | Quick action settings |
 | Basic-information double-tap slot | 基础信息区双击 | Basic-information double tap |
 | Basic-information long-press slot | 基础信息区长按 | Basic-information long press |

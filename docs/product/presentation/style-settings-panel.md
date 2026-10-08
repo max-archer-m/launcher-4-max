@@ -28,7 +28,13 @@ This shared product contract requires one observably identical panel treatment; 
   remains unchanged. This edge treatment is shared by Drawer and Home and is
   reused by the Quick action selection popup.
 - The edge treatment uses no shadow, elevation, glow, blur, or glass effect.
-- The panel surface has `0dp` general container padding. Every setting block consists of one non-interactive title line and one content line. A title line is exactly `32dp` high. Standard content lines are exactly `48dp` high; the application-size block is an accepted `56dp` exception. Lines occupy the complete inner panel width, use `12dp` start and end content insets, and vertically center their contents. A read-only informational row (for example the selection prompt or the fixed-style message) is a single `48dp` row.
+- The panel surface has `0dp` general container padding. Every setting block consists
+  of one non-interactive title line and one content line. A title line is exactly
+  `32dp` high. Standard content lines are exactly `48dp` high; the application-size
+  block is an accepted `56dp` exception. Lines occupy the complete inner panel width,
+  use `12dp` start and end content insets, and vertically center their contents. A
+  read-only informational row, such as a selection prompt or another host-defined
+  informational message, is a single `48dp` row.
 - Each host owns its setting-block order.
 - The shared panel surface does not itself define a Scrim, modal input blocking, outside-click behavior, bottom margin, maximum height, internal scrolling, or attachment to another control. Each host owns those rules.
 

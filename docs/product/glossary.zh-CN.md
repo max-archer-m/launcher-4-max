@@ -14,7 +14,9 @@
 | Favorite main list | 收藏主列表 | Home 基础信息下方，由同级纵向收藏模块和横向收藏织带组成的一个全宽、可纵向滚动有序序列 |
 | Favorite module | 收藏模块 | 至少包含一个收藏的持久纵向收藏模块或横向收藏织带 |
 | Vertical favorite module | 纵向收藏模块 | 全宽模块，其自然展开的全部条目共享一组模块级尺寸、名称位置和每行数量样式 |
-| Horizontal favorite ribbon | 横向收藏织带 | 全宽单行模块，包含固定样式、按内容测量的收藏条目，仅在溢出时横向滚动 |
+| Horizontal favorite ribbon | 横向收藏织带 | 全宽模块，包含固定样式、按内容测量的收藏条目，并使用织带或流式布局 |
+| Ribbon layout | 织带布局 | 横向收藏织带的单行横向展示模式，仅在溢出时横向滚动 |
+| Flow layout | 流式布局 | 横向收藏织带的多行展示模式，在模块可用宽度内换行且不横向滚动 |
 | Add-favorite entry | 新增收藏入口 | Home 编辑模式中位于收藏主列表或模块内部的非持久条目；仅由其位置决定它创建新模块还是加入既有模块 |
 | Edit dock | 编辑坞 | Home 编辑模式底部固定区域，在面板收起与展开时都保持可见，并包含展开或收起非模态 Home 样式设置面板的入口 |
 | Style settings panel | 样式设置面板 | Drawer 显示设置与可展开 Home 模块样式编辑器共同使用的圆角设置面板表现；各宿主分别定义自身内容、模态性、位置和行为 |
@@ -47,6 +49,8 @@
 | --- | --- | --- |
 | 纵向收藏模块 | 收藏列表 | Favorite list |
 | 横向收藏织带 | 收藏织带 | Favorite ribbon |
+| Ribbon layout | 织带 | Ribbon |
+| Flow layout | 流式布局 | Flow |
 | 快捷操作 | 快捷操作设置 | Quick action settings |
 | 基础信息区双击槽位 | 基础信息区双击 | Basic-information double tap |
 | 基础信息区长按槽位 | 基础信息区长按 | Basic-information long press |

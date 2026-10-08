@@ -8,7 +8,11 @@ Home is one fixed, non-pageable, non-collapsible Launcher surface. In normal Hom
 
 The main list is one ordered, heterogeneous sequence of peer modules. A module is either a vertical favorite module or a horizontal favorite ribbon. Both occupy the complete Home content width and may be added, repeated, and ordered without a product-defined module-count limit. Home has no primary, secondary, side-by-side, folder, or page-based favorite regions.
 
-Only the favorite main list scrolls vertically. A vertical module expands naturally and has no independent vertical scroll position; a ribbon has one row and may scroll horizontally. Remaining space is transparent Home background, not another module.
+Only the favorite main list scrolls vertically. A vertical module expands naturally and has
+no independent vertical scroll position. A horizontal favorite ribbon uses either the
+one-row Ribbon layout, which may scroll horizontally on overflow, or the multi-row Flow
+layout, which wraps within the available module width and does not scroll horizontally.
+Remaining space is transparent Home background, not another module.
 
 ## Time, date, and weekday
 
@@ -35,11 +39,22 @@ Only the favorite main list scrolls vertically. A vertical module expands natura
 - Every favorite belongs to exactly one persisted module. The same stable launchable identity cannot appear more than once across the main list. Primary, cloned, and work-profile entries remain distinct identities.
 - Every module persists one stable one-dimensional application order. A vertical module wraps that order from start to end and then top to bottom according to its current items-per-row value; a ribbon presents the same order from start to end. Changing application size, name placement, or items per row changes presentation only and never rewrites the persisted application order.
 - Every persisted module contains at least one favorite. A provisional empty module is persisted only after its first valid application is added and is otherwise discarded. Losing the final favorite deletes a persisted module.
+- Each horizontal favorite ribbon persists one display mode: Ribbon or Flow. Existing
+  ribbons retain Ribbon when this capability becomes available, and a newly created
+  horizontal favorite module defaults to Ribbon. Changing the display mode changes
+  presentation only; it does not change module membership, application order, or module
+  order.
 - There is no artificial total or per-type module limit. Available unique launchable identities form the natural capacity boundary. When all are favorited, no add flow may claim another module can be completed.
 - Names, icons, badges, and launchability resolve from the latest reliable Android inventory; they are not per-favorite visual overrides.
 - In normal Home mode, selecting an application in either module type launches it. Long-pressing it produces the platform-standard long-press haptic and opens the application action sheet.
 - Home uses one surface-wide `600ms` rapid-activation window for ordinary application launch targets. The first accepted activation suppresses every later Home application activation until that window expires, regardless of identity.
-- If an application launch handoff fails, Home keeps its current main-list and ribbon positions, shows the localized short Toast `Unable to open application`, and requests one non-blocking inventory refresh. The failure itself is not evidence of uninstall, permanent disappearance, or favorite invalidity. A failed refresh adds no second Toast or blocking state; later reliable inventory is reconciled through the ordinary rules below.
+- If an application launch handoff fails, Home keeps its current main-list position and
+  any Ribbon-layout ribbon positions, shows the localized short Toast
+  `Unable to open application`, and requests one non-blocking inventory refresh. A
+  Flow-layout ribbon has no independent horizontal position. The failure itself is not
+  evidence of uninstall, permanent disappearance, or favorite invalidity. A failed
+  refresh adds no second Toast or blocking state; later reliable inventory is reconciled
+  through the ordinary rules below.
 
 ## Vertical favorite modules
 
@@ -50,9 +65,18 @@ Only the favorite main list scrolls vertically. A vertical module expands natura
 
 ## Horizontal favorite ribbons
 
-- A ribbon is one full-width module with one horizontal row of content-measured entries. It remains stationary when content fits and scrolls horizontally without looping on overflow.
-- Its style is fixed: medium application presentation, name on the right, and the presentation-defined content width, maximum, ellipsis, background, boundary, and radius.
-- It exposes no row-count, items-per-row, name-position, application-size, border, or width-mode setting. Only members and module order are editable.
+- A horizontal favorite ribbon is one full-width module whose display mode is either
+  Ribbon or Flow. Both modes use the same favorite identities, stable order, and entry
+  style.
+- Ribbon mode presents one horizontal row of content-measured entries. It remains
+  stationary when content fits and scrolls horizontally without looping on overflow.
+- Flow mode presents the same entries in start-to-end order, wrapping them into additional
+  rows within the available module width. It uses the Home main-list vertical scroll rather
+  than an independent vertical or horizontal scroll region.
+- The entry style remains fixed across both modes: medium application presentation, name
+  on the right, and the presentation-defined entry width, maximum, ellipsis, background,
+  boundary, and radius. Only the display mode, members, and module order are editable for
+  a horizontal favorite ribbon.
 
 ## Loading, inventory changes, and failure
 
@@ -99,7 +123,16 @@ Edit mode may be entered from the existing favorite action or through a basic-in
 - Expanding or collapsing the panel preserves the main list's logical scroll position, the current module selection, and module order. It neither resets nor automatically scrolls, centers, or reveals another module. Collapsing the panel restores the basic-information region through the same animated slot swap in the same state change.
 - The expanded panel's dock row changes the physical-left instruction to `Tap to select · hold to move` and replaces the physical-right upward affordance with the downward affordance. Empty Home continues to show `Add favorites`. The instruction remains non-interactive.
 - It opens without requiring or automatically making a selection. Empty Home may open it without a Toast.
-- Every module receives a complete selection layer. Unselected modules show the presentation-defined four-corner edit marks; the selected module replaces them with its complete selection outline. That layer blocks every application target and gesture within the module. A release after an unconsumed tap selects the complete module; no application launches, opens an action sheet, is removed, or begins application movement. Long-pressing anywhere in the module to the platform threshold produces one platform-standard long-press haptic and begins whole-module movement; prior selection is not required. Before recognition, vertical movement remains main-list scrolling, and any movement that cancels platform long-press recognition does not begin module movement. Ribbon horizontal scrolling is blocked.
+- Every module receives a complete selection layer. Unselected modules show the
+  presentation-defined four-corner edit marks; the selected module replaces them with its
+  complete selection outline. That layer blocks every application target and gesture
+  within the module. A release after an unconsumed tap selects the complete module; no
+  application launches, opens an action sheet, is removed, or begins application movement.
+  Long-pressing anywhere in the module to the platform threshold produces one
+  platform-standard long-press haptic and begins whole-module movement; prior selection is
+  not required. Before recognition, vertical movement remains main-list scrolling, and any
+  movement that cancels platform long-press recognition does not begin module movement.
+  Ribbon-layout horizontal scrolling is blocked.
 - Tapping the already selected module or inter-module blank space leaves the selection unchanged. Long-pressing an unselected module starts movement without selecting it or clearing the existing selection; selection and movement are independent actions.
 - Recognition lifts a complete non-interactive module preview that preserves the pointer's original offset within the module and immediately removes the source module from list layout without retaining a placeholder. Remaining modules close the vacated space.
 - Module sorting is insertion-only and never exchanges two modules. The touch point controls the candidate boundary: entering the first half of a module shows its start-side insertion line; entering the second half shows its end-side insertion line. In an inter-module gap, the nearest adjacent boundary applies.
@@ -108,7 +141,13 @@ Edit mode may be entered from the existing favorite action or through a basic-in
 - Save failure restores the last successfully saved complete module list, retains Home edit mode, and shows the localized short Toast `Unable to save module order`. The user may retry by long-pressing a module again; no Dialog or separate Retry action is added.
 - With no selection, the panel shows one non-interactive localized message. Its accepted labels are `Select a favorite list to edit its style` in English and `选择收藏列表以编辑样式` in Simplified Chinese. The panel exposes no add action; adding favorites and creating modules belong to the add-favorite entries defined above.
 - A selected vertical module exposes application icon size, application name (text) size, name placement, and items per row directly, without a module-type row. While the module's name placement is `Hidden`, its text-size slider uses the shared disabled opacity and rejects activation, and another placement restores it with the persisted text tier; the icon-size slider is unaffected. The current panel exposes no complete-module deletion action.
-- A ribbon remains selectable through the same complete-module tap as any peer module. A selected ribbon shows one non-interactive localized message. Its accepted labels are `Favorite ribbons use a fixed style` in English and `收藏织带使用固定样式` in Simplified Chinese. It shows no module-type row, style controls, or disabled placeholders for unavailable style controls. Its fixed Medium presentation remains unchanged.
+- A ribbon remains selectable through the same complete-module tap as any peer module. A
+  selected ribbon exposes the display-mode choice between Ribbon and Flow and shows no
+  vertical-module controls. The accepted display-mode labels are `Ribbon` and `Flow` in
+  English and `织带` and `流式布局` in Simplified Chinese. It shows no module-type row,
+  application-size control, name-placement control, items-per-row control, or disabled
+  placeholder for those unavailable controls. Switching the display mode follows the
+  ordinary immediate-preview and complete module-style save rules.
 - Current product capability does not provide module naming or renaming.
 - Every valid style change previews immediately and starts one exclusive save of the complete module-style state. While that save remains unresolved, style mutation, add or remove actions, Undo activation, module selection, and application or module movement are unavailable; main-list scrolling, panel collapse, system Back, and external interruption remain available. The panel shows no Loading state or progress indicator, and no later style candidate or favorite mutation is queued, coalesced, or saved in parallel.
 - Save success makes the preview durable and restores the blocked editing actions. Save failure restores the complete last successfully saved style and shows the localized short Toast `Unable to save module style`. An open panel refreshes in place and retains its selected module when that identity still exists; a panel collapsed while saving remains collapsed and is not reopened. A later valid change may retry normally.
@@ -122,13 +161,46 @@ Edit mode may be entered from the existing favorite action or through a basic-in
 - Application-level editing is available only while the style settings panel is collapsed. Selecting an application item performs no action. Each item exposes one separate remove target; the rest of its complete item surface is the application-movement target, with no visible reorder handle or reserved handle space.
 - Selecting the remove target removes that favorite through the existing atomic mutation and shows the localized removal Snackbar `Removed from favorites` with the action `Undo`. The target consumes its complete pointer sequence and cannot launch the application or begin movement. Removing a favorite through the Home application action sheet uses the same lifecycle.
 - Application reorder is insertion-only; it never switches to a separate exchange operation. One movement means removing the source identity from its saved order and inserting it at one target-order boundary, so intervening identities shift naturally.
-- Long-pressing the non-remove portion of the complete application item to the platform threshold produces one platform-standard long-press haptic and gives that active pointer exclusive ownership of application movement. Prior to recognition, vertical intent remains main-list scrolling and horizontal intent within a ribbon remains ribbon scrolling; movement that cancels platform long-press recognition does not begin application movement. After recognition, the same sequence cannot select the application, open its action sheet, open Drawer, or start module movement. Candidate-boundary changes produce no repeated haptic.
+- Long-pressing the non-remove portion of the complete application item to the platform
+  threshold produces one platform-standard long-press haptic and gives that active pointer
+  exclusive ownership of application movement. Prior to recognition, vertical intent remains
+  main-list scrolling. Horizontal intent within a Ribbon-layout ribbon remains Ribbon-layout
+  scrolling; a Flow-layout ribbon has no horizontal scrolling. Movement that cancels
+  platform long-press recognition does not begin application movement. After recognition,
+  the same sequence cannot select the application, open its action sheet, open Drawer, or
+  start module movement. Candidate-boundary changes produce no repeated haptic.
 - A one-item-per-row vertical module divides a candidate item's bounds into top and bottom halves: the top half selects the boundary before the item and the bottom half selects the boundary after it. A multi-item row divides the candidate item's bounds into start-side and end-side halves: the start half selects before and the end half selects after. Current English and Simplified Chinese layouts resolve start to physical left and use left-to-right, then top-to-bottom reading order.
 - In a partially filled final row, space after the last real item selects the boundary after that item; it never creates a candidate empty identity or artificial slot. In a gap between two rows, the nearer preceding-row end or following-row start boundary applies, with an exact tie resolving to the following-row start. The trailing add-favorite entry occupies the position after the last real item and is excluded from this resolution.
-- A ribbon uses the same start-half-before and end-half-after rule. The preceding application's end half, the gap between adjacent applications, and the following application's start half all select the same order boundary between those applications; switching between these hit regions alone must not relocate the insertion line to another item edge. Space within the ribbon's valid content region before its first application or after its last application selects the module start or end boundary respectively, excluding its trailing add-favorite entry. The gap between the last application and that entry selects the end boundary; releasing on the entry itself remains invalid.
+- A Ribbon-layout ribbon uses the same start-half-before and end-half-after rule. The
+  preceding application's end half, the gap between adjacent applications, and the
+  following application's start half all select the same order boundary between those
+  applications. Switching between these hit regions alone must not relocate the insertion
+  line to another item edge. Space before the first application or after the last
+  application selects the module start or end boundary respectively, excluding its
+  trailing add-favorite entry. The gap before that entry selects the end boundary;
+  releasing on the entry itself remains invalid.
+- A Flow-layout ribbon uses the same logical order and candidate-boundary rules as a
+  multi-item vertical module. Its wrapped rows remain part of the Home main list, and it
+  has no horizontal scrolling.
 - Entering another module resolves a candidate through that destination module's own rules. The single insertion line appears within that destination geometry and is the only visual identification of both the target module and order boundary. In a gap between modules, the nearest preceding-module end or following-module start boundary applies, with an exact tie resolving to the following-module start. The basic-information region, edit dock, expanded style settings panel, system-protected area, every add-favorite entry, and every region without candidate feedback are invalid insertion destinations. A main-list add-favorite entry remains a valid drop destination under its own rule above.
-- At long-press recognition, the application is lifted into its preview and immediately omitted from the source layout without a placeholder. Remaining applications and the trailing add-favorite entry close the gap using the module's existing layout rules. This applies to single-column, multi-column, and ribbon sources. It is a transient presentation change only: the saved favorite identities, application orders, module order, and module existence remain unchanged. Lifting is not removal from favorites and creates neither a removal Snackbar nor an Undo snapshot.
-- All insertion candidates use the logical order with the moving source omitted. First and last applications, row wrapping, and neighboring gaps refer to those remaining applications, not an invisible source slot. During reflow or scrolling, hit testing and insertion feedback use the same current visible bounds, not pre-lift or final animation-target coordinates. Switching between equivalent ribbon hit regions alone does not move its line; the line still follows its boundary's visual movement. Hovering shows one candidate insertion indicator without inserting the preview into the destination, repeatedly reordering the list, or saving a provisional result. A same-module release inserts the source once into the reduced order; a cross-module release inserts it once into the destination order. The lifted preview retains source presentation until handoff to the destination after a successful save.
+- At long-press recognition, the application is lifted into its preview and immediately
+  omitted from the source layout without a placeholder. Remaining applications and the
+  trailing add-favorite entry close the gap using the module's existing layout rules.
+  This applies to single-column, multi-column, Ribbon-layout, and Flow-layout sources.
+  It is a transient presentation change only: the saved favorite identities, application
+  orders, module order, and module existence remain unchanged. Lifting is not removal
+  from favorites and creates neither a removal Snackbar nor an Undo snapshot.
+- All insertion candidates use the logical order with the moving source omitted. First and
+  last applications, row wrapping, and neighboring gaps refer to those remaining
+  applications, not an invisible source slot. During reflow or scrolling, hit testing and
+  insertion feedback use the same current visible bounds, not pre-lift or final
+  animation-target coordinates. Switching between equivalent hit regions within one
+  ribbon alone does not move its line; the line follows its boundary's visual movement.
+  Hovering shows one candidate insertion indicator without inserting the preview into the
+  destination, repeatedly reordering the list, or saving a provisional result. A
+  same-module release inserts the source once into the reduced order; a cross-module
+  release inserts it once into the destination order. The lifted preview retains source
+  presentation until handoff to the destination after a successful save.
 - If the lifted application was its module's only application, retain the source module at its existing main-list order with only its existing trailing add-favorite entry. Do not retain an application slot or create a new empty-module drop target. This temporarily application-empty module exposes no application insertion boundary, including a synthetic start or end boundary; its add entry remains an invalid drop destination. Cancelling the movement or releasing in an invalid region restores the application. Only a successful move to another module or a newly created module may remove this source module as part of the same atomic save. This transient display never persists an empty module or activates the ordinary empty-Home state.
 - A valid release that changes the semantic order immediately starts one exclusive atomic save of the resolved destination and order, without waiting for layout animation. Subsequent visual movement cannot change that released destination. Movement within one module rewrites only that module's application order. Cross-module movement removes the identity from the source and inserts it into the explicit destination in the same mutation; it never duplicates, redirects, or exposes an intermediate persisted state. If the move removes the source module's final application, deletion of that source module belongs to the same atomic mutation.
 - A valid release whose resulting application order equals the pre-movement saved order is a no-change completion: restore the source in that order and clear movement without saving, additional result messaging, or another haptic. Necessary visual restoration remains allowed. The comparison is by identity and order, not by the source's former screen coordinates. Releasing in an invalid region or receiving pointer cancellation restores the pre-movement saved arrangement without presenting a save failure.
@@ -137,7 +209,11 @@ Edit mode may be entered from the existing favorite action or through a basic-in
 - System Back during active movement cancels that movement and is consumed without also exiting edit mode. The Android system Home action, application backgrounding, lifecycle interruption, or process loss cancels the unpublished movement and then follows the existing navigation or restoration rule from the last saved state.
 - Additional pointers never take ownership, change the candidate, or move the preview. Release or cancellation of the owning pointer alone completes or cancels the movement.
 - Inventory changes do not turn an uncertain identity into a deletion while movement is active. If a reliable refresh confirms that the moving source identity permanently disappeared, Home cancels movement and then applies the existing confirmed-disappearance reconciliation rule.
-- Application movement uses the shared edge auto-scroll rules below. The Home main-list viewport may scroll only vertically, and the active ribbon viewport may scroll only horizontally. Candidate destinations, edge feedback, and application feedback must remain distinguishable from expanded-panel module selection and movement feedback.
+- Application movement uses the shared edge auto-scroll rules below. The Home main-list
+  viewport may scroll only vertically. A Ribbon-layout ribbon may scroll only horizontally
+  when it is the active movement container; a Flow-layout ribbon uses the main-list
+  vertical viewport. Candidate destinations, edge feedback, and application feedback must
+  remain distinguishable from expanded-panel module selection and movement feedback.
 - Removing a module's final application deletes that now-empty module as part of the same application-removal mutation because Home does not persist empty modules. The current product exposes no separate complete-module deletion control, confirmation, or independent module-removal Undo operation.
 - Only an explicit user-initiated application removal is Undo-eligible. Application movement, module reordering, and reliable-inventory automatic cleanup do not create an Undo snapshot. A future complete-module deletion capability requires its own accepted Undo decision and is not implied here.
 - Only the latest eligible removal snapshot exists. A later explicit removal replaces it. Snackbar timeout or dismissal, another successfully committed favorite mutation, exiting edit mode, entering Drawer favorite multi-selection, the Android system Home action, an external interruption, or process recreation invalidates it. An ordinary inventory refresh does not invalidate it unless a reliable result confirms that the removed identity permanently disappeared.
@@ -160,16 +236,32 @@ Edit mode may be entered from the existing favorite action or through a basic-in
 
 ## Home–Drawer gesture arbitration
 
-- In normal mode, an upward gesture may begin on any Launcher4Max-managed Home element. Vertical movement gives the favorite main list first opportunity to scroll and suppresses the originating click or long press.
-- At the main-list end, remaining displacement from the same continuous upward gesture transfers to the Home-to-Drawer transition without a second gesture or discontinuity.
-- Ribbon horizontal scrolling wins only after horizontal intent is established. Edit mode does not open Drawer through this gesture.
+- In normal mode, an upward gesture may begin on any Launcher4Max-managed Home element.
+  Vertical movement gives the favorite main list first opportunity to scroll and suppresses
+  the originating click or long press.
+- At the main-list end, remaining displacement from the same continuous upward gesture
+  transfers to the Home-to-Drawer transition without a second gesture or discontinuity.
+- Ribbon-layout horizontal scrolling wins only after horizontal intent is established.
+  Edit mode does not open Drawer through this gesture.
 
 ## Acceptance intent
 
-- Home presents one fixed information region and one full-width ordered main list containing any interleaving of vertical modules and ribbons. The information region remains visible in normal Home and collapsed-panel application-level editing, leaves layout only while the inline style settings panel is expanded, and returns when that panel collapses.
+- Home presents one fixed information region and one full-width ordered main list
+  containing any interleaving of vertical modules and ribbons. A ribbon may use either its
+  one-row Ribbon layout or its wrapped Flow layout. The information region remains visible
+  in normal Home and collapsed-panel application-level editing, leaves layout only while
+  the inline style settings panel is expanded, and returns when that panel collapses.
 - Modules have no artificial count limit, persisted empty modules do not exist, and every stable identity appears in at most one module.
-- Only the main list scrolls vertically; ribbons alone scroll horizontally. One continuous upward gesture can proceed into Drawer at the main-list end.
-- Vertical style is uniform per module; ribbon style is fixed. Right-side names allow one or two items per row, below-icon names allow one through four, and hidden names allow one through six. Count changes never switch placement; changing placement preserves an in-range count and clamps when the destination boundary is lower: entering right-side names clamps three or four (or a higher count from hidden names) to two, and entering below-icon names clamps a count above four to four. Stepper availability updates to the resulting boundary.
+- Only the main list scrolls vertically. Ribbon-mode ribbons alone scroll horizontally;
+  Flow-mode ribbons wrap within the main list and do not introduce horizontal scrolling.
+  One continuous upward gesture can proceed into Drawer at the main-list end.
+- Vertical style is uniform per module; Ribbon and Flow layouts share one fixed entry
+  style. Right-side names allow one or two items per row, below-icon names allow one
+  through four, and hidden names allow one through six. Count changes never switch
+  placement; changing placement preserves an in-range count and clamps when the destination
+  boundary is lower: entering right-side names clamps three or four (or a higher count
+  from hidden names) to two, and entering below-icon names clamps a count above four to
+  four. Stepper availability updates to the resulting boundary.
 - The fixed top edit dock persists across both panel states at the same position with an unchanged hot zone. The non-modal edit panel preserves list visibility and scrolling: expanding animates the information region to zero and the panel to its content height while the main list absorbs the difference, the panel never covers the list, the committed state never waits for the animation, re-toggling retargets the in-flight animation, and reduced motion skips to the final state. Its collapsed state exposes only application-level editing; its expanded state blocks application-level actions and allows whole-module selection and movement by tapping or long-pressing the complete module surface without a separate reorder handle. The panel exposes no add action.
 - Edit mode appends two add-favorite entries after the last module and one trailing add-favorite entry inside every module. Entry position alone resolves creating a new module against adding to an existing one. Every entry is excluded from insertion-boundary resolution, so adding to a module's end and creating a new module remain separate reachable outcomes. Dropping a moving application on a main-list entry creates that module type with the application as its first favorite in one atomic mutation.
 - Expanded-panel selection remains bound to a module identity and changes only through module taps, never through blank-space taps or long-press movement. Module-style persistence is serialized as one complete state; unresolved saves temporarily block mutation without blocking scrolling or panel dismissal, and failure restores the last durable style.

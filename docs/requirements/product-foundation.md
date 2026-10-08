@@ -69,7 +69,11 @@ The product compatibility boundary requires `minSdk` 31. Current configured `com
 ### In scope
 
 - Home: one non-pageable, non-collapsible default Home with fixed time and date above one vertically scrolling, full-width favorite main list and the Drawer gesture entry, plus a dismissible default-Launcher prompt between the fixed information region and that list while Launcher4Max is not the device's default Launcher.
-- Favorites: one ordered heterogeneous sequence of full-width vertical modules and single-row horizontal ribbons, without an artificial module-count limit. A launchable identity appears in only one module. Vertical modules persist module-level icon size, name (text) size, name placement, and items-per-row values; ribbons use one fixed style.
+- Favorites: one ordered heterogeneous sequence of full-width vertical modules and
+  horizontal favorite ribbons, without an artificial module-count limit. A launchable
+  identity appears in only one module. Vertical modules persist module-level icon size,
+  name (text) size, name placement, and items-per-row values; ribbons persist Ribbon or
+  Flow display mode while retaining their shared entry style.
 - Favorite editing: explicit add, remove, move, reorder, resize, confirmation, cancellation, latest-removal Undo, and Drawer drag-to-favorite behavior defined by the Home and Drawer contracts.
 - Screen locking: an optional, purpose-limited accessibility-service capability for eligible blank Home space, triggered by the quick-action slot the user binds to it. It does not gate independent Launcher paths.
 - Quick actions: two user-configurable Home basic-information blank-space slots, each bound to `No action`, `Edit mode`, or `Screen lock`, defaulting to `No action`.
