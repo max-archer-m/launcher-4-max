@@ -29,7 +29,7 @@ Use the owning document for a product decision instead of interpreting the wiref
 ## Wireframe index
 
 - [Home](wireframes/home.txt) — complete canvas showing fixed basic information, the dismissible default-Launcher prompt shown between that region and the list while Launcher4Max is not the default Launcher, and the vertically scrolling heterogeneous favorite main list with representative peer modules.
-- [Home edit mode](wireframes/home-edit-mode.txt) — representative expanded-panel canvas showing the temporarily removed basic-information region, the remaining main-list viewport, whole-module selection and long-press movement affordances, the main-list and in-module add-favorite entries, the expanded non-modal style settings panel, and the persistent edit dock.
+- [Home edit mode](wireframes/home-edit-mode.txt) — representative canvas showing the visible basic-information region, module headers, one module-local style panel with its selection outline, application editing on the other module, and the add-favorite entries.
 - [Drawer](wireframes/drawer.txt) — representative Content-state canvas showing the fixed search region, ordinary, search, and multi-selection semantics, list anchors, Settings section, and alphabet index.
 - [Application action sheet](wireframes/app-action-sheet.txt) — modal-state canvas showing the blocked background, scrim, and content order.
 - [Settings](wireframes/settings.txt) — complete canvas showing navigation, Launcher status, and product-information regions.

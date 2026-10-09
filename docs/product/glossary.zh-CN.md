@@ -18,14 +18,14 @@
 | Ribbon layout | 织带布局 | 横向收藏织带的单行横向展示模式，仅在溢出时横向滚动 |
 | Flow layout | 流式布局 | 横向收藏织带的多行展示模式，在模块可用宽度内换行且不横向滚动 |
 | Add-favorite entry | 新增收藏入口 | Home 编辑模式中位于收藏主列表或模块内部的非持久条目；仅由其位置决定它创建新模块还是加入既有模块 |
-| Edit dock | 编辑坞 | Home 编辑模式底部固定区域，在面板收起与展开时都保持可见，并包含展开或收起非模态 Home 样式设置面板的入口 |
-| Style settings panel | 样式设置面板 | Drawer 显示设置与可展开 Home 模块样式编辑器共同使用的圆角设置面板表现；各宿主分别定义自身内容、模态性、位置和行为 |
+| Module header | 模块表头 | 收藏模块上方的一行；名称展示打开时显示模块名称，编辑模式中放置可编辑名称、展示开关、样式入口、整列取消收藏和模块排序拖动柄 |
+| Style settings panel | 样式设置面板 | Drawer 显示设置与 Home 模块样式编辑器共同使用的圆角设置面板表现；各宿主分别定义自身内容、模态性、位置和行为 |
 | Application shortcut | 应用快捷操作 | 应用通过平台暴露的操作 |
 | Launcher action | 启动器操作 | Launcher4Max 提供的操作，例如收藏、编辑或卸载 |
 | Application action sheet | 应用操作面板 | 包含应用身份、应用快捷操作和启动器操作的模态 Bottom Sheet |
 | Section anchor | 分组锚点 | Drawer 中的分组标题，例如 A 或 `#`；内嵌展示位于分组上方并随列表滚动，左侧展示占据所属分组的起始侧列，并只在该分组经过视口期间吸附于固定顶部应用栏下方 |
 | Alphabet index | 字母索引 | Drawer 右侧用于跳转到锚点的固定索引 |
-| Edit mode | 编辑模式 | 从收藏操作或绑定为编辑模式的快捷操作槽位进入，在 Home 中显示编辑坞、模块移动、应用编辑和新增收藏入口的状态 |
+| Edit mode | 编辑模式 | 从收藏操作或绑定为编辑模式的快捷操作槽位进入，在 Home 中显示模块表头、模块移动、应用编辑和新增收藏入口的状态 |
 | Favorite multi-selection | 收藏多选 | Drawer 的临时模式，为一个已记录的 Home 收藏目标收集一组有顺序且此前未收藏的应用 |
 | Screen locking | 锁屏 | 通过 Launcher4Max 用途受限的无障碍服务请求一次 Android 系统锁屏操作的可选能力，由用户绑定到它的基础信息区快捷操作槽位触发 |
 | Quick actions | 快捷操作 | 把 Home 基础信息区空白槽位（双击、长按）绑定为 `无操作`、`编辑模式` 或 `锁屏` 的用户可配置注册表 |
@@ -49,6 +49,7 @@
 | --- | --- | --- |
 | 纵向收藏模块 | 收藏列表 | Favorite list |
 | 横向收藏织带 | 收藏织带 | Favorite ribbon |
+| 模块表头 | 模块表头 | Module header |
 | Ribbon layout | 织带 | Ribbon |
 | Flow layout | 流式布局 | Flow |
 | 快捷操作 | 快捷操作设置 | Quick action settings |

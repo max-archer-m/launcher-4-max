@@ -10,7 +10,7 @@ settings panels. It also owns the shared edge treatment reused by the Quick acti
 selection popup. That popup's other geometry remains in the
 [Settings presentation](settings.md#quick-action-settings-page-and-selection-dialog).
 [Drawer presentation](drawer.md#display-settings) and
-[Home presentation](home.md#edit-dock-and-style-settings-panel) own only their host-specific
+[Home presentation](home.md#module-header-and-style-settings-panel) own only their host-specific
 placement, modality, height, content, and surrounding layout. Their behavior
 specifications continue to own state and action results.
 

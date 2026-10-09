@@ -29,7 +29,7 @@
 ## 线框索引
 
 - [Home](wireframes/home.txt) — 完整画布，表达固定基础信息、Launcher4Max 不是默认 Launcher 时位于该区域与列表之间的可关闭默认启动器提示，以及可纵向滚动的异构收藏主列表，并展示代表性同级模块。
-- [Home 编辑模式](wireframes/home-edit-mode.txt) — 代表性面板展开画布，表达暂时移除的基础信息区、剩余主列表视口、完整模块选择与长按移动提示、主列表与模块内的新增收藏入口、展开的非模态样式设置面板及持续可见的编辑坞。
+- [Home 编辑模式](wireframes/home-edit-mode.txt) — 代表性画布，表达保持可见的基础信息区、模块表头、一个带选中边框的模块内样式面板、另一个模块上的应用编辑，以及新增收藏入口。
 - [Drawer](wireframes/drawer.txt) — 代表性 Content 状态画布，表达固定搜索区域、普通／搜索／多选语义、列表锚点、Settings 分组和字母索引。
 - [应用操作面板](wireframes/app-action-sheet.txt) — 模态状态画布，表达被阻断背景、遮罩和内容顺序。
 - [Settings](wireframes/settings.txt) — 完整画布，表达导航、Launcher 状态和产品信息区域。

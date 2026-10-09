@@ -18,14 +18,14 @@
 | Ribbon layout | 织带布局 | One-row horizontal mode; scrolls horizontally only on overflow |
 | Flow layout | 流式布局 | Multi-row mode; wraps within module width without horizontal scrolling |
 | Add-favorite entry | 新增收藏入口 | A non-persisted favorite-main-list or in-module entry in Home edit mode whose position alone determines whether it creates a module or adds to an existing one |
-| Edit dock | 编辑坞 | The fixed bottom Home edit region that remains visible in both panel states and contains the affordance that expands or collapses the non-modal Home style settings panel |
-| Style settings panel | 样式设置面板 | The shared rounded settings-panel presentation used by Drawer display settings and the expandable Home module-style editor; each host separately defines its content, modality, placement, and behavior |
+| Module header | 模块表头 | The row above a favorite module that shows its name when name visibility is on; in edit mode it holds the editable name, visibility affordance, style affordance, whole-module unfavorite action, and module-reorder handle |
+| Edit mode | 编辑模式 | The Home state entered from a favorite action or a basic-information quick-action slot bound to edit mode, exposing the module header, module movement, application editing, and add-favorite entries |
+| Style settings panel | 样式设置面板 | The shared rounded settings-panel presentation used by Drawer display settings and the Home module-style editor; each host separately defines its content, modality, placement, and behavior |
 | Application shortcut | 应用快捷操作 | An action exposed by the application through the platform |
 | Launcher action | 启动器操作 | An action supplied by Launcher4Max, such as favorite, edit, or uninstall |
 | Application action sheet | 应用操作面板 | The modal Bottom Sheet containing application identity, application shortcuts, and Launcher actions |
 | Section anchor | 分组锚点 | A Drawer section heading such as A or `#`; inline presentation scrolls above its section, while left-side presentation occupies its section's leading column and pins below the fixed top app bar only while that section crosses the viewport |
 | Alphabet index | 字母索引 | The fixed right-side Drawer index used to jump between anchors |
-| Edit mode | 编辑模式 | The Home state entered from a favorite action or a basic-information quick-action slot bound to edit mode, exposing the edit dock, module movement, application editing, and add-favorite entries |
 | Favorite multi-selection | 收藏多选 | The temporary Drawer mode that collects an ordered set of previously unfavorited applications for one captured Home favorite destination |
 | Screen locking | 锁屏 | The optional capability that requests one Android system lock action through Launcher4Max's narrowly scoped accessibility service, triggered by the basic-information quick-action slot the user binds to it |
 | Quick actions | 快捷操作 | The user-configurable registry that binds the Home basic-information blank-space slots — double tap and long press — to `No action`, `Edit mode`, or `Screen lock` |
@@ -49,6 +49,7 @@ Specification terms and user-facing interface labels are separate. Interface lab
 | --- | --- | --- |
 | Vertical favorite module | 收藏列表 | Favorite list |
 | Horizontal favorite ribbon | 收藏织带 | Favorite ribbon |
+| Module header | 模块表头 | Module header |
 | Ribbon layout | 织带 | Ribbon |
 | Flow layout | 流式布局 | Flow |
 | Quick actions | 快捷操作设置 | Quick action settings |

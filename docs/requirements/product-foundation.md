@@ -71,10 +71,11 @@ The product compatibility boundary requires `minSdk` 31. Current configured `com
 - Home: one non-pageable, non-collapsible default Home with fixed time and date above one vertically scrolling, full-width favorite main list and the Drawer gesture entry, plus a dismissible default-Launcher prompt between the fixed information region and that list while Launcher4Max is not the device's default Launcher.
 - Favorites: one ordered heterogeneous sequence of full-width vertical modules and
   horizontal favorite ribbons, without an artificial module-count limit. A launchable
-  identity appears in only one module. Vertical modules persist module-level icon size,
+  identity appears in only one module. Every module persists its own name and whether
+  that name is shown. Vertical modules persist module-level icon size,
   name (text) size, name placement, and items-per-row values; ribbons persist Ribbon or
   Flow display mode while retaining their shared entry style.
-- Favorite editing: explicit add, remove, move, reorder, resize, confirmation, cancellation, latest-removal Undo, and Drawer drag-to-favorite behavior defined by the Home and Drawer contracts.
+- Favorite editing: explicit add, remove, whole-module unfavorite, move, reorder, resize, confirmation, cancellation, latest-removal Undo, and Drawer drag-to-favorite behavior defined by the Home and Drawer contracts.
 - Screen locking: an optional, purpose-limited accessibility-service capability for eligible blank Home space, triggered by the quick-action slot the user binds to it. It does not gate independent Launcher paths.
 - Quick actions: two user-configurable Home basic-information blank-space slots, each bound to `No action`, `Edit mode`, or `Screen lock`, defaulting to `No action`.
 - Drawer: every launchable entry successfully read from Android-exposed sources, including cloned and work-profile entries when available, with ordinary-mode local application-name search and a user-selected background opacity from `0` (clear wallpaper) through `100` (solid surface color). A fresh configuration defaults to `50`. An isolated non-current-profile read failure does not block usable entries from other profiles.
@@ -174,10 +175,10 @@ The product lets users maintain Home favorites and use individual Settings entri
 
 ## Local data boundary
 
-- Durable user-content data consists of ordered favorite modules, module type, stable favorite identity and position, and applicable vertical-module size, name placement, and items-per-row values. A stable identity has one module destination and cannot be duplicated across modules.
+- Durable user-content data consists of ordered favorite modules, module type, each module's persisted name and name visibility, stable favorite identity and position, and applicable vertical-module size, name placement, and items-per-row values. A stable identity has one module destination and cannot be duplicated across modules.
 - Durable local configuration also includes the selected Drawer application icon size, application name size, name placement, items-per-row count, section-anchor presentation, background-opacity percentage, and the quick-action binding of each Home basic-information slot. Each valid change is saved as one complete configuration state.
 - Primary, cloned, and work-profile identities must remain distinguishable and must not be stored or deduplicated solely by package name.
-- The latest eligible application-removal snapshot is transient Undo state, not durable undo history.
+- The latest eligible removal snapshot is transient Undo state, not durable undo history. It may record either the latest removed application or the latest removed whole module.
 - The local date on which the user last dismissed the Home default-Launcher prompt is durable presentation state. It is user-controlled, is not application-usage history, and is not part of the backup file.
 - Time and date come from the device system and are not retained historically.
 - Launcher4Max does not collect or store accessibility window content or events, notifications, contacts, location, clipboard content, files, photos, stable device identifiers, application-usage history, or analytics events.
