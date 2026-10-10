@@ -50,8 +50,11 @@ The reverse transition uses the same values in reverse. Rebound and completion a
 - In normal Home mode, an upward drag is the only user-gesture entry into ordinary Drawer. A Home edit-mode add-favorite entry may programmatically complete the same upward transition into Drawer favorite multi-selection mode; this does not enable Home-to-Drawer dragging during edit mode.
 - In normal Home mode, the drag may begin anywhere inside Launcher4Max's Home interaction area, including over the time, date, favorite entries, empty state, loading state, error state, and Retry control. System-reserved inset gestures remain governed by Android.
 - Vertical upward movement first scrolls the favorite main list toward its end. If the main list cannot consume displacement, its remaining displacement transfers from the same continuous gesture into the Home-to-Drawer transition without requiring the user to lift. Transition progress begins from the transferred displacement, not distance already consumed by list scrolling.
-- Downward dragging scrolls the favorite main list toward its start and does not initiate a Home surface transition. A horizontal favorite ribbon consumes a gesture only after horizontal intent is established.
-- Home-to-Drawer dragging is disabled while Home edit mode is active. A whole-application-item long press recognized while the style settings panel is collapsed, or a whole-module long press recognized while it is expanded, owns its corresponding movement; other vertical drags scroll the favorite main list.
+- Downward dragging scrolls the favorite main list toward its start and does not initiate
+  a Home surface transition. A Ribbon-layout favorite ribbon consumes a gesture only
+  after horizontal intent is established; a Flow-layout ribbon remains part of the
+  main-list vertical scroll.
+- Home-to-Drawer dragging is disabled while Home edit mode is active. A whole-application-item long press recognized in a module whose style panel is closed owns application movement. A module-reorder handle drag owns module movement whether or not a panel is open. Other vertical drags scroll the favorite main list.
 - A pointer sequence can resolve to only one Home action. Before an interactive element's selection or long-press action has been committed, recognition of an upward drag transfers ownership to the Home-to-Drawer transition and suppresses that element's selection, long-press, and haptic response.
 - In eligible basic-information blank space, a double tap or a long press resolves to the action bound to the corresponding quick-action slot defined in [quick-actions.md](features/quick-actions.md); a slot bound to `No action` resolves to nothing. Any drag that takes transition ownership cancels that recognition. Time, date-and-weekday, favorites, and other interactive targets never participate in bound blank-space gestures.
 - Selection is committed only when the pointer is released without the sequence becoming an upward drag or a long-press. Once a long-press has been recognized and its action has opened, the same pointer sequence does not also begin the Drawer transition.
@@ -73,20 +76,37 @@ The reverse transition uses the same values in reverse. Rebound and completion a
 - On Settings, Back returns to the previous Launcher4Max surface, currently Drawer.
 - The quick-action settings page opens only from its Settings item and is a Settings sub-page rather than a separate surface. On it, Back returns to Settings and preserves Settings' prior position; the page is not restored after process recreation, matching the other non-restored transient surfaces.
 - On the application action sheet, Back dismisses the sheet and returns to the unchanged underlying surface.
-- In Home edit mode, Back first collapses an expanded style settings panel; otherwise it exits to normal Home. In Drawer favorite multi-selection mode, Back first cancels the complete unconfirmed selection and returns through the reverse transition to Home edit mode; it does not also exit edit mode.
-- Process restoration begins at Home. Drawer, Settings, an action sheet, edit mode, and transient panel or selection state are not restored. Within the same process, ordinary Launcher4Max round trips preserve the favorite main list's meaningful vertical position and each ribbon's meaningful horizontal position. Process recreation resets them to their content starts.
+- In Home edit mode, Back first closes an open style settings panel; otherwise it exits to normal Home. In Drawer favorite multi-selection mode, Back first cancels the complete unconfirmed selection and returns through the reverse transition to Home edit mode; it does not also exit edit mode.
+- Process restoration begins at Home. Drawer, Settings, an action sheet, edit mode, and
+  transient panel or selection state are not restored. Within the same process, ordinary
+  Launcher4Max round trips preserve the favorite main list's meaningful vertical position
+  and each Ribbon-layout ribbon's meaningful horizontal position. Process recreation
+  resets them to their content starts.
 
 ## Home edit-mode interruption
 
 - Home edit mode remains valid only while Home is the fully foreground, interactive Launcher4Max surface. A system or external interruption that covers Home input or moves interaction away from Home exits edit mode, including opening the notification shade or Quick Settings, showing Recents, locking or turning off the screen, opening another application, or presenting another system-owned surface.
-- The interruption cancels any in-progress gesture or unpublished application or module movement, collapses the style settings panel, clears module selection, and dismisses edit-only visual feedback. Successfully saved changes remain. An atomic mutation whose save already started follows its existing completion or failure rule, but neither result may restore edit mode. If Launcher4Max can observe the interruption result only when Home becomes interactive again, it must complete this reset before accepting new Home input. Dismissing the interruption therefore reveals normal Home, never the previous application- or module-level edit state.
+- The interruption cancels any in-progress gesture or unpublished application or module movement, closes the style settings panel, and dismisses edit-only visual feedback. Successfully saved changes remain. An atomic mutation whose save already started follows its existing completion or failure rule, but neither result may restore edit mode. If Launcher4Max can observe the interruption result only when Home becomes interactive again, it must complete this reset before accepting new Home input. Dismissing the interruption therefore reveals normal Home, never the previous application- or module-level edit state.
 - Launcher4Max-owned steps that belong to the same editing journey are not external interruptions: expanding or collapsing the inline style settings panel, showing an Launcher4Max confirmation or removal Snackbar, and entering or returning from Drawer favorite multi-selection follow their own documented state rules.
 
 ## Android system Home action and external application return
 
-- When Launcher4Max is the selected default Launcher, the Android system Home action from any Launcher4Max surface, including Home edit mode, Drawer, Drawer favorite multi-selection mode, Settings, and the quick-action settings page, displays normal Launcher4Max Home. An active favorite multi-selection is cancelled and edit mode is exited. Within the same process, normal Home retains the latest meaningful main-list and ribbon positions formed by successfully completed scrolling or editing; cancelling an unfinished gesture does not create a new position. This is a system navigation result, not an Launcher4Max Back or Drawer-to-Home transition, and Launcher4Max does not reinterpret the Android system Home action as Back. Unqualified `Home` in this contract means the Launcher4Max product surface, never this platform action.
+- When Launcher4Max is the selected default Launcher, the Android system Home action from
+  any Launcher4Max surface, including Home edit mode, Drawer, Drawer favorite
+  multi-selection mode, Settings, and the quick-action settings page, displays normal
+  Launcher4Max Home. An active favorite multi-selection is cancelled and edit mode is
+  exited. Within the same process, normal Home retains the latest meaningful main-list
+  position and Ribbon-layout ribbon positions formed by successfully completed scrolling
+  or editing; Flow-layout ribbons have no independent horizontal position. Cancelling
+  an unfinished gesture does not create a new position. This is a system navigation
+  result, not an Launcher4Max Back or Drawer-to-Home transition, and Launcher4Max does
+  not reinterpret the Android system Home action as Back. Unqualified `Home` in this
+  contract means the Launcher4Max product surface, never this platform action.
 - Launching an ordinary application from Home or Drawer creates an external application excursion. When Launcher4Max returns in the same process, it displays Home rather than restoring Drawer, and it does not show Loading or require a new blocking initial read before showing the existing Home content.
-- The same-process return preserves Home favorite state, the main list's meaningful vertical position, and each ribbon's meaningful horizontal position. It does not restore Drawer, Settings, an action sheet, edit mode, or an in-progress Drawer position.
+- The same-process return preserves Home favorite state, the main list's meaningful
+  vertical position, and each Ribbon-layout ribbon's meaningful horizontal position.
+  Flow-layout ribbons have no independent horizontal position to restore. It does not
+  restore Drawer, Settings, an action sheet, edit mode, or an in-progress Drawer position.
 - Changes observed while the external application is active are reconciled without replacing the returning Home surface with Loading. The updated inventory and favorite state are available the next time Drawer or the relevant Home content is presented, subject to the live-update rules of those surfaces.
 - If the Launcher process was recreated while the external application was active, the process-restoration rules apply instead of the same-process return rules.
 
@@ -111,5 +131,5 @@ The reverse transition uses the same values in reverse. Rebound and completion a
 - Opening or closing Drawer does not accidentally launch, long-press, or scroll an application entry.
 - With Launcher4Max selected as the default Launcher, the Android system Home action from Drawer and Settings displays Home; it does not depend on the Launcher4Max Back action.
 - Returning from an ordinary application in the same process displays Home without Loading and without restoring Drawer.
-- Returning from a system or external interruption never restores Home edit mode, its expanded style settings panel, module selection, or an unpublished movement.
+- Returning from a system or external interruption never restores Home edit mode, its open style settings panel, or an unpublished movement.
 - The implementation may choose any architecture that satisfies these observable behaviors.

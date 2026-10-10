@@ -1,24 +1,17 @@
 +------------------------------------------------------------------------------+
-|..............HOME / EDIT MODE / EXPANDED PANEL / SAFE CANVAS.................|
-|.................BASIC INFORMATION REMOVED IN THIS STATE......................|
-|...............FAVORITE MAIN LIST / REMAINING VIEWPORT........................|
-|  [CORNER EDIT MARKS] VERTICAL MODULE / COMPLETE SELECTION LAYER..............|
+|..............HOME / EDIT MODE / ONE MODULE PANEL / SAFE CANVAS...............|
+|........................BASIC INFORMATION REMAINS VISIBLE.....................|
+|...............FAVORITE MAIN LIST / VERTICALLY SCROLLABLE.....................|
+|  [UNFAVORITE] [NAME] [VISIBILITY] .... [STYLE] [REORDER HANDLE] / HEADER........|
+|  STYLE PANEL / OPEN / INSIDE THIS MODULE / SELECTION OUTLINE.................|
+|  ARRANGEMENT OR RIBBON-FLOW CHOICE...........................................|
 |  [APP 1] APPLICATION NAME....................................................|
 |  [APP 2] APPLICATION NAME....................................................|
-|  [+] ADD FAVORITE (TRAILING MODULE ENTRY)....................................|
-|  [CORNER EDIT MARKS] HORIZONTAL RIBBON / COMPLETE SELECTION LAYER............|
-|  [APP] NAME   [APP] NAME   [+] ADD FAVORITE..................................|
+|  [+] ADD FAVORITE (TRAILING MODULE ENTRY / BLOCKED WHILE PANEL IS OPEN)......|
+|  [UNFAVORITE] [NAME] [VISIBILITY] .... [STYLE] [REORDER HANDLE] / HEADER........|
+|  [APP] NAME   [APP] NAME   [+] ADD FAVORITE / APPLICATION EDITING............|
 |  [+] ADD VERTICAL MODULE   [+] ADD RIBBON....................................|
-|  LONG PRESS COMPLETE MODULE; LIFTED PREVIEW + INSERTION LINE.................|
-|  DROP ON MAIN LIST ADD ENTRY CREATES MODULE; OUTLINE EMPHASIS................|
-|  MAIN LIST REMAINS VERTICALLY SCROLLABLE.....................................|
-|................STYLE SETTINGS PANEL / EXPANDED / NON-MODAL...................|
-|  SELECTION PROMPT OR FIXED-RIBBON MESSAGE....................................|
-|  ARRANGEMENT TITLE / TITLE LINE............................................|
-|  [NAME POSITION: RIGHT|BELOW] [ITEMS PER ROW: - 1 +] / CONTENT LINE..........|
-|  APPLICATION SIZE / TEXT SIZE TITLE / TITLE LINE.............................|
-|  [TRIANGLE SLIDERS: ICON SIZE | TEXT SIZE] / CONTENT LINE...................|
-|  CONTENT LINES SHARE RELATED CONTROLS; SCROLL ONLY ON CONTENT OVERFLOW.......|
-|........32DP EDIT DOCK: TAP TO SELECT - HOLD TO MOVE.............[24DP DOWN]..|
+|  REORDER USES THE HEADER HANDLE; INSERTION LINE ONLY.........................|
+|  NO EDIT DOCK / NO CORNER MARKS / NO EMPTY-SELECTION PANEL...................|
 |..............................BOTTOM SAFE AREA................................|
 +------------------------------------------------------------------------------+

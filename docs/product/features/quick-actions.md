@@ -31,7 +31,10 @@ Quick actions cover only these two registered slots. Selecting time or date keep
 ## Bound actions
 
 - `No action`: the recognized gesture produces no product action and no feedback.
-- `Edit mode`: recognition enters Home edit mode exactly as the other edit-mode entry paths do, preserving main-list and ribbon positions, and produces one platform-standard haptic at recognition.
+- `Edit mode`: recognition enters Home edit mode exactly as the other edit-mode entry paths
+  do, preserving the main-list position and any Ribbon-layout ribbon positions. Flow-layout
+  ribbons have no independent horizontal position. It produces one platform-standard haptic
+  at recognition.
 - `Screen lock`: recognition requests one system lock-screen action through the purpose-limited accessibility service defined in [double-tap-lock.md](double-tap-lock.md). A successful request produces no Toast, haptic, animation, or additional confirmation. While the service is disabled, the gesture produces no product action and does not open system settings; when the service is enabled but the action is unavailable or fails, Home stays available and shows the localized short Toast `Unable to lock screen` without retrying.
 
 ## Settings surface
