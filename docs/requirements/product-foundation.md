@@ -74,8 +74,8 @@ The product compatibility boundary requires `minSdk` 31. Current configured `com
   identity appears in only one module. Every module persists its own name and whether
   that name is shown. Vertical modules persist module-level icon size,
   name (text) size, name placement, and items-per-row values; ribbons persist Ribbon or
-  Flow display mode while retaining their shared entry style.
-- Favorite editing: explicit add, remove, whole-module unfavorite, move, reorder, resize, confirmation, cancellation, latest-removal Undo, and Drawer drag-to-favorite behavior defined by the Home and Drawer contracts.
+  Flow display mode while retaining their shared entry style. The Home bottom app bar is one additional favorite position, not a second favorite or a module.
+- Favorite editing: explicit add, remove, whole-module unfavorite, move, reorder, resize, confirmation, cancellation, latest-removal Undo, and Drawer drag-to-favorite behavior defined by the Home and Drawer contracts. Moving a favorite onto or off the Home bottom app bar changes its position only.
 - Screen locking: an optional, purpose-limited accessibility-service capability for eligible blank Home space, triggered by the quick-action slot the user binds to it. It does not gate independent Launcher paths.
 - Quick actions: two user-configurable Home basic-information blank-space slots, each bound to `No action`, `Edit mode`, or `Screen lock`, defaulting to `No action`.
 - Icon shape: one global icon-clipping preference — `OEM clip` or one freeform corner-radius proportion from `0` through `100` — applied to Home vertical-module icons, ribbon icons, and Drawer icons, managed by a dedicated Settings page with a live wallpaper preview.
@@ -160,7 +160,7 @@ The performance expectation is that the author's primary physical device runs th
 - Drawer does not omit, duplicate, or misidentify entries returned by successfully read Android sources; isolated failed sources may be absent without blocking available Content.
 - Ordinary Drawer search filters the reliable local application inventory by displayed application name without network access, changing the selected arrangement, or introducing a second application order.
 - Private Space identities requiring hidden-profile access remain outside inventory and permission declarations.
-- Favorite identity, module destination, application order, applicable vertical-module style, and module order survive applicable recreation without unexpected loss, duplication, or reassignment.
+- Favorite identity, module or Home bottom app bar destination, application order, applicable vertical-module style, and module order survive applicable recreation without unexpected loss, duplication, or reassignment.
 - Failed or uncertain reads remain distinguishable from valid empty data and do not overwrite the last reliable favorite state.
 - Permission denial or revocation affects only the dependent capability and leaves independent Launcher paths available.
 - Local backup and restore preserve and restore the complete favorite, display-setting, quick-action-binding, and icon-shape preference state without network access, automatic backup, or loss of unrelated configuration.
@@ -175,11 +175,11 @@ Core success means that Home, Drawer, and Settings form a reliable minimum utili
 
 ## User control
 
-The product lets users maintain Home favorites and use individual Settings entries. It provides manual local backup and restore of favorites, quick-action bindings, the icon-shape preference, and Drawer display settings through the system document picker; it does not provide one-action clearing, cloud deletion, automatic backup, or cloud restoration of all configuration. Users can clear application data through Android system settings. Favorite changes result from explicit user actions, and language follows system locale rather than observed behavior.
+The product lets users maintain Home favorites and use individual Settings entries. It provides manual local backup and restore of favorites, the Home bottom app bar, quick-action bindings, the icon-shape preference, and Drawer display settings through the system document picker; it does not provide one-action clearing, cloud deletion, automatic backup, or cloud restoration of all configuration. Users can clear application data through Android system settings. Favorite changes result from explicit user actions, and language follows system locale rather than observed behavior.
 
 ## Local data boundary
 
-- Durable user-content data consists of ordered favorite modules, module type, each module's persisted name and name visibility, stable favorite identity and position, and applicable vertical-module size, name placement, and items-per-row values. A stable identity has one module destination and cannot be duplicated across modules.
+- Durable user-content data consists of ordered favorite modules, module type, each module's persisted name and name visibility, stable favorite identity and position, and applicable vertical-module size, name placement, and items-per-row values, plus the Home bottom app bar state: whether it is on, whether it is fixed, its selected icon size, and the ordered identities placed on it. A stable identity has one Home destination, either one module or the bar, and cannot be duplicated. The bar's calculated capacity is not stored.
 - Durable local configuration also includes the selected Drawer application icon size, application name size, name placement, items-per-row count, section-anchor presentation, background-opacity percentage, the quick-action binding of each Home basic-information slot, and the icon-shape preference (clip mode and saved freeform proportion). Each valid change is saved as one complete configuration state.
 - Primary, cloned, and work-profile identities must remain distinguishable and must not be stored or deduplicated solely by package name.
 - The latest eligible removal snapshot is transient Undo state, not durable undo history. It may record either the latest removed application or the latest removed whole module.
@@ -187,7 +187,7 @@ The product lets users maintain Home favorites and use individual Settings entri
 - Time and date come from the device system and are not retained historically.
 - Launcher4Max does not collect or store accessibility window content or events, notifications, contacts, location, clipboard content, files, photos, stable device identifiers, application-usage history, or analytics events.
 - Launcher4Max has no account, cloud synchronization, server, cloud backup, or cross-device backup. Android cloud backup and device-to-device transfer backup remain disabled for Launcher4Max-owned favorite and display-setting data; only the user-initiated local backup described below is provided.
-- A user-initiated local backup writes one schema-versioned JSON file containing the complete favorite-module, Drawer display-setting, quick-action-binding, and icon-shape preference state to a location the user chooses through the system document picker. The file is user-managed, stays outside Launcher4Max's app-private storage, and is never uploaded or written automatically.
+- A user-initiated local backup writes one schema-versioned JSON file containing the complete favorite-module, Home bottom app bar, Drawer display-setting, quick-action-binding, and icon-shape preference state to a location the user chooses through the system document picker. The file is user-managed, stays outside Launcher4Max's app-private storage, and is never uploaded or written automatically.
 
 ## Dependencies and risks
 

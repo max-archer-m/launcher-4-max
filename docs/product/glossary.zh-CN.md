@@ -10,9 +10,10 @@
 | Settings | 设置 | Launcher4Max 配置与产品信息界面 |
 | Launchable entry | 可启动应用条目 | Launcher4Max 可以启动的一个平台目标；主应用与分身是不同条目 |
 | Item | 条目 | Drawer 列表、搜索结果或收藏模块中占据一个位置的交互应用元素；条目自身的 inset、网格位置、描边与覆盖都以条目描述，一个条目背后的数据身份仍是可启动应用条目 |
-| Favorite | 收藏应用 | 只保存到一个 Home 收藏模块的可启动应用条目；同一稳定身份不得跨模块重复 |
+| Favorite | 收藏应用 | 在 Home 只收藏一次的可启动应用条目，位置是一个收藏模块或主页底部常驻应用栏 |
 | Favorite main list | 收藏主列表 | Home 基础信息下方，由同级纵向收藏模块和横向收藏织带组成的一个全宽、可纵向滚动有序序列 |
 | Favorite module | 收藏模块 | 至少包含一个收藏的持久纵向收藏模块或横向收藏织带 |
+| Home bottom app bar | 主页底部常驻应用栏 | Home 底部的一个收藏位置；它不是收藏模块，放在那里的收藏仍然只是一份收藏 |
 | Vertical favorite module | 纵向收藏模块 | 全宽模块，其自然展开的全部条目共享一组模块级尺寸、名称位置和每行数量样式 |
 | Horizontal favorite ribbon | 横向收藏织带 | 全宽模块，包含固定样式、按内容测量的收藏条目，并使用织带或流式布局 |
 | Ribbon layout | 织带布局 | 横向收藏织带的单行横向展示模式，仅在溢出时横向滚动 |
@@ -36,7 +37,7 @@
 | Badge | 标记 | 平台提供的分身或资料身份视觉标记 |
 | Application information | 应用信息 | 系统负责的应用信息与管理界面 |
 | Private Space | 私密空间 | 当前产品契约之外的 Android 隐藏资料能力；Launcher4Max 不申请 `ACCESS_HIDDEN_PROFILES` 访问该能力 |
-| Backup file | 备份文件 | 一个由用户选择、带 schema 版本号的本地 JSON 文件，包含完整的收藏模块、Drawer 显示设置与快捷操作绑定状态；仅由 Settings 中明确的备份操作创建，永不上传或自动写入 |
+| Backup file | 备份文件 | 一个由用户选择、带 schema 版本号的本地 JSON 文件，包含完整的收藏模块、主页底部常驻应用栏、Drawer 显示设置、快捷操作绑定与图标形状状态；仅由 Settings 中明确的备份操作创建，永不上传或自动写入 |
 | Restore | 恢复 | Settings 中读取用户选择的备份文件，并在确认后原子替换当前收藏、Drawer 显示设置与快捷操作绑定状态的操作 |
 
 产品文档统一使用上述术语。只有实现确实需要额外区分且形成文档时，技术命名才可以不同。
@@ -61,5 +62,6 @@
 | Default-launcher prompt title | 尚未设为默认启动器 | Not set as the default launcher yet |
 | Default-launcher prompt supporting line | 设为默认后，回到这里 | Set as default to return here |
 | Default-launcher prompt dismiss control | 关闭 | Dismiss |
+| Home bottom app bar | 主页底部常驻应用栏 | Home bottom app bar |
 
 `收藏主列表` 是 favorite main list 的规范中文工作术语。`home 收藏区` 是同一区域的口语同义说法，不是独立术语。

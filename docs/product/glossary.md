@@ -10,9 +10,9 @@
 | Settings | 设置 | Launcher4Max configuration and product-information surface |
 | Launchable entry | 可启动应用条目 | One platform-exposed target that Launcher4Max can launch; a primary app and clone are separate entries |
 | Item | 条目 | One interactive application element occupying a position in the Drawer list, search results, or a favorite module; an item's own inset, grid placement, outline, and overlays are all described with item, and the data identity behind one item remains the launchable entry |
-| Favorite | 收藏应用 | A launchable entry saved to exactly one Home favorite module; one stable identity cannot be duplicated across modules |
+| Favorite | 收藏应用 | A launchable entry saved once to Home, either in one favorite module or on the Home bottom app bar |
 | Favorite main list | 收藏主列表 | The one full-width, vertically scrolling ordered sequence of peer vertical favorite modules and horizontal favorite ribbons below Home basic information |
-| Favorite module | 收藏模块 | One persisted vertical favorite module or horizontal favorite ribbon containing at least one favorite |
+| Home bottom app bar | 主页底部常驻应用栏 | One favorite position at the bottom of Home; it is not a favorite module, and a favorite placed there is still one favorite |
 | Vertical favorite module | 纵向收藏模块 | A full-width module whose naturally expanded entries share one module-level size, name placement, and items-per-row style |
 | Horizontal favorite ribbon | 横向收藏织带 | Full-width fixed-style module using Ribbon or Flow |
 | Ribbon layout | 织带布局 | One-row horizontal mode; scrolls horizontally only on overflow |
@@ -36,7 +36,7 @@
 | Badge | 标记 | Platform-provided visual identity for a clone or profile context |
 | Application information | 应用信息 | The system-owned information and management surface for an application |
 | Private Space | 私密空间 | Android hidden-profile capability outside the current product contract; Launcher4Max does not request `ACCESS_HIDDEN_PROFILES` to access it |
-| Backup file | 备份文件 | One user-chosen, schema-versioned local JSON file containing the complete favorite-module, Drawer display-setting, and quick-action-binding state, created only by the explicit Settings backup action and never uploaded or written automatically |
+| Backup file | 备份文件 | One user-chosen, schema-versioned local JSON file containing the complete favorite-module, Home bottom app bar, Drawer display-setting, quick-action-binding, and icon-shape state, created only by the explicit Settings backup action and never uploaded or written automatically |
 | Restore | 恢复 | The Settings action that reads a user-selected backup file and, after confirmation, atomically replaces the current favorite, Drawer display-setting, and quick-action-binding state |
 
 Use these terms consistently in product documents. Technical names may differ only when an implementation distinction is necessary and documented.
@@ -61,5 +61,6 @@ Specification terms and user-facing interface labels are separate. Interface lab
 | Default-launcher prompt title | 尚未设为默认启动器 | Not set as the default launcher yet |
 | Default-launcher prompt supporting line | 设为默认后，回到这里 | Set as default to return here |
 | Default-launcher prompt dismiss control | 关闭 | Dismiss |
+| Home bottom app bar | 主页底部常驻应用栏 | Home bottom app bar |
 
 `收藏主列表` is the canonical Chinese working term for the favorite main list. `home 收藏区` is an informal synonym for the same region and is not a separate term.

@@ -36,7 +36,7 @@ Remaining space is transparent Home background, not another module.
 ## Favorite identity and module lifecycle
 
 - A new installation or the one-time adoption of this Home model starts with an empty favorite main list. The former vertical-list and favorite-bar model is not migrated, retained, or run in parallel. This author-accepted favorite reset does not clear Drawer display settings or unrelated local configuration.
-- Every favorite belongs to exactly one persisted module. The same stable launchable identity cannot appear more than once across the main list. Primary, cloned, and work-profile entries remain distinct identities.
+- Every favorite belongs to exactly one persisted destination: one favorite module or the Home bottom app bar defined by [home-bottom-app-bar.md](../features/home-bottom-app-bar.md). The same stable launchable identity cannot appear more than once across Home. Primary, cloned, and work-profile entries remain distinct identities. The bar is a favorite position, not a module, and it does not create a second favorite.
 - Every module persists one stable one-dimensional application order. A vertical module wraps that order from start to end and then top to bottom according to its current items-per-row value; a ribbon presents the same order from start to end. Changing application size, name placement, or items per row changes presentation only and never rewrites the persisted application order.
 - Every persisted module contains at least one favorite. A provisional empty module is persisted only after its first valid application is added and is otherwise discarded. Losing the final favorite deletes a persisted module.
 - Each horizontal favorite ribbon persists one display mode: Ribbon or Flow. Existing
