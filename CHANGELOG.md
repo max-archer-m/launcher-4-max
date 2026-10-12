@@ -6,6 +6,11 @@ Launcher4Max was named Avenor Launcher before `1.7.0`. Versions `1.0.0` through 
 
 ## Unreleased
 
+### 1.7.2
+
+- Restore click, long-press, and drag actions on Drawer search results when the alphabet
+  index contains enough sections to reach its height limit.
+
 ### 1.7.1
 
 - Normalize application icons through one device-mask path, removing the legacy-icon wrapper

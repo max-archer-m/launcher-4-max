@@ -5,7 +5,6 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -55,8 +54,12 @@ internal fun DrawerAlphabetIndex(
     )
     LazyColumn(
         modifier = modifier
-            .heightIn(max = dimensionResource(id = R.dimen.drawer_index_complete_height))
-            .height(height = slotHeight * indexEntries.size)
+            .height(
+                height = minOf(
+                    slotHeight * indexEntries.size,
+                    dimensionResource(id = R.dimen.drawer_index_complete_height),
+                ),
+            )
             .width(width = dimensionResource(id = R.dimen.drawer_index_width))
             .pointerInput(
                 key1 = indexEntries,
