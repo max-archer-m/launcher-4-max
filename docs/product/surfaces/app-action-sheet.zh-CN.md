@@ -4,7 +4,7 @@
 
 ## 呈现
 
-应用操作面板是从普通 Home 模式长按应用，或在 Drawer 普通模式长按应用后未开始[拖动收藏](drawer.zh-CN.md#拖动收藏)而抬起时打开的模态 Bottom Sheet；Drawer 中长按触觉后移动超过平台 touch slop 时，改为开始拖动收藏，由 [Drawer 交互规格](drawer.zh-CN.md)定义。Home 应用级编辑把应用长按保留给移动，Home 模块级编辑则完全屏蔽应用输入。
+应用操作面板是模态 Bottom Sheet。普通 Home 中长按一个已经完整呈现的收藏，并且未移动超过平台 touch slop 就抬手时打开它；Drawer 普通模式中长按应用后未开始[拖动收藏](drawer.zh-CN.md#拖动收藏)而抬起时也打开它。长按触觉后移动超过 touch slop 时，Home 改为开始[一次操作模式](home.zh-CN.md#一次操作模式)，Drawer 改为开始拖动收藏，由 [Drawer 交互规格](drawer.zh-CN.md)定义。Home 应用级编辑把应用长按保留给移动，Home 模块级编辑则完全屏蔽应用输入。
 
 - 使用深色表面与浅色文字，并保持系统状态栏图标为浅色。
 - 顶部显示一条浅色短横线作为拖动柄。

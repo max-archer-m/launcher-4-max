@@ -12,14 +12,16 @@
 | Item | 条目 | One interactive application element occupying a position in the Drawer list, search results, or a favorite module; an item's own inset, grid placement, outline, and overlays are all described with item, and the data identity behind one item remains the launchable entry |
 | Favorite | 收藏应用 | A launchable entry saved once to Home, either in one favorite module or on the Home bottom app bar |
 | Favorite main list | 收藏主列表 | The one full-width, vertically scrolling ordered sequence of peer vertical favorite modules and horizontal favorite ribbons below Home basic information |
+| Favorite module | 收藏模块 | A persisted vertical favorite module or horizontal favorite ribbon that contains at least one favorite |
 | Home bottom app bar | 主页底部常驻应用栏 | One favorite position at the bottom of Home; it is not a favorite module, and a favorite placed there is still one favorite |
 | Vertical favorite module | 纵向收藏模块 | A full-width module whose naturally expanded entries share one module-level size, name placement, and items-per-row style |
 | Horizontal favorite ribbon | 横向收藏织带 | Full-width fixed-style module using Ribbon or Flow |
 | Ribbon layout | 织带布局 | One-row horizontal mode; scrolls horizontally only on overflow |
 | Flow layout | 流式布局 | Multi-row mode; wraps within module width without horizontal scrolling |
-| Add-favorite entry | 新增收藏入口 | A non-persisted favorite-main-list or in-module entry in Home edit mode whose position alone determines whether it creates a module or adds to an existing one |
+| Add-favorite entry | 新增收藏入口 | A non-persisted favorite-main-list or in-module entry whose position alone determines whether it creates a module or adds to an existing one; edit mode shows both kinds, while one-shot operation temporarily shows only the two main-list entries |
 | Module header | 模块表头 | The row above a favorite module that shows its name when name visibility is on; in edit mode it holds the editable name, visibility affordance, style affordance, whole-module unfavorite action, and module-reorder handle |
-| Edit mode | 编辑模式 | The Home state entered from a favorite action or a basic-information quick-action slot bound to edit mode, exposing the module header, module movement, application editing, and add-favorite entries |
+| Edit mode | 编辑模式 | The Home state entered from a favorite action or a basic-information quick-action slot bound to edit mode, exposing every editing affordance and leaving only through Back or interruption |
+| One-shot operation | 一次操作模式 | The temporary Home state for one favorite placement, entered by reordering a presented favorite or by receiving a Drawer drag-to-favorite; it shows only the destinations needed for that placement and returns to normal Home when the operation ends |
 | Style settings panel | 样式设置面板 | The shared rounded settings-panel presentation used by Drawer display settings and the Home module-style editor; each host separately defines its content, modality, placement, and behavior |
 | Application shortcut | 应用快捷操作 | An action exposed by the application through the platform |
 | Launcher action | 启动器操作 | An action supplied by Launcher4Max, such as favorite, edit, or uninstall |
