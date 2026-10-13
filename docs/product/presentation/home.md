@@ -31,6 +31,13 @@ This document owns exact Home layout, typography, component geometry, and visual
 - Modules use the complete padded content width. Their item geometry and right-side, below-icon, and hidden name arrangements use the applicable Drawer application-item presentation values, composed from the module's selected icon and name (text) tiers.
 - One-item-per-row with a right-side name follows the established Home list geometry, composed exactly as the Drawer right-side-name items from the module's selected icon and text tiers. Each icon is placed `8dp` from the item's top and `12dp` from its bottom. The name uses normal-weight shared `largeAppNameFontSize`, `primaryTextFontSize`, or `secondaryTextFontSize` for the Large, Medium, or Small text tier, each with its shared line height and `primaryTextColor`; all retain the Drawer single-line ellipsis rule. The press Ripple covers the complete item without being reduced by item padding.
 - Every size permits one or two items per row with right-side names, one through four with below-icon names, and one through six with hidden names. Exact multi-column item geometry reuses the applicable Drawer presentation values. Step controls use the shared style settings panel geometry and the established enabled and disabled presentation at one and the applicable maximum. They update in the same frame as a name-placement change: right-to-below at two enables increment, below-to-right from three or four displays two with increment disabled, and hidden-to-right or hidden-to-below displays the destination placement's clamped boundary with increment disabled.
+- A narrower available Home width keeps the selected icon and text sizes unchanged. The effective
+  items-per-row count is the selected count limited by the current name-placement range and the
+  width that can contain complete items, with a minimum of one column. An extremely narrow window
+  therefore uses one column; it does not compress or clip an item. All applications remain
+  available through additional rows, and reducing the effective column count does not remove
+  applications or change their order. Home content padding and the module's complete available
+  width participate in this constraint.
 - Normal-mode items use no module-level title bar. While the style settings panel is collapsed, application-level editing adds one remove control but no application-reorder handle or reserved handle space; the non-remove portion of the complete item remains the long-press movement target.
 
 ## Horizontal favorite ribbons
@@ -124,5 +131,5 @@ Behavior belongs to [home-bottom-app-bar.md](../features/home-bottom-app-bar.md)
 - Fewer favorites than capacity stay centered between the two `16dp` insets. The `16dp` gap does not grow to fill the row.
 - A fixed bar, and a semi-hidden bar while expanded, use that full height. The favorite main list keeps its own `8dp` spacing above the bar. That spacing is not part of the bar's capacity.
 - While semi-hidden and collapsed, the bar is clipped to the top `24dp` of its full height. Icons remain vertically centered in the full height. The collapsed bar uses `80%` opacity. Expanded and fixed bars use full opacity.
-- The bar background is opaque `primaryTextColor` at `12%`. Icons on it do not use the Home glyph shadow.
+- The bar background is one opaque white layer. Icons on it do not use the Home glyph shadow.
 - The edit-mode add control uses the same icon-tier slot and `16dp` gap as a favorite. It shows the shared `24dp` plus artwork centered in that slot and is not a separate control size.

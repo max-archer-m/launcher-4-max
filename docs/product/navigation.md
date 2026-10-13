@@ -71,7 +71,14 @@ The reverse transition uses the same values in reverse. Rebound and completion a
 
 ## Back and restoration
 
-- On Home, Back has no visible effect when Launcher4Max is the system default Launcher. When Launcher4Max is not the default Launcher, Launcher4Max performs ordinary system Back behavior and does not prescribe the external destination.
+- On Home, Back is resolved by the most specific active Home state before the ordinary Home result:
+  active application or module movement cancels that movement and consumes Back; active module-name
+  text editing ends the `EditText` session and hides the keyboard without reverting its already
+  saved name; an open style settings panel closes while retaining edit mode; an expanded
+  semi-hidden bottom app bar collapses only in normal Home when none of those states is active.
+  After those state-specific results, Back has no visible effect when Launcher4Max is the system
+  default Launcher. When Launcher4Max is not the default Launcher, Launcher4Max performs ordinary
+  system Back behavior and does not prescribe the external destination.
 - On Drawer, Back returns to Home.
 - On Settings, Back returns to the previous Launcher4Max surface, currently Drawer.
 - The quick-action settings page opens only from its Settings item and is a Settings sub-page rather than a separate surface. On it, Back returns to Settings and preserves Settings' prior position; the page is not restored after process recreation, matching the other non-restored transient surfaces.

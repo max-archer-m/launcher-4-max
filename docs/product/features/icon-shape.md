@@ -18,7 +18,14 @@ There is one shape preference for the whole product. It is not per-surface, per-
 - On a fresh configuration that has never saved a proportion, selecting `Freeform clip` for the first time starts at `50`.
 - In `Freeform clip` mode the proportion is one integer percentage from `0` through `100`: `0` renders the square base with no rounding and `100` renders the full circle. The rendered corner radius is the selected proportion of half the applicable icon-slot size, so the same proportion produces the same relative shape at every icon size.
 - In `OEM clip` mode the saved proportion is not applied and is not changed by the mode switch. The corner-radius control reports unavailable with the shared disabled presentation while `OEM clip` is selected.
-- Preference changes take effect immediately. The page provides no confirm, cancel, or discard control; the top app bar Back control and system Back are the only exits, and every change is already saved when they are used.
+- Mode changes take effect immediately and start one exclusive save of the complete shape
+  preference. While that save is unresolved, further shape changes are unavailable, but the top
+  app bar Back control and system Back remain available. The page provides no separate confirm
+  action. A corner-radius drag previews the value in real time without changing the saved state;
+  releasing commits the value once, while pointer cancellation, Back, or external interruption
+  restores the last successfully saved value. A save failure restores the last successfully saved
+  complete preference, shows the localized short Toast `Unable to save icon shape`, and does not
+  reopen a page that has already closed. A later valid change may retry.
 
 ## Scope of application
 
@@ -38,18 +45,34 @@ Settings contains one primary item titled `Icon shape`, placed directly below `Q
 ## Backup and restore
 
 - The shape preference — its mode and saved proportion — is part of the manual backup file and follows its schema rules.
-- A missing preference section or field restores the default `OEM clip` mode.
+- A missing preference section restores the complete default shape preference: `OEM clip` mode
+  with a saved proportion of `50` for a future switch to `Freeform clip`. A missing mode field
+  uses `OEM clip`. A present `Freeform clip` mode with a missing proportion keeps that mode and
+  uses proportion `50`. A missing or invalid proportion in `OEM clip` uses proportion `50`
+  without affecting the current OEM rendering. An unknown, empty, or otherwise invalid mode
+  uses `OEM clip` while other valid backup sections remain restorable. An out-of-range,
+  non-integer, empty, or otherwise invalid proportion uses `50` while other valid backup
+  sections remain restorable. If the mode and proportion cannot be resolved into one valid
+  shape preference together, the complete shape preference falls back to its default while
+  other valid backup sections remain restorable. No invalid proportion is clamped.
 
 ## Acceptance intent
 
 - Given the default preference, when Home, ribbon, or Drawer icons are presented, then every application icon keeps the device-default clip result and no custom rounding is applied.
 - Given `Freeform clip` with any saved proportion, when large, medium, and small icons are presented across Home vertical modules, ribbon entries, and Drawer, then every application icon shows the same relative corner shape — the proportion of half its slot size.
 - Given `Freeform clip` at `100`, when any application icon is presented, then it renders as a full circle; at `0`, it renders as a square.
-- Given the page is open with `Freeform clip`, when the user drags the corner-radius slider, then all three preview rows update in real time and the change is persisted without any confirm action.
+- Given the page is open with `Freeform clip`, when the user drags the corner-radius slider, then all three preview rows update in real time without changing the saved state; when the pointer is released, the final value is committed once without any confirm action. Cancelling the drag restores the last successfully saved value.
 - Given `OEM clip` is selected, when the page is shown, then the corner-radius slider reports unavailable with the disabled presentation and the saved proportion is unchanged.
 - Given the user switches `OEM clip` to `Freeform clip` after having saved a proportion, then that saved proportion applies again.
 - Given a fresh configuration, when `Freeform clip` is selected for the first time, then the proportion starts at `50`.
 - Given the page is open, when any region outside the preview window is presented, then it keeps the standard opaque Settings surface. The preview window does not read or draw the wallpaper; its interior is fully transparent, so the system wallpaper shows through behind the three sample icons.
-- Given a backup containing the preference, when restore completes, then Home, ribbon, and Drawer present exactly the restored shape; given the preference section or a field is missing, then the preference restores to `OEM clip`.
+- Given a backup containing a valid preference, when restore completes, then Home, ribbon, and
+  Drawer present exactly the restored shape. Given a missing preference section, the mode is
+  `OEM clip` and the saved proportion is `50`; given a missing proportion in a present
+  `Freeform clip` section, the mode remains `Freeform clip` and the proportion is `50`.
+  Given an invalid mode or proportion, the invalid field falls back to its defined default;
+  if the fields cannot form one valid preference, the complete shape preference falls back to
+  its default. Other valid backup sections remain restored, and invalid proportions are not
+  clamped.
 - Given `Freeform clip` is selected, when platform shortcut icons are presented in the application action sheet, then they keep their platform rendering and do not follow the proportion.
 - Given the user invokes system Back or the Back control on the page, then Settings opens at its prior position and every change made on the page remains saved.

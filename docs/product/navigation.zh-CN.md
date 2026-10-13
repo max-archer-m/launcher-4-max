@@ -68,7 +68,12 @@ Home 与 Drawer 使用同一套可逆、跟手的直接操作过渡。以下术�
 
 ## Back 与恢复
 
-- Launcher4Max 已是系统默认 Launcher 时，Home 上的 Back 不产生可见行为；未设置为默认 Launcher 时，Launcher4Max 执行普通系统 Back 行为，不规定最终返回的外部目标。
+- Home 上的 Back 先由当前最具体的活动状态处理，再执行普通 Home 结果：
+  活动中的应用或模块移动会取消该移动并消费 Back；活动中的模块名称文本编辑会结束
+  `EditText` 会话并隐藏键盘，但不回退已经保存的名称；已打开的样式设置面板会关闭并保留编辑模式；
+  展开的半隐藏底部栏仅在普通 Home 且上述状态均未活动时收起。完成这些状态专属处理后，
+  Launcher4Max 已是系统默认 Launcher 时，Home 上的 Back 不产生可见行为；
+  未设置为默认 Launcher 时，Launcher4Max 执行普通系统 Back 行为，不规定最终返回的外部目标。
 - Drawer 上的 Back 返回 Home。
 - Settings 上的 Back 返回进入前的 Launcher4Max 界面，当前即 Drawer。
 - 快捷操作设置页只能由其 Settings 项进入，并且是 Settings 的子页面而不是独立界面。在该页上 Back 返回 Settings 并保留 Settings 此前位置；页面在进程重建后不恢复，与其他不恢复的临时界面一致。

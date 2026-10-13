@@ -16,7 +16,11 @@ Quick actions cover only these two registered slots. Selecting time or date keep
 ## Bindings and configuration
 
 - Slots are configured independently. Launcher4Max applies no uniqueness, exclusivity, or cross-slot validation: two slots may bind the same action, and no binding constrains another.
-- Binding changes take effect immediately and persist locally with the complete settings state.
+- Binding changes take effect immediately and start one exclusive save of the complete settings
+  state. While that save is unresolved, other binding changes are unavailable, but leaving the
+  page remains available. A save failure restores the last successfully saved complete binding
+  state and shows the localized short Toast `Unable to save quick-action settings`; a page or
+  popup that has already closed is not reopened. A later valid binding change may retry.
 - The binding state is part of the manual backup file and follows its schema rules; a missing bindings section or field restores the default `No action` value.
 - Changing one binding never affects the other slot's recognition, an in-progress gesture recognition, or any other Home behavior.
 
@@ -44,8 +48,8 @@ Settings contains one primary item titled `Quick action settings`, which opens t
 - The page title is `Quick action settings` and it reuses the Settings page structure and top app bar, including its Back control. No separate low-fidelity wireframe is defined for this page.
 - The page lists one row per registered slot — `Basic-information double tap` then `Basic-information long press` — and each row's supporting text shows its current action name: `No action`, `Edit mode`, or `Screen lock`.
 - The page additionally lists the screen-lock service state row defined below. Every row on the page carries the same trailing arrow as a Settings row, including the two slot rows.
-- Selecting a slot row opens one local single-choice popup listing `No action`, `Edit mode`, and `Screen lock`. Each option row shows one leading single-selection indicator and its action label, with the current binding marked. Three paths close the popup: selecting an option saves that binding immediately and refreshes the row's supporting text; an outside tap closes it without changing any binding; system Back closes it without changing any binding.
-- Selecting `Screen lock` saves that binding exactly like any other option, with no confirmation and without depending on the accessibility state. When the service is `Off` at that moment, Launcher4Max enters the screen-lock authorization flow defined by [double-tap-lock.md](double-tap-lock.md): the local explanation surface with `Open accessibility settings`, and the prominent disclosure before that handoff. The flow opens after the popup closes, and the binding stays saved regardless of whether the user cancels the flow, agrees without enabling the service, or enables the service.
+- Selecting a slot row opens one local single-choice popup listing `No action`, `Edit mode`, and `Screen lock`. Each option row shows one leading single-selection indicator and its action label, with the current binding marked. Three paths close the popup: selecting an option applies the preview and starts its save, then closes the popup; an outside tap closes it without changing any binding; system Back closes it without changing any binding. A save failure restores the previous binding and shows the failure Toast without reopening the popup.
+- Selecting `Screen lock` saves that binding exactly like any other option, with no confirmation and without depending on the accessibility state. The authorization flow begins only after the binding save succeeds. When the service is `Off` at that moment, Launcher4Max enters the screen-lock authorization flow defined by [double-tap-lock.md](double-tap-lock.md): the local explanation surface with `Open accessibility settings`, and the prominent disclosure before that handoff. The flow opens after the popup closes, and the binding stays saved regardless of whether the user cancels the flow, agrees without enabling the service, or enables the service. If the binding save fails, the authorization flow does not open.
 - Selecting `No action` or `Edit mode` never opens the accessibility flow.
 - Returning from the page to Settings preserves Settings' prior position. Settings' own Back behavior is unchanged.
 

@@ -128,10 +128,32 @@ Edit mode may be entered from the existing favorite action or through a basic-in
 - Every module persists its own name and whether that name is shown. Name visibility defaults to hidden, including for modules that already exist when this behavior is adopted. An unnamed module uses the stable default label `Favorite list` for a vertical favorite module and `Favorite ribbon` for a horizontal favorite ribbon. The default label is not derived from an application's name.
 - While the name is hidden, ordinary Home adds no row and no reserved blank space above the module content. Its spacing remains the current spacing. While the name is shown, ordinary Home adds one non-interactive title row above that module's content and shows the persisted name, or the default label when the module is unnamed. The title row launches nothing and does not enter edit mode.
 - Edit mode always shows one operation header row above every module's content, whether or not that module's style settings panel is open. The row contains the module name, a visibility affordance, a style affordance, a whole-module unfavorite action, and a module-reorder handle. The name remains in the row when name visibility is hidden, so it can still be edited. The visibility affordance and style affordance do not appear in ordinary Home. Leaving edit mode removes the operation header row.
-- The module name in the operation header is an editable text field. Only edit mode can change it. Ordinary Home never presents that field. Committing an edit persists the name immediately. An empty committed name keeps the module unnamed and continues to use its default label. Cancelling the edit leaves the persisted name unchanged. The text field does not start module movement, remove the module, change name visibility, or open the style settings panel.
+- The module name in the operation header is an editable `EditText` field. Only edit mode can
+  change it. Ordinary Home never presents that field. Every valid text change previews immediately
+  and starts an exclusive save of the complete module-name state; the name is not rolled back
+  merely because editing ends. Pressing the keyboard Enter key confirms the current text, ends
+  `EditText` editing, and hides the keyboard. System Back while the keyboard or `EditText` is
+  active ends editing and hides the keyboard without cancelling or undoing an already persisted
+  name. An empty committed name keeps the module unnamed and continues to use its default label.
+  Tapping another module target, opening a style panel, or beginning movement first ends the
+  current text editing and hides the keyboard; it does not revert the persisted name. A name-save
+  failure restores the last successfully saved name, shows the localized short Toast
+  `Unable to save module name`, keeps the current `EditText` active when it is still visible,
+  and allows later text changes to retry; it does not reopen an editor that has already closed.
+  External interruption ends text editing and hides the keyboard while the already saved name
+  remains durable; a save already in progress follows its success or failure result. The text
+  field does not start module movement, remove the module, change name visibility, or open the
+  style settings panel.
 - The visibility affordance uses an eye-like icon and toggles only that module's persisted name visibility. It does not rename the module. The operation header exposes no further action.
 - The style affordance is the only way to open a module's style settings panel. It appears on every favorite module, including a horizontal favorite ribbon. Its artwork is selected from the existing image resources during implementation. Selecting it opens that module's panel directly and gives that module the selection outline. Selecting it again collapses the panel and clears the outline. Selecting another module's style affordance closes the current panel and opens the other module's panel in the same state change. At most one panel and one selection outline are visible. Tapping the module surface does not select the module or open the panel. Empty Home has no style affordance and no panel.
-- The whole-module unfavorite action removes that complete module in one atomic mutation and does not leave an empty module. It shows one localized long-duration removal Snackbar, `Removed the whole favorite group`, with the action `Undo`. The Snackbar stays until the user dismisses it or a later explicit removal replaces it; it does not dismiss itself after a timeout. Undo restores the complete module once, including its name, name visibility, module type, style, main-list order, and contained favorites in their saved order. Leaving Home or process recreation invalidates that snapshot. The existing short removal Snackbar for one application is unchanged.
+- The whole-module unfavorite action removes that complete module in one atomic mutation
+  and does not leave an empty module. It shows one localized long-duration removal Snackbar,
+  `Removed the whole favorite group`, with the action `Undo`. The Snackbar does not time out;
+  it remains only while its snapshot is valid under the Undo lifecycle below and closes
+  immediately when that snapshot becomes invalid. Undo restores the complete module once,
+  including its name, name visibility, module type, style, main-list order, and contained
+  favorites in their saved order. The existing short removal Snackbar for one application
+  is unchanged.
 - The module-reorder handle is the only way to reorder a module. Long-pressing the module surface does not start module movement. Reorder remains insertion-only and never exchanges two modules. The handle drag follows the module-movement rules already defined in this document, including edge auto-scroll and one atomic save of the resulting order.
 - Exact header dimensions and order belong to [Home presentation](../presentation/home.md). The header row is `40dp` high, its visible content is `32dp` high, and each edit-mode icon target is `40dp x 40dp`. From the physical left, the order is whole-module unfavorite, name, visibility, flexible space, style, and reorder handle. Icon artwork is selected during implementation and is not a product-contract value. Header spacing is defined by Home presentation: `32dp` content centered in each `40dp` target, `4dp` to the target edge, and an `8dp` visual gap between adjacent contents.
 - Home does not use an edit dock. The former dock instructions are not retained.
@@ -205,7 +227,17 @@ Edit mode may be entered from the existing favorite action or through a basic-in
   same-module release inserts the source once into the reduced order; a cross-module
   release inserts it once into the destination order. The lifted preview retains source
   presentation until handoff to the destination after a successful save.
-- If the lifted application was its module's only application, retain the source module at its existing main-list order with only its existing trailing add-favorite entry. Do not retain an application slot or create a new empty-module drop target. This temporarily application-empty module exposes no application insertion boundary, including a synthetic start or end boundary; its add entry remains an invalid drop destination. Cancelling the movement or releasing in an invalid region restores the application. Only a successful move to another module or a newly created module may remove this source module as part of the same atomic save. This transient display never persists an empty module or activates the ordinary empty-Home state.
+- If the lifted application was its module's only application, the source module remains at its
+  existing main-list order and retains its pre-operation module extent until the one-shot operation
+  ends. The operation hides the module header and trailing add-favorite entry, retains no
+  application slot or source placeholder, and creates no empty-module drop target. This
+  temporarily application-empty module exposes no application insertion boundary, including a
+  synthetic start or end boundary. If a module still has applications after the source leaves,
+  its end boundary is resolved from the last remaining application's current visible geometry;
+  it does not depend on the hidden trailing add-favorite entry. Cancelling the operation or
+  releasing in an invalid region restores the application. Only a successful move to another
+  module or a newly created module may remove this source module as part of the same atomic save.
+  This transient display never persists an empty module or activates the ordinary empty-Home state.
 - A valid release that changes the semantic order immediately starts one exclusive atomic save of the resolved destination and order, without waiting for layout animation. Subsequent visual movement cannot change that released destination. Movement within one module rewrites only that module's application order. Cross-module movement removes the identity from the source and inserts it into the explicit destination in the same mutation; it never duplicates, redirects, or exposes an intermediate persisted state. If the move removes the source module's final application, deletion of that source module belongs to the same atomic mutation.
 - A valid release whose resulting application order equals the pre-movement saved order is a no-change completion: restore the source in that order and clear movement without saving, additional result messaging, or another haptic. Necessary visual restoration remains allowed. The comparison is by identity and order, not by the source's former screen coordinates. Releasing in an invalid region or receiving pointer cancellation restores the pre-movement saved arrangement without presenting a save failure.
 - While the atomic save is unresolved, another application or module movement cannot begin. Save failure restores the last reliable complete favorite state, including a source module provisionally emptied by the failed move, without overwriting newer reliable inventory facts; Home stays in edit mode and provides non-blocking feedback.
@@ -220,8 +252,35 @@ Edit mode may be entered from the existing favorite action or through a basic-in
   remain distinguishable from an open module panel and module-movement feedback.
 - Removing a module's final application deletes that now-empty module as part of the same application-removal mutation because Home does not persist empty modules. That automatic deletion is not the whole-module unfavorite action and does not by itself create the whole-module Undo snapshot.
 - An explicit user-initiated application removal and an explicit whole-module unfavorite are both Undo-eligible. Application movement, module reordering, and reliable-inventory automatic cleanup do not create an Undo snapshot.
-- Only the latest eligible removal snapshot exists. A later explicit removal, of one application or of a whole module, replaces it. For an application-removal snapshot, Snackbar timeout or dismissal, another successfully committed favorite mutation, exiting edit mode, entering Drawer favorite multi-selection, the Android system Home action, an external interruption, or process recreation invalidates it. For a whole-module snapshot, the long-duration Snackbar does not time out; dismissal by the user, a later explicit removal, leaving Home, or process recreation invalidates it. Exiting edit mode, entering Drawer favorite multi-selection, or another favorite mutation that is not a removal does not invalidate a whole-module snapshot. An ordinary inventory refresh does not invalidate either snapshot unless a reliable result confirms that a removed identity permanently disappeared.
-- Undo of an application removal restores that application to its original module and order position and restores the module type and style needed when the removal deleted its final item. Undo of a whole-module unfavorite restores that module once, including its name, name visibility, module type, style, main-list order, and contained favorites in their saved order. A reliably disabled identity remains eligible for restoration; a reliably permanently absent identity is not restored. Undo save failure keeps the currently durable state, shows the localized short Toast `Unable to restore favorite`, and does not retry automatically or add another recovery surface.
+- Only the latest eligible removal snapshot exists. A later explicit removal, of one application
+  or of a whole module, replaces it. For an application-removal snapshot, Snackbar timeout or
+  dismissal, another successfully committed favorite mutation, exiting edit mode, entering
+  Drawer favorite multi-selection, the Android system Home action, an external interruption,
+  or process recreation invalidates it.
+- For a whole-module snapshot, the long-duration Snackbar does not time out. User dismissal,
+  a later explicit removal, leaving Home, or process recreation invalidates it. Exiting edit
+  mode and entering or returning from Drawer favorite multi-selection do not themselves
+  invalidate it; that multi-selection journey is an exception to leaving Home.
+  Any subsequent successfully saved addition of a favorite invalidates the whole snapshot,
+  whether or not the added identity was in it and whether the destination is a module or the
+  Home bottom app bar. Any subsequent change affecting the snapshot's stored module data or
+  contained favorite identities also invalidates the whole snapshot. Invalidation closes its
+  Snackbar immediately and removes Undo; it never edits the snapshot into a partial restore.
+  Merely entering multi-selection, changing unconfirmed selections, cancelling, or failing to
+  save an addition does not count as a successful addition. Other changes that neither add a
+  favorite nor affect the snapshot's contents do not invalidate it.
+- An ordinary inventory refresh does not itself invalidate either snapshot. A reliable result
+  confirming that any removed identity permanently disappeared invalidates its snapshot;
+  for a whole-module snapshot, the complete snapshot and its Snackbar are discarded together.
+- Undo of an application removal restores that application to its original module and order
+  position and restores the module type and style needed when the removal deleted its final
+  item. Undo of a still-valid whole-module snapshot restores the complete module once,
+  including its name, name visibility, module type, style, main-list order, and contained
+  favorites in their saved order. An invalid whole-module snapshot offers no Undo and is
+  never partially restored. A reliably disabled identity remains eligible for restoration;
+  a reliably permanently absent identity invalidates the snapshot as specified above.
+  Undo save failure keeps the currently durable state, shows the localized short Toast
+  `Unable to restore favorite`, and does not retry automatically or add another recovery surface.
 - [Content transitions](../presentation/home.md#content-transitions) never determine mutation success, delay an otherwise valid save or failure recovery, or change the Undo snapshot and expiry rules. Once the existing save rules permit another action, an unfinished visual transition adds no input lock. Interrupting or disabling an animation must yield the same reliable state; first display, return navigation, and scrolling do not create favorite mutations or Undo opportunities.
 
 ### Edge auto-scroll during movement
@@ -247,9 +306,19 @@ One-shot operation has two entries. Reordering begins on a fully presented favor
 - Reordering can begin on a favorite in a module, a favorite on an expanded semi-hidden Home bottom app bar, or a favorite on a fixed bar. A collapsed bar cannot begin it. Movement before the long-press haptic still follows the existing list and Ribbon scrolling rules. After that haptic, movement beyond the platform touch slop begins the operation instead of opening the application action sheet.
 - The moving item lifts into a preview that keeps its source presentation. A Home favorite leaves its source layout, and the remaining favorites close the gap through the existing arrangement rules. A Drawer item keeps its source presentation until handoff. The operation shows only that preview and one insertion candidate. It does not show the edit-region background, a module header, a remove control, a trailing add-favorite entry, the bar's add control, a style affordance, or a module-reorder handle.
 - While the operation is active, the two main-list add-favorite entries appear after the last module as drop destinations. They disappear when the operation ends. They are not selectable and do not open Drawer favorite multi-selection. A release on one creates that entry's module type with the moving item as its first favorite, in one atomic save. If reordering empties the source module, removing that module belongs to the same save.
-- While the operation is active, a collapsed semi-hidden bar expands temporarily, and an empty bar is shown temporarily while the feature is on. Both are drop destinations. When the operation ends, each returns to the presentation it had before. While the feature is off, the empty bar stays absent. A full bar rejects the release without displacing a saved favorite or changing the icon tier.
+- While the operation is active, a collapsed semi-hidden bar expands temporarily, and an empty
+  bar is shown temporarily while the feature is on. Both are drop destinations. After a
+  successful save, the bar's ordinary presentation is recomputed from its final membership and
+  fixed-or-semi-hidden setting; it is not forced back to a previously empty or hidden state.
+  After cancellation, an invalid release, an unchanged release, or a failed save, the bar
+  returns to the presentation it had before the operation. While the feature is off, the empty
+  bar stays absent. A full bar rejects a release that would add a member without displacing a
+  saved favorite or changing the icon tier; internal reordering remains valid.
 - Placement uses the existing insertion rules, not an exchange of two favorites. Shared edge auto-scroll is available only while the operation is active. Selecting a favorite during the operation does not launch it.
-- A release that changes the saved favorite state commits one atomic save and returns to normal Home. It adds no success feedback and creates no Undo snapshot. An unchanged release, an invalid release, pointer cancellation, and system Back restore the applicable saved state and return to normal Home. They do not return to Drawer.
+- A release that changes the saved favorite state commits one atomic save and returns to normal Home.
+  It adds no success feedback and creates no Undo snapshot. An unchanged release, an invalid
+  release, pointer cancellation, and system Back restore the applicable saved state and return
+  to normal Home. They do not return to Drawer.
 - Save failure restores the last reliable complete favorite state, shows the localized short Toast `Unable to save favorite`, and returns to normal Home. It does not enter edit mode. The Android system Home action and an external interruption cancel the unpublished operation and reveal normal Home.
 - After the operation begins, further movement neither scrolls a list nor starts the Home-to-Drawer transition. One-shot operation cannot be entered from inside edit mode, and edit mode is not entered from it.
 
@@ -285,8 +354,28 @@ One-shot operation has two entries. Reordering begins on a fully presented favor
 - Edit mode appends two add-favorite entries after the last module and one trailing add-favorite entry inside every module. Entry position alone resolves creating a new module against adding to an existing one. Every entry is excluded from insertion-boundary resolution, so adding to a module's end and creating a new module remain separate reachable outcomes. Dropping a moving application on a main-list entry creates that module type with the application as its first favorite in one atomic mutation.
 - An open panel remains bound to its module identity and changes only through that module's style affordance or another module's style affordance. Module-style persistence is serialized as one complete state; unresolved saves temporarily block mutation without blocking scrolling, and failure restores the last durable style.
 - Application editing outside an open panel makes item selection inert, uses one separate remove target, and starts insertion movement by long-pressing the remainder of the complete item without a reorder handle. The open panel blocks those actions only inside its owning module. The same stable insertion-order model applies across single-column, multi-column, ribbon, and cross-module movement: the source leaves layout without a placeholder, candidates use the compacted arrangement, and only one candidate boundary appears. A temporarily application-empty source module retains only its existing add entry without becoming an insertion destination. Only a changed valid release commits; no-change, cancellation, interruption, and failure restore the applicable saved arrangement while preserving atomicity and identity uniqueness.
-- In normal Home, one-shot operation uses that same insertion model without entering edit mode. It covers both reordering a presented favorite and receiving a Drawer drag-to-favorite. During the operation it exposes only the two main-list add-favorite entries, a temporarily expanded collapsed bar, and a temporarily shown empty bar while the feature is on. It hides every other editing affordance, rejects a full bar, and returns to normal Home after every outcome.
-- Explicit application removal exposes only one transient latest-removal Undo snapshot, shared with a later whole-module unfavorite. An application removal restores the original module and position when still valid. A whole-module unfavorite restores the complete module once. Unrelated edits, editing-journey exit, process recreation, or reliable permanent disappearance invalidate an application snapshot; a whole-module snapshot remains valid across edit-mode exit and is invalidated by leaving Home, process recreation, user dismissal, or a later explicit removal.
+- In normal Home, one-shot operation uses that same insertion model without entering edit mode.
+  It covers both reordering a presented favorite and receiving a Drawer drag-to-favorite. During
+  the operation it exposes only the two main-list add-favorite entries, a temporarily expanded
+  collapsed bar, and a temporarily shown empty bar while the feature is on. It hides every other
+  editing affordance, hides module headers and trailing module add entries, and resolves a
+  remaining module's end boundary from its visible final application. A temporarily empty source
+  module retains its pre-operation extent without becoming a destination or exposing an insertion
+  boundary. A successful save recomputes the ordinary bottom-bar presentation from final state;
+  every cancellation, invalid release, unchanged release, or failure restores the prior
+  presentation. A full bar rejects only a release that would add a member, and internal
+  reordering remains valid. The operation returns to normal Home after every outcome.
+- Explicit application removal exposes only one transient latest-removal Undo snapshot,
+  shared with a later whole-module unfavorite. An application removal restores the original
+  module and position when still valid. A valid whole-module snapshot restores the complete
+  module once. Unrelated edits, editing-journey exit, process recreation, or reliable permanent
+  disappearance invalidate an application snapshot. A whole-module snapshot survives
+  edit-mode exit and the Drawer multi-selection journey itself, but any subsequent successful
+  favorite addition or change affecting its contents invalidates it in full and closes its
+  Snackbar. Leaving Home outside that journey, process recreation, user dismissal, or a later
+  explicit removal also invalidates it. Unconfirmed selection, cancellation, or a failed
+  addition alone does not invalidate it. Re-adding any removed application therefore prevents
+  undoing the old whole-module removal; no duplicate identity or partial restore is produced.
 - Content transitions preserve atomic state and existing Undo timing. During gap closure, insertion hit testing and drawing agree on current visible geometry. Lifting, successful release, and recovery each show only one visual instance of the moving application; disabling animations changes neither action availability nor final state.
 - Module and application movement share deterministic edge scrolling: only the active viewport's own axis moves, activation requires continuous residence through the defined delay, speed follows pointer proximity, and every exit, ownership change, boundary, completion, or interruption stops the current request without another haptic.
 - The new model starts empty without migrating former Home favorites while retaining unrelated local settings.
