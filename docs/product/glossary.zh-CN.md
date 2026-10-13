@@ -39,7 +39,7 @@
 | Application information | 应用信息 | 系统负责的应用信息与管理界面 |
 | Private Space | 私密空间 | 当前产品契约之外的 Android 隐藏资料能力；Launcher4Max 不申请 `ACCESS_HIDDEN_PROFILES` 访问该能力 |
 | Backup file | 备份文件 | 一个由用户选择、带 schema 版本号的本地 JSON 文件，包含完整的收藏模块、主页底部常驻应用栏、Drawer 显示设置、快捷操作绑定与图标形状状态；仅由 Settings 中明确的备份操作创建，永不上传或自动写入 |
-| Restore | 恢复 | Settings 中读取用户选择的备份文件，并在确认后原子替换当前收藏、Drawer 显示设置与快捷操作绑定状态的操作 |
+| Restore | 恢复 | Settings 中读取用户选择的备份文件，并在确认后原子替换当前收藏模块、主页底部常驻应用栏、Drawer 显示设置、快捷操作绑定与图标形状状态的操作 |
 
 产品文档统一使用上述术语。只有实现确实需要额外区分且形成文档时，技术命名才可以不同。
 

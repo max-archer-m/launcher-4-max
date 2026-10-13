@@ -8,7 +8,7 @@
 - 固定顶部应用栏展示页面标题和一个可见返回控件。点击该控件与系统 Back 结果相同；两条路径都不会打开其他目标，也不会重置 Drawer 位置。
 - 只有点击 Drawer 列表末尾固定的设置条目才进入 Settings；选中字母索引中的齿轮锚点只导航到该条目所在分组。
 - Back 返回 Drawer，并在同一进程内保留此前列表位置。
-- Settings 使用不透明的标准 Material 3 dark color scheme。它与 Home、Drawer 的区别是会绘制 Material 表面背景，不透出应用下方的系统背景。图标形状设置页是唯一例外：其实时预览窗口按 [icon-shape.zh-CN.md](../features/icon-shape.zh-CN.md) 的定义呈现当前壁纸，Settings 其余全部区域保持不透明。
+- Settings 使用不透明的标准 Material 3 dark color scheme。它与 Home、Drawer 的区别是会绘制 Material 表面背景，不透出应用下方的系统背景。图标形状设置页是唯一例外：其实时预览窗口完全透明，按 [icon-shape.zh-CN.md](../features/icon-shape.zh-CN.md) 的定义透出系统壁纸而不读取壁纸。Settings 其余全部区域保持不透明。
 
 ## 当前契约
 

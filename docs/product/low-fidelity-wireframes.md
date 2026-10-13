@@ -34,7 +34,7 @@ Use the owning document for a product decision instead of interpreting the wiref
 - [Drawer](wireframes/drawer.txt) — representative Content-state canvas showing the fixed search region, ordinary, search, and multi-selection semantics, list anchors, Settings section, and alphabet index.
 - [Application action sheet](wireframes/app-action-sheet.txt) — modal-state canvas showing the blocked background, scrim, and content order.
 - [Settings](wireframes/settings.txt) — complete canvas showing navigation, Launcher status, and product-information regions.
-- [Icon shape settings](wireframes/icon-shape-settings.txt) — page canvas showing the wallpaper-exposing live-preview window with its centered three-stop icon group and the panel-language settings block with the clip-mode selector and the corner-radius slider.
+- [Icon shape settings](wireframes/icon-shape-settings.txt) — page canvas showing the fully transparent live-preview window, through which the system wallpaper shows without being read, with its centered three-stop icon group and the panel-language settings block with the clip-mode selector and the corner-radius slider.
 
 ## Authority and update rules
 

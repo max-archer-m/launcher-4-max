@@ -39,7 +39,7 @@
 | Application information | 应用信息 | The system-owned information and management surface for an application |
 | Private Space | 私密空间 | Android hidden-profile capability outside the current product contract; Launcher4Max does not request `ACCESS_HIDDEN_PROFILES` to access it |
 | Backup file | 备份文件 | One user-chosen, schema-versioned local JSON file containing the complete favorite-module, Home bottom app bar, Drawer display-setting, quick-action-binding, and icon-shape state, created only by the explicit Settings backup action and never uploaded or written automatically |
-| Restore | 恢复 | The Settings action that reads a user-selected backup file and, after confirmation, atomically replaces the current favorite, Drawer display-setting, and quick-action-binding state |
+| Restore | 恢复 | The Settings action that reads a user-selected backup file and, after confirmation, atomically replaces the current favorite-module, Home bottom app bar, Drawer display-setting, quick-action-binding, and icon-shape state |
 
 Use these terms consistently in product documents. Technical names may differ only when an implementation distinction is necessary and documented.
 

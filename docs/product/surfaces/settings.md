@@ -8,7 +8,7 @@
 - A fixed top app bar displays the page title and one visible Back control. Selecting that control has the same result as system Back; neither path opens another destination or resets Drawer position.
 - Settings opens only when the user selects the fixed Settings item at the end of the Drawer list. Selecting the gear anchor in the AlphabetIndex only navigates to that item's section.
 - Back returns to Drawer and preserves its prior list position during the same process.
-- Settings uses an opaque standard Material 3 dark color scheme. Unlike Home and Drawer, it paints its Material surface background rather than exposing the system background beneath the application. The icon-shape settings page is the one exception: its live-preview window presents the current wallpaper as defined by [icon-shape.md](../features/icon-shape.md), and every other region of Settings remains opaque.
+- Settings uses an opaque standard Material 3 dark color scheme. Unlike Home and Drawer, it paints its Material surface background rather than exposing the system background beneath the application. The icon-shape settings page is the one exception: its live-preview window is fully transparent and reveals the system wallpaper without reading it, as defined by [icon-shape.md](../features/icon-shape.md). Every other region of Settings remains opaque.
 
 ## Current contract
 

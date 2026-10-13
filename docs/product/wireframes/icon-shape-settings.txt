@@ -8,8 +8,9 @@
 |  +------------------------------------------------------------------------+  |
 |  |                LIVE PREVIEW WINDOW / ROUNDED RECTANGLE                 |  |
 |  |                                                                        |  |
-|  |           PRESENTS THE CURRENT REAL WALLPAPER                          |  |
-|  |           (THE ONLY WALLPAPER-EXPOSING REGION OF SETTINGS)             |  |
+|  |           FULLY TRANSPARENT INTERIOR                                   |  |
+|  |           DOES NOT READ OR DRAW THE WALLPAPER                          |  |
+|  |           SYSTEM WALLPAPER SHOWS THROUGH                               |  |
 |  |                                                                        |  |
 |  |           EXPANDS TO FILL ALL REMAINING VERTICAL SPACE                 |  |
 |  |           BETWEEN THE APP BAR AND THE SETTINGS BLOCK                   |  |
@@ -36,9 +37,7 @@
 |  |  |   [ OEM CLIP ]      |      FREEFORM CLIP     |                      |  |
 |  |  +----------------------------------------------+                      |  |
 |  |                                                                        |  |
-|  |  SELECTOR START-ALIGNED IN THE CONTENT ROW                             |  |
-|  |  WIDTH FITS FOUR-CJK-CHARACTER OPTIONS WITH                            |  |
-|  |  HORIZONTAL PADDING; EXACT WIDTH DECIDED LATER                         |  |
+|  |  SELECTOR IS 232dp x 40dp, START-ALIGNED                               |  |
 |  |                                                                        |  |
 |  |  CORNER RADIUS                                                         |  |
 |  |  [ 50% ]  [--------------------------O-------------------------]       |  |
