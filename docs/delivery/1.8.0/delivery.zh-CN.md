@@ -1,0 +1,112 @@
+# Launcher4Max 1.8.0 交付
+
+> 语义源：英文。中文对应文档：[delivery.md](delivery.md)。
+>
+> 本记录定义 1.8.0 的计划交付边界。不授权生产实现、提交、推送、打 tag 或发布。
+
+## 版本意图
+
+`1.8.0` 整理 1.7.0 公开发布后积累的已确认产品更新，通过五个可独立验收的迭代，完善图标形状配置以及 Home 的结构、编辑、放置和加载行为。`a19eba4` 中已经完成的 Drawer 搜索结果 bug 修复继续保留为既有工作，不选入本版本迭代。
+
+## 交付级别
+
+`Author daily-use baseline`，定义见[发布治理](../../release.zh-CN.md)。本版本目标是在作者主设备上安装并验收。后续正式产物、tag 或 GitHub Release 不属于本版本，除非另行授权。
+
+版本标识在版本收尾时分配。本规划不授权任何 `versionName` 或 `versionCode`。
+
+## 产品引用
+
+- [产品概览](../../../overview.zh-CN.md)
+- [产品基础要求](../../requirements/product-foundation.zh-CN.md)
+- [Home 行为](../../product/surfaces/home.zh-CN.md)
+- [抽屉行为](../../product/surfaces/drawer.zh-CN.md)
+- [Settings 行为](../../product/surfaces/settings.zh-CN.md)
+- [应用操作面板](../../product/surfaces/app-action-sheet.zh-CN.md)
+- [Home 底部应用栏](../../product/features/home-bottom-app-bar.zh-CN.md)
+- [图标形状](../../product/features/icon-shape.zh-CN.md)
+- [快捷操作](../../product/features/quick-actions.zh-CN.md)
+- [Home 呈现](../../product/presentation/home.zh-CN.md)
+- [抽屉呈现](../../product/presentation/drawer.zh-CN.md)
+- [Settings 呈现](../../product/presentation/settings.zh-CN.md)
+- [导航](../../product/navigation.zh-CN.md)
+- [验证指南](../../validation.zh-CN.md)
+
+## 纳入范围与用户旅程
+
+作者可以配置契约规定的图标形状，并在 Home 与抽屉中看到一致结果。作者可以使用 Home 底部应用栏和修订后的 Home 编辑模式交互，按照已接受的放置规则放置收藏，并使用对应的 Flow 或 ribbon 布局。最后的收尾迭代只修复这些已选契约范围内暴露的 Home 加载、刷新、恢复和集成问题，不新增产品能力。
+
+## 排除项
+
+- 模块列表折叠与展开、折叠列表状态、折叠状态持久化及相关交互。完整产品定义被接受前，该内容不进入 1.8.0。
+- 横屏、折叠屏适配、桌面快捷方式与 X4Max 命名治理。
+- `a19eba4` 已完成的 Drawer 搜索结果操作修复；它属于既有工作，不属于本版本迭代。
+- 收尾阶段发现的新产品能力；需另行确定范围与归属。
+- 正式发布物、GitHub Release、APK 上传与仓库发布。
+
+## 技术方案与风险
+
+五个迭代串行执行，因为 Home 布局、编辑、放置和加载共享状态与呈现面。生产实现前，每条实现线必须包含下方记录的产品基线。最后一个迭代只能修复已有定义行为，并应将新能力提案退回单独授权的范围。
+
+主要风险包括：底部应用栏与编辑模式的交互重叠、不同已有模块排列下收藏放置与布局不变量的保持、不同 OEM 应用图标上的形状一致性，以及将加载修复与新产品行为分离。
+
+## 纳入迭代
+
+| 迭代 | 状态 | 更新日期 | 依据 |
+| --- | --- | --- | --- |
+| [迭代 35：图标形状配置](iteration-35-icon-shape-customization.zh-CN.md) | `Planned` | 2026-10-14 | 当前产品契约已包含本版本第一项能力迭代所选的图标形状设置与呈现范围。 |
+| [迭代 36：Home 底部应用栏](iteration-36-home-bottom-app-bar.zh-CN.md) | `Planned` | 2026-10-14 | 作者确认底部应用栏应作为独立迭代。 |
+| [迭代 37：Home 编辑模式交互](iteration-37-home-edit-mode-interaction.zh-CN.md) | `Planned` | 2026-10-14 | 作者确认模块标题属于 Home 编辑模式交互修改。 |
+| [迭代 38：Home 收藏放置与布局](iteration-38-home-favorite-placement-layout.zh-CN.md) | `Planned` | 2026-10-14 | 已接受的 Home 放置与布局更新形成独立可验收的放置旅程。 |
+| [迭代 39：Home 加载与收尾](iteration-39-home-loading-closure.zh-CN.md) | `Planned` | 2026-10-14 | 作者要求最后一个迭代处理 Home 加载与小范围已定义问题。 |
+
+## 迭代证据与结果
+
+### 迭代 35：图标形状配置
+
+[契约](iteration-35-icon-shape-customization.zh-CN.md)。状态：`Planned`。尚无实现证据。后续责任人：项目作者。最终作者决定：尚不适用。
+
+### 迭代 36：Home 底部应用栏
+
+[契约](iteration-36-home-bottom-app-bar.zh-CN.md)。状态：`Planned`。尚无实现证据。后续责任人：项目作者。最终作者决定：尚不适用。
+
+### 迭代 37：Home 编辑模式交互
+
+[契约](iteration-37-home-edit-mode-interaction.zh-CN.md)。状态：`Planned`。尚无实现证据。后续责任人：项目作者。最终作者决定：尚不适用。
+
+### 迭代 38：Home 收藏放置与布局
+
+[契约](iteration-38-home-favorite-placement-layout.zh-CN.md)。状态：`Planned`。尚无实现证据。后续责任人：项目作者。最终作者决定：尚不适用。
+
+### 迭代 39：Home 加载与收尾
+
+[契约](iteration-39-home-loading-closure.zh-CN.md)。状态：`Planned`。尚无实现证据。后续责任人：项目作者。最终作者决定：尚不适用。
+
+## 依赖与顺序
+
+迭代 35 与迭代 36 在基线接受后可以独立实现与验证；迭代 36 必须包含底部应用栏中的图标形状集成。迭代 37 依赖迭代 36 建立的布局与交互边界；迭代 38 依赖迭代 37 的编辑模式规则；迭代 39 仅接收由迭代 35–38 直接引入的回归，并依赖其集成结果。该顺序不绑定分支、终端或贡献者。
+
+## 验证
+
+强制环境为作者主物理设备。每个迭代都需要作者验收所选旅程，并建议针对状态、序列化、导航、布局和回归行为执行聚焦自动化检查。Gradle 执行仍由作者控制；未执行的检查必须记录为 `Not run`、`Unavailable` 或 `Unknown`。
+
+## 产物与发布要求
+
+本版本使用 `Author daily-use baseline` 门槛。验收 APK 必须记录应用身份、版本标识、源提交、签名类别、安装结果、已知缺口与主设备验收。正式签名、产物保留、tag、GitHub Release 与发布不提升为本版本门槛。
+
+## 已知局限与遗留问题
+
+- 更广泛的 OEM、API、语言环境、本地化与设备覆盖在执行前保持未知。
+- 被搁置的抽屉滑杆测试簇仍限制回归信号。
+- 模块折叠与展开明确不属于本版本。
+
+## 完成标准
+
+- 五个纳入迭代均为 `Completed` 并获得作者验收。
+- 所选产品契约与实现不存在未解决的重大不一致。
+- 作者主设备接受图标形状、底部应用栏、编辑模式、收藏放置与 Home 加载旅程。
+- 版本标识、源提交、签名类别、已知缺口与验证证据记录完整。
+- 实现与全部适用的 1.8.0 交付文档已提交，并同步到作者指定的共享 Git 历史。
+
+## 完成结果
+
+尚无最终结果。本版本截至 2026-10-14 处于规划状态。
