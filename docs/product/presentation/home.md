@@ -30,7 +30,15 @@ This document owns exact Home layout, typography, component geometry, and visual
 
 - Modules use the complete padded content width. Their item geometry and right-side, below-icon, and hidden name arrangements use the applicable Drawer application-item presentation values, composed from the module's selected icon and name (text) tiers.
 - One-item-per-row with a right-side name follows the established Home list geometry, composed exactly as the Drawer right-side-name items from the module's selected icon and text tiers. Each icon is placed `8dp` from the item's top and `12dp` from its bottom. The name uses normal-weight shared `largeAppNameFontSize`, `primaryTextFontSize`, or `secondaryTextFontSize` for the Large, Medium, or Small text tier, each with its shared line height and `primaryTextColor`; all retain the Drawer single-line ellipsis rule. The press Ripple covers the complete item without being reduced by item padding.
-- Every size permits one or two items per row with right-side names, one through four with below-icon names, and one through six with hidden names. Exact multi-column item geometry reuses the applicable Drawer presentation values. Step controls use the shared style settings panel geometry and the established enabled and disabled presentation at one and the applicable maximum. They update in the same frame as a name-placement change: right-to-below at two enables increment, below-to-right from three or four displays two with increment disabled, and hidden-to-right or hidden-to-below displays the destination placement's clamped boundary with increment disabled.
+- Every size permits a selected count of one or two with right-side names, one through four with
+  below-icon names, and one through six with hidden names. Exact multi-column item geometry reuses
+  the applicable Drawer presentation values. Step controls display and operate on the selected
+  count, using the shared panel geometry and boundary presentation at one and the placement's
+  maximum. When controls are not temporarily locked by animation or saving, they update in the
+  same frame as a name-placement change. These examples refer to the selected count, not
+  necessarily the rendered columns: right-to-below at two enables increment; below-to-right from
+  three or four displays two with increment disabled; hidden-to-right or hidden-to-below clamps
+  a count above the destination maximum to that boundary, with increment disabled.
 - A narrower available Home width keeps the selected icon and text sizes unchanged. The effective
   items-per-row count is the selected count limited by the current name-placement range and the
   width that can contain complete items, with a minimum of one column. An extremely narrow window
@@ -38,7 +46,13 @@ This document owns exact Home layout, typography, component geometry, and visual
   available through additional rows, and reducing the effective column count does not remove
   applications or change their order. Home content padding and the module's complete available
   width participate in this constraint.
-- Normal-mode items use no module-level title bar. While the style settings panel is collapsed, application-level editing adds one remove control but no application-reorder handle or reserved handle space; the non-remove portion of the complete item remains the long-press movement target.
+- Actual columns divide the available module width by that effective count. A width change does
+  not rewrite the saved selection or the stepper's selected-count boundaries.
+- Normal mode has no module title row while the module name is hidden. When the name is shown,
+  it uses the non-interactive title row defined in the Home interaction specification.
+  While the style settings panel is collapsed, application-level editing adds one remove control
+  but no application-reorder handle or reserved handle space; the non-remove portion of the
+  complete item remains the long-press movement target.
 
 ## Horizontal favorite ribbons
 

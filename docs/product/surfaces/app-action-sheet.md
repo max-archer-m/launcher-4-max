@@ -4,7 +4,16 @@
 
 ## Presentation
 
-The application action sheet is a modal bottom sheet opened by long-pressing a fully presented favorite in normal Home mode and releasing without moving beyond the platform touch slop, or by long-pressing an application in ordinary Drawer mode and then releasing without beginning [drag-to-favorite](drawer.md#drag-to-favorite). Movement beyond the touch slop after the long-press haptic begins [one-shot operation](home.md#one-shot-operation) on Home, or drag-to-favorite in Drawer as defined by the [Drawer interaction specification](drawer.md). Home application-level edit mode reserves application long press for movement, and Home module-level edit mode blocks application input completely.
+The application action sheet is a modal bottom sheet opened by long-pressing a fully presented
+favorite in normal Home mode and releasing without moving beyond the platform touch slop, or by
+long-pressing an application in ordinary Drawer mode and then releasing without beginning
+[drag-to-favorite](drawer.md#drag-to-favorite). Movement beyond the touch slop after the long-press
+haptic begins [one-shot operation](home.md#one-shot-operation) on Home, or drag-to-favorite in
+Drawer as defined by the [Drawer interaction specification](drawer.md).
+Home has normal, edit, and one-shot operation states. In edit mode, application long press is
+reserved for movement wherever application-level editing is available. An open style settings
+panel blocks application-level targets only inside its owning module; other modules retain
+application-level editing. Neither edit mode nor one-shot operation opens this sheet.
 
 - It uses a dark surface with light text and preserves light system status-bar icons.
 - A light short horizontal drag handle appears at the top.
@@ -13,7 +22,7 @@ The application action sheet is a modal bottom sheet opened by long-pressing a f
 - Selecting the scrim, completing the standard downward dismissal, or pressing Back dismisses it. Every dismissal path performs no unselected action and preserves the underlying surface position.
 - Until dismissal, the underlying application surface cannot receive clicks, long presses, or scrolling.
 - Accepting an action dismisses the sheet as part of that action's handoff; each action-specific rule below owns the resulting destination and failure behavior. Current product definition does not add separate success feedback.
-- Invoking the selected ordinary application from Home or Drawer closes the sheet and creates the external application excursion defined in [Navigation](../navigation.md#system-home-and-external-application-return). Returning in the same process displays Home without Loading rather than restoring Drawer.
+- Invoking the selected ordinary application from Home or Drawer closes the sheet and creates the external application excursion defined in [Navigation](../navigation.md#android-system-home-action-and-external-application-return). Returning in the same process displays Home without Loading rather than restoring Drawer.
 
 ## Content order
 
@@ -47,7 +56,11 @@ When the sheet's content exceeds its available height, only the application-shor
 
 ## Launcher actions
 
-- Launcher actions are available on both hosts. Home shows remove favorite, edit, and uninstall; Drawer shows uninstall only, in the leftmost slot. Favorite management remains entered from Home edit mode, while application information remains the system-management path for a Drawer entry.
+- Launcher actions are available on both hosts. Home shows remove favorite, edit, and uninstall;
+  Drawer shows uninstall only, in the leftmost slot. Normal Home can remove a favorite directly
+  through this sheet or enter edit mode through Edit. Other favorite-management entries follow
+  the Home and Drawer interaction specifications. Application information remains the
+  system-management path for a Drawer entry.
 - Home Launcher actions use five fixed horizontal slots ordered from left to right. Visible actions compact into the leftmost available slots; hidden actions leave no internal gap, and unused slots remain empty on the right. Actions do not redistribute evenly across the full width.
 - Each Launcher action's complete icon-and-label item is one interaction target. The icon is not an independent or smaller touch target.
 - At most five Launcher actions are defined; this limit does not apply to platform application shortcuts.

@@ -19,6 +19,10 @@ This shared product contract requires one observably identical panel treatment; 
 ## Shared panel surface
 
 - The style settings panel uses one resource-backed `darkSurfaceBaseColor` surface with exactly `12dp` corners. Drawer and Home use the same surface color, corner radius, horizontal outer margin, and border without host-specific visual substitutions.
+- The shared horizontal outer margin follows the current implementation's appearance accepted
+  by the author on a physical device; no exact value must be predetermined in this specification.
+  The implementation maintains this parameter and may adjust it under author device acceptance.
+  Account for safe-area insets and host padding once, without duplicating either in panel spacing.
 - The panel edge treatment is one `1dp` border in `#5A5A60`, drawn along the
   panel corner radius, with an approximately `3dp` non-uniform dark transition
   extending inward from the border's inner edge. The transition remains
@@ -43,6 +47,13 @@ This shared product contract requires one observably identical panel treatment; 
 - Related controls that belong to one semantic setting appear together on one content line; for example, the application-arrangement block combines the name-placement selector and the items-per-row stepper on one content line. A content line may scroll horizontally only when its controls overflow the available line width; the title line never scrolls. The contracted acceptance is that content lines do not overflow on the author's designated baseline device (currently the author-designated primary physical device; the Pixel 8 is not currently considered).
 - Interaction targets in the panel are at least `40dp x 40dp`. This is an author-accepted exception to the shared `48dp` minimum target, because the panel is not a frequent-touch region and its compact `48dp` content lines otherwise leave no target margin. Visible control size does not define hit geometry.
 - A compact two-option selector uses a `140dp x 40dp` dark rounded frame with a light boundary and `2dp` internal padding. It contains two equal `68dp x 36dp` light-filled, borderless rounded thumbs. Centered option labels use medium-weight shared `secondaryTextFontSize` and its line height. Each option retains a target at least `40dp` high and full thumb width.
+- The three-option name-placement selector (`Right` / `Below` / `Hidden`) reuses the two-option
+  selector's visual style, frame and thumb heights, internal padding, typography, and applicable
+  interaction rules. Its width follows the current author-accepted device appearance and layout
+  fit, without requiring the two-option total width. The implementation maintains this width
+  and may adjust it under author device acceptance. The selector and items-per-row stepper
+  remain on one content line, subject to the baseline-device no-overflow rule above.
+  The two-option selector's specified dimensions remain in force.
 - Selector thumb and text-color transitions use the same platform or theme short-duration property-animation token, with approximately `200ms` as the reference duration rather than a hard-coded duration.
 - Decrement and increment use localized text on approximately `28dp x 28dp` visible rounded backgrounds with `4dp` corners. The items-per-row value uses an approximately `32dp x 28dp` visible background. Each of the three controls retains its own interaction target of at least `40dp x 40dp`; visible background size does not define hit geometry.
 - The application-size block combines two three-stop tapering sliders on its accepted `56dp` content line, using the shared `12dp` start and end content insets and one `16dp` gap between them. The two sliders divide the remaining line width equally: the physical-left slider selects the application icon size and the physical-right slider selects the application name (text) size. This is one custom control owned entirely by this specification; it is not the platform-standard slider.

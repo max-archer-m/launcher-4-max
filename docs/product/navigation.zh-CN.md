@@ -10,7 +10,9 @@
 
 - Launcher 启动或进程重建后，以 Home 作为初始界面。
 - 即使后续实现使用同一个 draggable 容器，Home 与 Drawer 仍是两个不同的产品功能界面。
-- Settings 只能通过点击 Drawer 末尾固定设置分组中的设置条目进入。AlphabetIndex 底部的设置齿轮只导航到该分组，不直接打开 Settings。
+- Settings 只能通过普通 Drawer 的设置条目进入：Content 时位于末尾分组，Error 时位于重试下方，
+  由 [Drawer 行为](surfaces/drawer.zh-CN.md)定义。
+  AlphabetIndex 齿轮只导航到 Content 中的该分组，不直接打开 Settings。
 - Home 不提供 Settings 入口。
 
 ## 过渡模型
@@ -76,6 +78,8 @@ Home 与 Drawer 使用同一套可逆、跟手的直接操作过渡。以下术�
   未设置为默认 Launcher 时，Launcher4Max 执行普通系统 Back 行为，不规定最终返回的外部目标。
 - Drawer 上的 Back 返回 Home。
 - Settings 上的 Back 返回进入前的 Launcher4Max 界面，当前即 Drawer。
+- 同一进程内往返 Settings 保留来源 Drawer 的 Error 状态，不触发重试，
+  遵循 [Drawer 行为](surfaces/drawer.zh-CN.md#空结果或读取失败)。
 - 快捷操作设置页只能由其 Settings 项进入，并且是 Settings 的子页面而不是独立界面。在该页上 Back 返回 Settings 并保留 Settings 此前位置；页面在进程重建后不恢复，与其他不恢复的临时界面一致。
 - 应用操作面板上的 Back 关闭面板，并返回保持不变的底层界面。
 - Home 编辑模式中，Back 先关闭已打开的样式设置面板，否则退出到普通 Home。Drawer 收藏多选模式中，Back 先取消全部未确认选择并通过反向过渡返回 Home 编辑模式，不会同时退出编辑模式。

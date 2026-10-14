@@ -62,7 +62,10 @@ The current shared text-size tokens are:
 - A standalone non-interactive status icon or loading progress indicator is `48dp x 48dp`. It has no separate touch target or ripple.
 - Functional and status icons use the applicable semantic content color and consistent optical weight. An icon-only control has a localized accessibility name; decorative or already-labelled icons do not expose duplicate descriptions.
 - Defining a shared icon token does not add the corresponding control to a surface.
-- Native adaptive application icons follow the current device mask. Legacy icons are normalized within that mask while preserving recognizable artwork. Platform clone or profile badges are applied after normalization and remain consistent across application surfaces.
+- Application icons follow the global [icon-shape preference](features/icon-shape.md).
+  OEM clip retains the device-default clip; Freeform clip uses the saved corner-radius proportion.
+  Legacy icons are normalized while preserving recognizable artwork. Platform clone or profile
+  badges are applied after normalization and remain consistent across application surfaces.
 - If application artwork cannot be loaded, use Android's platform-default generic application icon with the same normalization and badge rules. Do not substitute an unrelated Launcher4Max icon.
 - Current target devices are expected to provide clone or profile badges. Launcher4Max does not add a fallback badge or secondary identity label when the platform provides none.
 - Exact parity with proprietary OEM shadows, icon packs, theme services, or other Launcher-specific effects is not required.

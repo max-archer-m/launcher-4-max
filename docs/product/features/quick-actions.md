@@ -67,8 +67,11 @@ Settings contains one primary item titled `Quick action settings`, which opens t
 - Given both slots are bound to `Screen lock`, when either bound gesture is recognized with the service enabled, then each recognition requests one system lock action.
 - Given a slot is bound to `Screen lock` while the service is disabled, when the bound gesture is recognized, then no action and no feedback occur.
 - Given a backup contains bindings, when restore completes, then Home presents exactly the restored bindings; given the bindings section or a field is missing, then that slot restores to `No action`.
-- Given the default bindings, when the user opens `Quick action settings`, then both slot rows show `No action` and the screen-lock service state row is visible with `Off`.
-- Given no slot is bound to `Screen lock` while the service is enabled, when the page is shown, then the service state row stays visible with `On`.
+- Given the default bindings, when the user opens `Quick action settings`, then both slot rows
+  show `No action` and the screen-lock service state row remains visible. It shows `On` only when
+  the required service is enabled and connected, and `Off` otherwise, independently of bindings.
+- Given no slot is bound to `Screen lock` while the service is enabled and connected, when the
+  page is shown, then the service state row stays visible with `On`.
 - Given a slot is bound to `Screen lock` while the service is disabled, when the page is shown, then the service state row shows `Off` and opens the explanation surface.
 - Given the service is `Off`, when the user selects `Screen lock`, then the binding is saved and the authorization flow is entered; cancelling that flow or leaving the service disabled keeps the binding.
 - Given the service is `Off`, when the user selects `No action` or `Edit mode`, then no authorization flow appears.

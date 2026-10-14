@@ -14,7 +14,9 @@ This document owns exact Drawer layout, typography, component geometry, and visu
 - In right-side-name arrangement, every icon-and-text combination uses a `12dp` icon-to-name gap. The name uses normal-weight shared `largeAppNameFontSize`, `primaryTextFontSize`, or `secondaryTextFontSize` for the Large, Medium, or Small text tier, each with its shared line height and `primaryTextColor`.
 - In below-icon-name arrangement, each item uses `8dp` above its icon, a `12dp` icon-to-name gap, and `12dp` below the one-line name, so the item height is exactly `8dp` + the selected icon size + `12dp` + the selected name line height + `12dp`. The name occupies one text box spanning the complete item content width with exactly `8dp` visible-content inset on each side, and the text is horizontally centered within that box; the icon is horizontally centered in the item. Adjacent items therefore keep their name text boxes exactly `16dp` apart without a separate column gap. In hidden-name arrangement, no name is rendered: the icon is placed `8dp` from the item's top and `12dp` from its bottom and horizontally centered in the item, so the item height is exactly `8dp` + the selected icon size + `12dp`, and the text tier has no effect on hidden-name items.
 - The application grid boundary begins `8dp` from the safe start edge and ends `8dp` before the safe-end AlphabetIndex reservation. Every item adds its own `8dp` start and end visible-content inset. The resulting first and last visible-content boundaries are `16dp` from their applicable outer boundary, and adjacent items produce `16dp` between visible content without a separate column gap. Implementations must not add another container and item inset that changes these observable totals.
-- Columns use `0dp` separate spacing and divide the available application-grid width by the selected items-per-row count. Every rendered name uses one static line and end ellipsis.
+- Columns use `0dp` separate spacing and divide the available application-grid width by the
+  width-constrained effective items-per-row count. Every rendered name uses one static line and
+  end ellipsis.
 - The selected icon and text sizes remain unchanged when the available width becomes narrower.
   The effective items-per-row count is the selected count limited by the current name-placement
   range and the width that can contain complete items, with a minimum of one column. A narrow
@@ -22,7 +24,19 @@ This document owns exact Drawer layout, typography, component geometry, and visu
   remain available through additional rows; reducing the effective column count does not remove
   applications or change their order. The left-side anchor, AlphabetIndex reservation, outer
   margins, and item insets all contribute to the available application-grid width.
-- At every icon and text tier combination, right-side-name arrangement supports one or two equal-width columns, below-icon-name arrangement supports one through four equal-width columns, and hidden-name arrangement supports one through six equal-width columns. The stepper's decrement and increment targets retain their ordinary geometry at a boundary but use the shared disabled presentation and expose disabled state rather than actionable Ripple. Their enabled or disabled presentation updates with the effective count in the same frame as a label-placement change; switching to `Below` at two enables increment, switching to `Right` from three or four presents two with increment disabled, switching to `Hidden` preserves the count and enables increment up to six, and switching from `Hidden` to `Right` presents two or from `Hidden` to `Below` presents four when the count exceeds that boundary, with increment disabled.
+- At every icon and text tier combination, the selected count ranges from one to two for
+  right-side names, one to four for below-icon names, and one to six for hidden names.
+  Actual equal-width columns use the effective count above; narrowing the window does not
+  rewrite the saved selection. The stepper displays and operates on the selected count.
+  At a selected-count boundary its targets retain ordinary geometry but use the shared disabled
+  presentation and expose disabled state rather than actionable Ripple.
+  When controls are not temporarily locked by animation or saving, their boundary presentation
+  updates in the same frame as a label-placement change. These examples refer to the selected
+  count, not necessarily the rendered columns: switching to `Below` at two enables increment;
+  switching to `Right` from three or four displays two with increment disabled; switching to
+  `Hidden` preserves the count and enables increment below six; switching from `Hidden` to
+  `Right` or `Below` clamps a count above the destination maximum to two or four respectively,
+  with increment disabled.
 
 ## Background opacity and contrast
 
@@ -65,6 +79,19 @@ Future parameter changes require author acceptance and an update to this specifi
 - The fixed Settings item is at least `56dp` high. It uses a `40dp` `primaryTextColor` gear, a `16dp` icon-to-name gap, and a normal-weight shared `primaryTextFontSize` name with its line height and `primaryTextColor`.
 - The item begins `16dp` from the safe start edge. Its content ends before the AlphabetIndex reservation, which consists of `16dp` safe-end content inset plus the fixed `32dp` index width. The complete item is the interaction target; the gear exposes no duplicate target or description.
 
+## Error layout
+
+- Below the fixed top app bar, the status icon, message, and Retry form a centered vertical
+  stack in the safe application region. They use the Loading/Error sizes and gaps above;
+  Retry reuses the standard Material 3 text button and shared interaction-target rules.
+- In ordinary Error, one Settings item follows Retry with the same `16dp` gap already used
+  between the message and Retry. The complete stack, including Settings, is vertically centered.
+  The Settings row reuses the [fixed item](#settings-fixed-item) height, gear, text, gap,
+  horizontal geometry, and combined interaction target, including its safe-end reservation.
+  That reservation stays blank; Error renders no section heading, anchor, or AlphabetIndex.
+- Favorite multi-selection Error uses the same status stack without the Settings row, following
+  [Drawer behavior](../surfaces/drawer.md#availability-states-during-multi-selection).
+
 ## Favorite multi-selection
 
 - The multi-selection top app bar remains `56dp` high and uses start, center, and end content regions. The start `Cancel` and end `Confirm` controls each occupy a vertically centered `48dp`-high target flush with their applicable safe edge, with `12dp` start and end content padding inside that target. The text itself retains its shared font size and natural line height rather than being assigned a `48dp` text height.
@@ -78,5 +105,10 @@ Future parameter changes require author acceptance and an update to this specifi
 ## Display settings
 
 - Drawer hosts the shared [style settings panel](style-settings-panel.md) as a compact custom surface that may enter from the bottom. It uses the shared horizontal outer margin and adds a Drawer-specific bottom margin. The panel opens and closes with one height property animation — growing from `0` to its content height on open and retracting back on close — using the shared short-duration property-animation token with its approximately `200ms` reference duration, matching the Home style panel. A transparent modal layer blocks underlying input without dimming the exposed Drawer or system background; the shared edge border must preserve visible separation from both exposed layers.
+- The Drawer-specific bottom margin follows the current implementation's appearance accepted
+  by the author on a physical device; no exact value must be predetermined in this specification.
+  The implementation maintains this parameter and may adjust it under author device acceptance.
+  Account for the bottom safe-area inset and host padding once, without duplicating either
+  in the panel's bottom spacing.
 - Drawer presents four setting blocks through the shared panel: section anchors, application arrangement, application size, and Drawer background. The section-anchor control uses the shared compact two-option selector; the name-placement (`Right` / `Below` / `Hidden`) control and the items-per-row stepper share the arrangement block's content line using the shared compact selector and stepper; the application-size block uses the shared dual tapering-slider control selecting the icon and text tiers. Drawer retains its own setting names, option labels, availability, and save behavior.
 - The Drawer-background block presents one percentage readout and one background-opacity slider on its content line using the shared background-row geometry, readout treatment, and slider accent defined by the [style settings panel presentation](style-settings-panel.md): a fixed-width percentage readout at the physical left, a `16dp` gap, and a continuous slider filling the remaining width.

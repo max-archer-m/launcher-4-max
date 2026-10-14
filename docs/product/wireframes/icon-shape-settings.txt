@@ -37,7 +37,7 @@
 |  |  |   [ OEM CLIP ]      |      FREEFORM CLIP     |                      |  |
 |  |  +----------------------------------------------+                      |  |
 |  |                                                                        |  |
-|  |  SELECTOR IS 232dp x 40dp, START-ALIGNED                               |  |
+|  |  COMPACT DUAL-OPTION SELECTOR, START-ALIGNED                            |  |
 |  |                                                                        |  |
 |  |  CORNER RADIUS                                                         |  |
 |  |  [ 50% ]  [--------------------------O-------------------------]       |  |

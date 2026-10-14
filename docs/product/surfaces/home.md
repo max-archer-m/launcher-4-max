@@ -4,7 +4,12 @@
 
 ## Purpose and structure
 
-Home is one fixed, non-pageable, non-collapsible Launcher surface. In normal Home and collapsed-panel editing, a fixed basic-information region shows time, date, and weekday; expanding the inline style settings panel temporarily removes only that region as defined below. One full-width favorite main list occupies the remaining content area and scrolls vertically. A dismissible default-Launcher prompt, defined below, occupies its own region between the basic-information region and that list, and it is present only while Launcher4Max is not the device's default Launcher.
+Home is one fixed, non-pageable, non-collapsible Launcher surface. In normal Home and
+collapsed-panel editing, a fixed basic-information region shows time, date, and weekday;
+expanding the inline style settings panel preserves that region. One full-width favorite main
+list occupies the remaining content area and scrolls vertically. A dismissible default-Launcher
+prompt, defined below, occupies its own region between the basic-information region and that
+list, and it is present only while Launcher4Max is not the device's default Launcher.
 
 The main list is one ordered, heterogeneous sequence of peer modules. A module is either a vertical favorite module or a horizontal favorite ribbon. Both occupy the complete Home content width and may be added, repeated, and ordered without a product-defined module-count limit. Home has no primary, secondary, side-by-side, folder, or page-based favorite regions.
 
@@ -75,8 +80,8 @@ Remaining space is transparent Home background, not another module.
   than an independent vertical or horizontal scroll region.
 - The entry style remains fixed across both modes: medium application presentation, name
   on the right, and the presentation-defined entry width, maximum, ellipsis, background,
-  boundary, and radius. Only the display mode, members, and module order are editable for
-  a horizontal favorite ribbon.
+  boundary, and radius. Display mode, members, module order, module name, and name visibility
+  are editable for a horizontal favorite ribbon.
 
 ## Loading, inventory changes, and failure
 

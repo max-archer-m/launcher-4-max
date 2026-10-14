@@ -29,11 +29,15 @@ Use the owning document for a product decision instead of interpreting the wiref
 
 ## Wireframe index
 
-- [Home](wireframes/home.txt) — complete canvas showing fixed basic information, the dismissible default-Launcher prompt shown between that region and the list while Launcher4Max is not the default Launcher, the vertically scrolling heterogeneous favorite main list with representative peer modules, and the Home bottom app bar when that feature is on.
+- [Home](wireframes/home.txt) - representative canvas with the Home bottom app bar at its default
+  off setting. It shows fixed basic information, the dismissible default-Launcher prompt between
+  that region and the list while Launcher4Max is not the default Launcher, and the vertically
+  scrolling heterogeneous favorite main list with representative peer modules.
 - [Home edit mode](wireframes/home-edit-mode.txt) — representative canvas showing the visible basic-information region, module headers, one module-local style panel with its selection outline, application editing on the other module, and the add-favorite entries.
 - [Drawer](wireframes/drawer.txt) — representative Content-state canvas showing the fixed search region, ordinary, search, and multi-selection semantics, list anchors, Settings section, and alphabet index.
 - [Application action sheet](wireframes/app-action-sheet.txt) — modal-state canvas showing the blocked background, scrim, and content order.
-- [Settings](wireframes/settings.txt) — complete canvas showing navigation, Launcher status, and product-information regions.
+- [Settings](wireframes/settings.txt) - canvas showing navigation, Launcher status and settings,
+  manual backup and restore entries, and product information including third-party notices.
 - [Icon shape settings](wireframes/icon-shape-settings.txt) — page canvas showing the fully transparent live-preview window, through which the system wallpaper shows without being read, with its centered three-stop icon group and the panel-language settings block with the clip-mode selector and the corner-radius slider.
 
 ## Authority and update rules

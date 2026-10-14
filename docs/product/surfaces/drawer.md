@@ -10,7 +10,12 @@ Drawer presents every launchable application entry successfully read from the so
 
 - The application inventory supports a finite selected items-per-row count and is not restricted to one item per row. The current arrangement contract includes right-side-name, below-icon-name, and hidden-name label placement; it does not imply another named layout mode.
 - With inline section anchors, each anchor occupies its own row and scrolls with the application list; it never remains pinned over later content. With left-side anchors, each anchor occupies the leading column beside its own application section. It pins immediately below the fixed top app bar while that section crosses the viewport and is pushed away by the next section anchor or the end of its owning section. At most one left-side anchor is pinned at a time; it never escapes its section, creates a separate viewport-wide panel, or becomes interactive. The Settings section uses a gear as its left-side anchor rather than fitting the localized `Settings` label into that column. Inline anchors add no permanent margin to application items.
-- Right-side-name, below-icon-name, and hidden-name arrangements use the exact item geometry defined in the [Drawer presentation specification](../presentation/drawer.md#surface-and-application-content). The selected items-per-row count divides the available application-content width. Names occupy one static line and use end ellipsis; hidden-name arrangement renders no name.
+- Right-side-name, below-icon-name, and hidden-name arrangements use the exact item geometry
+  defined in the
+  [Drawer presentation specification](../presentation/drawer.md#surface-and-application-content).
+  The effective items-per-row count after width constraints divides the available
+  application-content width. Names occupy one static line and use end ellipsis; hidden-name
+  arrangement renders no name.
 - The application-size setting combines two independent three-tier selections — application icon size and application name (text) size — presented as two tapering sliders in one block titled `Application size · Text size`. Exact control geometry belongs to the [style settings panel presentation specification](../presentation/style-settings-panel.md).
 - Selecting an application immediately launches it. Ordinary Drawer and search results share one surface-wide `600ms` rapid-activation window: the first accepted activation suppresses every later Drawer application activation until the window expires, regardless of identity.
 - If an application launch handoff fails, Drawer keeps the current mode, query, anchor, and relative list position, shows the localized short Toast `Unable to open application`, and requests one non-blocking inventory refresh. The failure itself is not evidence of permanent disappearance. A failed refresh adds no second Toast or blocking state; later reliable inventory follows the ordinary refresh rules.
@@ -19,7 +24,9 @@ Drawer presents every launchable application entry successfully read from the so
 ## Drag-to-favorite
 
 - Drag-to-favorite is available in ordinary Drawer Content and in search mode. It is unavailable in favorite multi-selection mode, Loading, and Error. The fixed Settings item never participates.
-- An application item is drag-eligible only when its stable launchable identity is neither already assigned to any favorite module nor reliably disabled. A reliably disabled identity cannot enter favorites.
+- An application item is drag-eligible only when its stable launchable identity is not already
+  assigned to any Home favorite module or the Home bottom app bar and is not reliably disabled.
+  A reliably disabled identity cannot enter favorites.
 - After the long-press haptic, moving the pointer beyond the platform touch slop on a drag-eligible item begins drag-to-favorite; releasing without that movement opens the application action sheet.
 - On an already-favorited identity, movement beyond the touch slop does not begin a drag: Drawer shows the localized short Toast `App is already in favorites`, and releasing the pointer still opens the application action sheet. On a reliably disabled identity, the same movement shows the localized short Toast `Unable to add to favorites` and release still opens the application action sheet.
 - Drag-to-favorite adds no haptic beyond the one long-press haptic. The moving application lifts into a non-interactive preview that is the current real-time snapshot of its Drawer item and retains that source presentation until handoff to the destination.
@@ -57,6 +64,12 @@ Drawer presents every launchable application entry successfully read from the so
 
 ## Display settings
 
+- The items-per-row setting, stepper readout, and accessibility value refer to the selected count.
+  The stepper and placement-change examples below use that selected count and its placement
+  bounds, when controls are not temporarily locked by animation or saving. Layout uses the
+  width-constrained effective count defined by the presentation specification, with a minimum
+  of one column. A width change does not rewrite the saved selection or its stepper boundaries.
+
 - Selecting the ordinary-mode display-settings entry opens one modal Drawer display-settings panel. The modal layer blocks the underlying Drawer; system Back or selecting outside the panel closes it without invoking a separate confirmation action.
 - The panel owns four independent semantic settings: application size, application arrangement, section-anchor presentation, and Drawer background. Application size combines two independent tiers — application icon size and application name (text) size — and each tier has exactly `Large`, `Medium`, and `Small`, with `Medium` as the current default for both.
 - Application arrangement combines a three-option label-placement selector, `Right`, `Below`, or `Hidden`, with an independently operated items-per-row stepper. The current default is `Right` with one item per row, matching the representative default Drawer wireframe. Every icon and text tier combination supports the same fixed count bounds: `Right` allows one or two items per row, `Below` allows one through four, and `Hidden` allows one through six. Decrement is disabled at one; increment is disabled at two for `Right`, four for `Below`, and six for `Hidden`, and neither action can cross its current placement boundary. Changing the count never changes label placement. Changing from `Right` to `Below` preserves the current count of one or two and recomputes stepper availability; at two, increment therefore changes from disabled to enabled. Changing from `Below` to `Right` preserves one or two, but atomically clamps three or four to two; increment is then disabled. Changing to `Hidden` preserves the current count of one through four and raises the maximum to six, so increment becomes available below six. Changing from `Hidden` to `Right` atomically clamps a count above two to two, and changing from `Hidden` to `Below` atomically clamps a count above four to four. The placement change and any required clamp form one complete display-setting change and one save. `Hidden` hides only the displayed name: accessibility still announces the complete application name, and search still filters by it. Changing either size tier preserves the selected count because every tier supports the same bounds. Available width never raises these product-defined maxima.
@@ -82,7 +95,10 @@ Drawer presents every launchable application entry successfully read from the so
 - The top app bar replaces ordinary contents with `Cancel`, a localized captured-destination description, and `Confirm`. The description distinguishes adding to or creating a vertical module from adding to or creating a ribbon without assigning a persistent name or ordinal. The originating add-favorite entry's position alone determines whether the captured destination is an existing module or a new one; no panel state or prior selection participates. Confirm is disabled while nothing is selected.
 - Selecting an available application toggles its selection instead of launching it. Long-press actions and the application action sheet are disabled in this mode. Selection items reuse the ordinary inventory's items-per-row grid and arrangements without layout change. An available unselected item shows no selection indicator; the mode is expressed by the top app bar. A selected item receives the selected-item treatment defined by the Drawer presentation specification: the item scales to approximately ninety percent as a purely visual transform with unchanged layout bounds, gains the complete selection outline, and carries one overlaid order badge at its top-left corner showing its one-based plain-text order. The badge is not independently interactive; selecting the complete item again deselects it, removes selected treatments, and closes later numbering gaps.
 - Selection order is the order in which entries were selected. Deselecting an entry immediately closes the numbering gap, and confirming appends the remaining entries to the captured destination in the displayed number order.
-- An identity already assigned to any favorite module remains visible but unavailable for selection. Its icon and name use disabled semantic opacity, and it receives no badge, outline, or scaling; selecting it has no effect and produces no feedback. Primary, cloned, and work-profile entries remain distinct identities.
+- An identity already assigned to any Home favorite module or the Home bottom app bar remains
+  visible but unavailable for selection. Its icon and name use disabled semantic opacity, and it
+  receives no badge, outline, or scaling; selecting it has no effect and produces no feedback.
+  Primary, cloned, and work-profile entries remain distinct identities.
 - Home does not pre-check whether this mode will contain an available identity. If every visible identity is already assigned, all items follow the unavailable treatment and Confirm remains disabled; Drawer adds no separate full-favorites state, Toast, or redirect.
 - Selecting Confirm saves the complete current selection once, then completes the downward transition and returns to the same Home edit mode. Home restores the favorite main list and every existing ribbon to their recorded pre-entry scroll positions without automatically scrolling to, centering, or revealing the changed destination or newly added entries. The destination and main-list content extents grow naturally after the saved addition; added content may therefore remain outside the current viewport until the user scrolls to it.
 - Selecting Cancel, system Back, or a valid downward Drawer dismissal discards the complete unconfirmed selection, completes the downward transition, and returns to Home edit mode with the favorite main list and every existing ribbon at their exact pre-entry scroll positions. Cancellation does not create a destination, change a content extent, or redirect the user to another module.
@@ -142,7 +158,8 @@ Drawer presents every launchable application entry successfully read from the so
 - A magnified bubble displays only the active character or Settings gear using the Drawer presentation specification. It remains visible while the pointer is held and disappears immediately on release or cancellation.
 - While the index owns the pointer, the application list does not independently consume the gesture; index movement may drive the list only through the discrete anchor smooth-scroll behavior above.
 - The Settings gear is an index anchor, not a control that opens Settings. Selecting it by initial pointer down jumps immediately to the fixed Settings section; entering it during index movement smooth-scrolls to that section and produces the same index-step haptic feedback as any other anchor change.
-- The Settings item in that section is the only Drawer control that opens Settings.
+- In ordinary Content, only the Settings item in that section opens Settings. Ordinary Error
+  presents the same item separately under the [error-state rules](#empty-or-failed-result).
 - Returning from Settings preserves the Drawer list position during the same process.
 - TalkBack semantics and an accessibility-specific alternate index interaction are outside the current personal-use scope.
 
@@ -171,11 +188,36 @@ Drawer presents every launchable application entry successfully read from the so
 - The application region hides the progress indicator, shows the shared non-interactive status icon, displays the localized message `Unable to load applications`, and provides a separate `Retry` action.
 - The error state does not instruct the user to restart Launcher4Max.
 - The application list, fixed Settings section, and AlphabetIndex remain absent while this full-surface error is shown.
-- Selecting Retry clears the visible error state, returns to the Loading state, and starts a new inventory read.
-- While the user remains on the same Error presentation, activity resume, network changes, package callbacks, and other ordinary lifecycle events do not automatically retry or clear the error. Leaving Drawer and later entering it again starts a new initial read.
-- A successful retry displays the application list. An empty or failed retry returns to the same error state.
+- Ordinary Error retains one `Settings` item below Retry, independent of inventory availability.
+  It opens the existing Settings page without retrying or clearing Error. It has no section
+  heading, list anchor, or AlphabetIndex gear and is absent in favorite multi-selection Error.
+- A Settings round trip during the same process returns to the same Error state without an
+  automatic inventory read, including after backup, restore, or a Settings sub-page visit.
+  Settings actions retain their own results; backup and restore do not repair inventory failure.
+- Selecting Retry clears the visible error and Settings item, returns to the unchanged Loading
+  state, and starts one new inventory read. Retry does not open Settings or change favorites.
+- While the user remains on the same Error presentation, activity resume, network changes,
+  package callbacks, and other ordinary lifecycle events do not automatically retry or clear
+  the error. Leaving Drawer and later entering it again starts a new initial read, except for
+  the Settings round trip above.
+- A successful retry restores Content with its application list, Settings section, and
+  AlphabetIndex under the current mode's rules. An empty or failed retry returns to the same
+  Error state; ordinary Error again offers both Retry and the single Settings item.
 
 ## Acceptance intent
+
+- With repeated empty or failed inventory reads, ordinary Error keeps one usable Settings
+  entry. Opening it starts no read; Back returns to Error in the same process, including after
+  using backup, restore, quick-action settings, or Privacy. Those actions retain their own
+  success and failure results without implying inventory recovery.
+- Retry enters Loading with Settings absent, then restores Content on usable inventory or
+  the same Error on an empty or failed result. Error never exposes application anchors or
+  AlphabetIndex. Loading, search, and favorite multi-selection retain their existing Settings
+  visibility rules, and Home gains no Settings entry.
+
+- Count-boundary and placement-change checks use the selected count. When width reduces the
+  effective columns, the saved count and stepper readout remain selected values, while layout
+  uses the effective count with a minimum of one. Width changes alone do not save a new count.
 
 - Ordinary Drawer keeps the top app bar fixed and visually transparent over the selected Drawer background while content scrolls; its Back arrow returns through the normal downward transition, its centered search field enters in-place application search, and its right-side display-settings entry opens the display-settings dialog.
 - Search filters on every text change through the confirmed contiguous matching rules, preserves the selected Drawer arrangement and complete-name order, rebuilds anchors and AlphabetIndex from matching application sections, hides Settings, distinguishes no-match Content from inventory Error, and restores the recorded ordinary position only when search is cancelled or exited through system Back.

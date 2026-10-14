@@ -10,7 +10,9 @@ This document defines the current relationship, entry, exit, restoration, and sh
 
 - Home is the initial surface whenever the Launcher starts or restores after process recreation.
 - Home and Drawer are distinct product surfaces even if implementation later uses one draggable container.
-- Settings is reachable only by selecting the fixed Settings item in the final Drawer section. The Settings gear at the bottom of the AlphabetIndex navigates to that section and does not open Settings directly.
+- Settings is reachable only through ordinary Drawer's Settings item: in the final section
+  during Content or below Retry during Error, as defined by [Drawer behavior](surfaces/drawer.md).
+  The AlphabetIndex gear navigates to the Content section and does not open Settings directly.
 - Home has no Settings entry.
 
 ## Transition model
@@ -81,6 +83,8 @@ The reverse transition uses the same values in reverse. Rebound and completion a
   system Back behavior and does not prescribe the external destination.
 - On Drawer, Back returns to Home.
 - On Settings, Back returns to the previous Launcher4Max surface, currently Drawer.
+- A Settings round trip within the same process preserves the originating Drawer Error state
+  without retrying, as defined by [Drawer behavior](surfaces/drawer.md#empty-or-failed-result).
 - The quick-action settings page opens only from its Settings item and is a Settings sub-page rather than a separate surface. On it, Back returns to Settings and preserves Settings' prior position; the page is not restored after process recreation, matching the other non-restored transient surfaces.
 - On the application action sheet, Back dismisses the sheet and returns to the unchanged underlying surface.
 - In Home edit mode, Back first closes an open style settings panel; otherwise it exits to normal Home. In Drawer favorite multi-selection mode, Back first cancels the complete unconfirmed selection and returns through the reverse transition to Home edit mode; it does not also exit edit mode.

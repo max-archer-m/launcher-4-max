@@ -29,7 +29,9 @@ There is one shape preference for the whole product. It is not per-surface, per-
 
 ## Scope of application
 
-- The shape preference applies to application icons in Home vertical modules, application icons inside horizontal ribbon entries, and Drawer application icons in every state of that list, including search results and favorite multi-selection.
+- The shape preference applies to application icons in Home vertical modules, horizontal ribbon
+  entries, the Home bottom app bar, and Drawer in every state of that list, including search
+  results and favorite multi-selection.
 - Platform shortcut icons in the application action sheet and every functional glyph in the product (add-favorite artwork, arrows, anchors, status and service artwork) are not application icons and do not follow the shape preference.
 - The preference changes only the icon clip. It does not change icon-slot sizes, module geometry, launch behavior, or any other presentation value owned by other contracts.
 
@@ -58,16 +60,22 @@ Settings contains one primary item titled `Icon shape`, placed directly below `Q
 
 ## Acceptance intent
 
-- Given the default preference, when Home, ribbon, or Drawer icons are presented, then every application icon keeps the device-default clip result and no custom rounding is applied.
-- Given `Freeform clip` with any saved proportion, when large, medium, and small icons are presented across Home vertical modules, ribbon entries, and Drawer, then every application icon shows the same relative corner shape — the proportion of half its slot size.
+- Given the default preference, when icons in Home vertical modules, ribbon entries, the Home
+  bottom app bar, or Drawer are presented, then every application icon keeps the device-default
+  clip result and no custom rounding is applied.
+- Given `Freeform clip` with any saved proportion, when large, medium, and small icons are
+  presented across Home vertical modules, ribbon entries, the Home bottom app bar, and Drawer,
+  then every application icon shows the same relative corner shape: the proportion of half its
+  slot size.
 - Given `Freeform clip` at `100`, when any application icon is presented, then it renders as a full circle; at `0`, it renders as a square.
 - Given the page is open with `Freeform clip`, when the user drags the corner-radius slider, then all three preview rows update in real time without changing the saved state; when the pointer is released, the final value is committed once without any confirm action. Cancelling the drag restores the last successfully saved value.
 - Given `OEM clip` is selected, when the page is shown, then the corner-radius slider reports unavailable with the disabled presentation and the saved proportion is unchanged.
 - Given the user switches `OEM clip` to `Freeform clip` after having saved a proportion, then that saved proportion applies again.
 - Given a fresh configuration, when `Freeform clip` is selected for the first time, then the proportion starts at `50`.
 - Given the page is open, when any region outside the preview window is presented, then it keeps the standard opaque Settings surface. The preview window does not read or draw the wallpaper; its interior is fully transparent, so the system wallpaper shows through behind the three sample icons.
-- Given a backup containing a valid preference, when restore completes, then Home, ribbon, and
-  Drawer present exactly the restored shape. Given a missing preference section, the mode is
+- Given a backup containing a valid preference, when restore completes, then Home vertical modules,
+  ribbon entries, the Home bottom app bar, and Drawer present exactly the restored shape.
+  Given a missing preference section, the mode is
   `OEM clip` and the saved proportion is `50`; given a missing proportion in a present
   `Freeform clip` section, the mode remains `Freeform clip` and the proportion is `50`.
   Given an invalid mode or proportion, the invalid field falls back to its defined default;
@@ -75,4 +83,9 @@ Settings contains one primary item titled `Icon shape`, placed directly below `Q
   its default. Other valid backup sections remain restored, and invalid proportions are not
   clamped.
 - Given `Freeform clip` is selected, when platform shortcut icons are presented in the application action sheet, then they keep their platform rendering and do not follow the proportion.
-- Given the user invokes system Back or the Back control on the page, then Settings opens at its prior position and every change made on the page remains saved.
+- Given the user invokes system Back or the Back control on the page, then Settings opens at
+  its prior position. Successfully saved changes remain saved. A corner-radius preview whose
+  pointer has not been released is cancelled and restores the last successfully saved value
+  without starting a save. An already-started save resolves independently: success retains the
+  new preference; failure restores the last successfully saved complete preference and shows
+  `Unable to save icon shape`. Neither result reopens the page.

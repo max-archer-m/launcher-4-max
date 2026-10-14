@@ -16,7 +16,18 @@ The accepted Settings entry and page title are `Home bottom app bar` in English 
 - The page title is `Home bottom app bar`. From top to bottom it shows one master switch, one preview, and the remaining settings. The master switch is the only control that turns the feature on or off. It defaults to off. The page also shows a localized read-only capacity message for the selected icon tier and current Home width, such as `Up to 6 apps at this width`. This message updates whenever the width or selected icon tier changes.
 - While the switch is off, Home shows no bar, no collapsed edge, and no reserved height. Membership, the fixed-or-semi-hidden choice, and the icon size remain saved. The settings below the preview use the shared disabled treatment and reject input. The preview stays visible and does not accept changes.
 - While the switch is on and the bar has no favorite, ordinary Home still shows no bar and reserves no height. Edit mode is the exception defined below.
-- The master switch, the fixed-or-semi-hidden choice, and the icon size are independent saved settings. When no valid saved presentation choice exists, the fixed-or-semi-hidden choice defaults to semi-hidden. When no valid saved icon tier exists, the icon size defaults to Medium. Turning the master switch off and on again restores the saved presentation choice and icon size; it does not reset either setting. Fixed means the bar stays at full height. Not fixed means semi-hidden. Icon size uses the existing Large, Medium, and Small icon tiers. There is no separate maximum-count setting and no membership editor. Adding and removing happen only in Home edit mode. Reordering can also begin from a fully presented favorite in normal Home, as defined by [one-shot operation](../surfaces/home.md#one-shot-operation).
+- The master switch, the fixed-or-semi-hidden choice, and the icon size are independent saved
+  settings. When no valid saved presentation choice exists, the fixed-or-semi-hidden choice
+  defaults to semi-hidden. When no valid saved icon tier exists, the icon size defaults to Medium.
+  Turning the master switch off and on again restores the saved presentation choice and icon size;
+  it does not reset either setting. Fixed means the bar stays at full height. Not fixed means
+  semi-hidden. Icon size uses the existing Large, Medium, and Small icon tiers. There is no separate
+  maximum-count setting and no membership editor. Home edit mode supports adding and removing.
+  Adding and moving also follow the one-shot and Drawer drag entries defined below.
+  Normal Home supports removal through the
+  [application action sheet](../surfaces/app-action-sheet.md#launcher-actions).
+  Reordering can also begin from a fully presented favorite in normal Home, as defined by
+  [one-shot operation](../surfaces/home.md#one-shot-operation).
 - The preview shows the bottom row without names on one opaque built-in image. It does not sample the current wallpaper. It does not decide capacity. Home's available width does.
 - Every settings change applies immediately and starts one exclusive save of the complete bar
   settings state. While that save is unresolved, other bar-setting changes are unavailable, but

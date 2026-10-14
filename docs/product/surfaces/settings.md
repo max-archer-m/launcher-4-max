@@ -6,8 +6,15 @@
 
 - The page title is `Settings`.
 - A fixed top app bar displays the page title and one visible Back control. Selecting that control has the same result as system Back; neither path opens another destination or resets Drawer position.
-- Settings opens only when the user selects the fixed Settings item at the end of the Drawer list. Selecting the gear anchor in the AlphabetIndex only navigates to that item's section.
-- Back returns to Drawer and preserves its prior list position during the same process.
+- Settings opens only from the Settings item in ordinary Drawer: in the final list section
+  during Content or below Retry during Error. The AlphabetIndex gear only navigates to the
+  Content section; it does not open Settings.
+- Back returns to Drawer during the same process, preserving its prior Content list position
+  or its Error state according to the [Drawer error contract](drawer.md#empty-or-failed-result).
+  A Settings round trip does not retry or clear that Error.
+- Settings entries, including backup, restore, quick-action settings, and Privacy, remain
+  available from Error under their existing rules without waiting for inventory recovery.
+  Backup and restore operate on saved favorites and settings; neither repairs inventory failure.
 - Settings uses an opaque standard Material 3 dark color scheme. Unlike Home and Drawer, it paints its Material surface background rather than exposing the system background beneath the application. The icon-shape settings page is the one exception: its live-preview window is fully transparent and reveals the system wallpaper without reading it, as defined by [icon-shape.md](../features/icon-shape.md). Every other region of Settings remains opaque.
 
 ## Current contract
@@ -39,7 +46,15 @@ This heading organizes the behavior contract and is not a visible Settings group
   - Canceling or dismissing the document picker writes nothing, changes nothing, and shows no message.
   - While the write is in progress, both Data entries are non-interactive. An interrupted backup leaves the current application state unchanged; a partially written file is simply an invalid backup under the restore rules.
   - A successful backup shows the localized short message `Favorites and settings backed up`. A failed write shows the localized short message `Unable to back up favorites and settings`.
-- **Restore from backup:** Selecting it opens the system document picker to choose a backup file. Canceling or dismissing the picker changes nothing and shows no message. After a file is selected, a confirmation dialog states that confirming replaces the current favorites and display settings with the backup contents and that the action cannot be undone, with `Restore` and `Cancel` actions; `Cancel`, dismissing the dialog, and Back change nothing. Confirming replaces the complete current state with the backup state as one atomic operation and shows the localized short message `Favorites and settings restored`. Settings remains displayed; Home and Drawer present the restored state on their next view.
+- **Restore from backup:** Selecting it opens the system document picker to choose a backup file.
+  Canceling or dismissing the picker changes nothing and shows no message. After a file is selected,
+  a confirmation dialog states that confirming replaces the current Home favorites (including
+  the Home bottom app bar's members and settings), Drawer display settings, quick-action bindings,
+  and icon-shape preference with the backup contents, and that the action cannot be undone.
+  It offers `Restore` and `Cancel`; `Cancel`, dismissing the dialog, and Back change nothing.
+  Confirming replaces the complete current state with the backup state as one atomic operation
+  and shows the localized short message `Favorites and settings restored`. Settings remains
+  displayed; Home and Drawer present the restored state on their next view.
   - Restore does not validate the backup against the current application inventory; afterwards the ordinary inventory-refresh rules apply, so disabled identities are retained, reliably disappeared identities are removed, and failed launches show the ordinary launch-failure feedback.
   - Schema compatibility is directional: a backup whose schema version is higher than the current application schema is version-incompatible. A backup whose schema version is equal to or lower than the current schema is accepted and interpreted under the current schema.
   - A backup missing a state section is valid: a missing favorites section restores an empty favorite state, a missing Drawer display-settings section restores display settings to Launcher4Max's default values, a missing quick-action-bindings section restores every slot to `No action`, a missing icon-shape section restores the complete icon-shape default (`OEM clip` with saved proportion `50`), and a missing Home bottom app bar section restores that bar to off with no favorites placed on it. A missing field inside a present section receives its field-specific default under the owning feature contract. For icon shape, a missing mode uses `OEM clip`, a missing proportion in `Freeform clip` uses `50`, and invalid mode or proportion values fall back to their field defaults; if the two fields cannot form one valid shape preference, the complete icon-shape preference falls back to its default. Invalid proportions are not clamped, and other valid backup sections remain restorable. When a valid Home bottom app bar section contains more identities than the current capacity for its restored icon tier and Home width, restore keeps the first `N` valid identities in the backup's saved bar order and omits the rest from the restored bar without moving them to another module. An empty backup with no modules is valid.
@@ -58,7 +73,9 @@ This heading organizes the behavior contract and is not a visible Settings group
 
 ### Support and diagnostics
 
-Complex logs, update checks, backup, cloud synchronization, diagnostic export, and copying version or device information are outside the current product contract.
+Manual local backup and restore are supported as defined above. Complex logs, update checks,
+automatic backup, cloud synchronization, diagnostic export, and copying version or device
+information are outside the current product contract.
 
 ## Privacy presentation
 
