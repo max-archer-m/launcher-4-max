@@ -40,9 +40,25 @@ There is one shape preference for the whole product. It is not per-surface, per-
 Settings contains one primary item titled `Icon shape`, placed directly below `Quick action settings` and above the Data entries, which opens the dedicated page defined here. The page reuses the Settings page structure and top app bar, including its Back control, and Back returns to Settings at its prior position.
 
 - The page presents one live-preview window above one settings block. Exact geometry belongs to the [Settings presentation specification](../presentation/settings.md#icon-shape-settings-page); the spatial sketch is the [icon-shape settings wireframe](../wireframes/icon-shape-settings.txt).
-- **Live-preview window:** one rounded-rectangle region whose interior is fully transparent. It does not read, sample, copy, or draw the wallpaper. The system wallpaper remains visible through that interior. The window expands to fill the vertical space between the app bar and the settings block, and the page itself does not scroll. This region is the only place in Settings that reveals the wallpaper. Inside the window, a group of exactly three vertically stacked, non-interactive rows is centered horizontally and vertically, one row per icon-size stop — large, medium, small — each rendering the fixed sample icon, the system default application icon, with the current preference result. Real installed applications are not used as preview samples. The rows update in real time while the corner-radius control is dragged, and each row carries a localized accessibility name identifying its size stop.
+- **Live-preview window:** one rounded rectangle whose interior is fully transparent.
+  It does not read, sample, copy, or draw the wallpaper. The system wallpaper remains visible
+  through that interior. The preview region fills the space between the app bar and the settings
+  block; the window is inset within that region as defined by the
+  [Settings presentation specification](../presentation/settings.md#icon-shape-settings-page).
+  The page itself does not scroll. The window is the only place in Settings that reveals wallpaper.
+  Inside the window, exactly three vertically stacked, non-interactive rows are centered
+  horizontally and vertically, one per icon-size stop: large, medium, small. Each renders the
+  fixed sample icon, the system default application icon, with the current preference result.
+  Real installed applications are not used as preview samples. The rows update in real time while
+  the corner-radius control is dragged, and each carries a localized accessibility name
+  identifying its size stop.
 - **Settings block:** the block below the preview follows the shared style-settings-panel language of block titles and content rows. It contains one `Clip mode` content row with a compact dual-option selector offering `OEM clip` and `Freeform clip`, and one `Corner radius` content row combining an integer-percentage readout with one continuous slider exposing `0`–`100`. The readout, slider range handling, and disabled presentation reuse the shared controls; the slider is non-interactive while `OEM clip` is selected.
-- The page itself does not scroll; the preview window absorbs the remaining vertical space. Settings' own entry, return, and state-refresh behavior is unchanged.
+- The page itself does not scroll; the preview region absorbs the remaining vertical space.
+  Settings' own entry, return, and state-refresh behavior is unchanged.
+- Each preview row displays a localized sample application name with its size tier to the
+  right of the icon, with the icon and name centered as one group. The localized accessibility
+  name for each tier is announced once. Exact wording and styling belong to the
+  [Settings presentation specification](../presentation/settings.md#icon-shape-settings-page).
 
 ## Backup and restore
 

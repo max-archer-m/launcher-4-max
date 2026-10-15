@@ -43,10 +43,39 @@ This document owns exact Settings typography and row geometry. [Settings behavio
 
 ## Icon shape settings page
 
-- The `Icon shape` page reuses the Settings top app bar and page structure. Its title is `Icon shape`. The page itself does not scroll: the live-preview window expands to fill the vertical space not consumed by the app bar, the settings block, and the safe areas.
-- Below the app bar divider, the page presents one live-preview window: a rounded-rectangle region whose interior is fully transparent. It does not read, sample, copy, or draw the wallpaper, so the system wallpaper shows through. The window uses `12dp` corners, spans the content width with `16dp` horizontal margins, and starts `16dp` below the divider. It is the only region of Settings that reveals the wallpaper. The window adds no wallpaper rendering, dimming, scrim, blur, or overlay of its own, and every other region of the page keeps the standard opaque Settings surface.
-- The preview window's height is not content-driven: it expands to fill all remaining vertical space between the app bar and the settings block. Inside the window, one vertically stacked group of three non-interactive rows is centered horizontally and vertically, with `8dp` between rows. Each row centers one sample icon rendered with the current shape preference at its icon-size stop — large `48dp`, medium `40dp`, small `32dp`. The rows carry no visible labels; each row provides a localized accessibility name identifying its size stop.
-- Below the preview window, separated by a `16dp` gap and sharing the same `16dp` horizontal margins, the settings block reuses the shared style-settings-panel language defined by the [style settings panel presentation](style-settings-panel.md#shared-panel-surface): the shared `darkSurfaceBaseColor` surface with exactly `12dp` corners and the shared edge treatment, `32dp` block-title rows, `48dp` content rows, and the shared `12dp` content insets.
+- The `Icon shape` page reuses the Settings top app bar and page structure. Its title is
+  `Icon shape`. The page itself does not scroll. The preview region fills all available height
+  between the app bar divider and the settings block anchored at the bottom.
+- The preview region contains one fully transparent rounded-rectangle window with `12dp` corners.
+  The window is inset `64dp` from all four edges of the region, shrinking both width and height.
+  Available parent bounds constrain the window to a nonnegative size,
+  potentially zero on short screens; preview drawing stays inside the region and window bounds,
+  prioritizing settings-block visibility.
+  The window does not read, sample, copy, or draw wallpaper; the system wallpaper shows through.
+  It is the only transparent region of Settings and adds no dimming, scrim, blur, or overlay.
+  Every other region keeps the standard opaque Settings surface.
+- Inside the window, three vertically stacked non-interactive rows form a group centered
+  horizontally and vertically, with `16dp` between rows. The group height follows its row
+  contents and spacing, allowing text to grow with system font scaling.
+  Each row renders one sample icon with the current shape preference at its icon-size stop:
+  large `48dp`, medium `40dp`, small `32dp`.
+- The names to the right of the icons are `Sample app (Large)`, `Sample app (Medium)`, and
+  `Sample app (Small)` in English; Chinese uses `示例应用（大）`, `示例应用（中）`, and
+  `示例应用（小）`, with full-width parentheses. The icon-to-name gap is `16dp`.
+  Each row centers the icon and name as one group and aligns them vertically at their centers.
+  Names stay on one line and use end ellipsis when available width is exhausted.
+- Names reuse the matching Large, Medium, or Small Home application-name text tier from
+  [Home vertical favorite modules](home.md#vertical-favorite-modules): its shared font size,
+  line height, normal weight, and `primaryTextColor`. They also reuse the glyph shadow owned by
+  [Home surface and basic information](home.md#surface-and-basic-information).
+  The row provides one localized accessibility name
+  identifying its size stop, without duplicate announcements from the icon and text.
+- Below the preview region, the settings block has `16dp` horizontal margins and reuses the shared
+  [style settings panel presentation](style-settings-panel.md#shared-panel-surface):
+  `darkSurfaceBaseColor`, exactly `12dp` corners, the shared edge treatment, `32dp` block-title
+  rows, `48dp` content rows, and `12dp` content insets.
+- The page reserves `32dp` of bottom padding after the settings block inside the safe area.
+  Surplus vertical space belongs to the preview region, keeping the settings block at the bottom.
 - The `Clip mode` block title row is followed by one content row carrying the compact dual-option
   selector with the options `OEM clip` and `Freeform clip`. The selector reuses the shared compact
   dual-option treatment with one page-owned size exception: a `232dp x 40dp` frame, start-aligned
