@@ -241,6 +241,7 @@ internal fun Launcher4MaxApp(
         effectiveFavoriteStore,
         effectiveDrawerDisplaySettingsStore,
         effectiveQuickActionBindingsStore,
+        effectiveIconShapeSettingsStore,
     ) {
         val favoritesAccess = effectiveFavoriteStore as? BackupFavoritesAccess
         val settingsAccess = effectiveDrawerDisplaySettingsStore as? BackupSettingsAccess
@@ -253,6 +254,7 @@ internal fun Launcher4MaxApp(
                 favorites = favoritesAccess,
                 settings = settingsAccess,
                 bindings = bindingsAccess,
+                iconShape = effectiveIconShapeSettingsStore,
             )
         }
     }

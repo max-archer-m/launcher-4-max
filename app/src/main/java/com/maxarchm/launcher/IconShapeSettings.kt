@@ -61,7 +61,7 @@ internal fun IconShapeSettings.iconAppearance(): LauncherIconAppearance =
 
 internal class IconShapeSettingsStore internal constructor(
     private val atomicFile: AtomicFile,
-) {
+) : BackupIconShapeAccess {
     constructor(context: Context) : this(
         atomicFile = AtomicFile(context.filesDir.resolve(FILE_NAME)),
     )
@@ -107,6 +107,12 @@ internal class IconShapeSettingsStore internal constructor(
     }
 
     fun loadBlocking(): Unit = runBlocking { load() }
+
+    override fun currentIconShapeSettings(): IconShapeSettings? =
+        (mutableState.value as? IconShapeSettingsReadState.Readable)?.settings
+
+    override suspend fun restoreIconShapeSettings(settings: IconShapeSettings): Boolean =
+        replace(settings)
 
     suspend fun replace(settings: IconShapeSettings): Boolean = mutationMutex.withLock {
         val current = (mutableState.value as? IconShapeSettingsReadState.Readable)?.settings

@@ -47,6 +47,14 @@ class SettingsBackupStringParityTest {
             assertTrue(english.getString(identifier).isNotBlank())
             assertTrue(simplifiedChinese.getString(identifier).isNotBlank())
         }
+        val englishConfirmation = english.getString(R.string.settings_data_restore_dialog_body)
+        val chineseConfirmation = simplifiedChinese.getString(
+            R.string.settings_data_restore_dialog_body,
+        )
+        assertTrue(englishConfirmation.contains("quick-action bindings"))
+        assertTrue(englishConfirmation.contains("icon-shape preference"))
+        assertTrue(chineseConfirmation.contains("快捷操作绑定"))
+        assertTrue(chineseConfirmation.contains("图标形状偏好"))
     }
 
     @Test

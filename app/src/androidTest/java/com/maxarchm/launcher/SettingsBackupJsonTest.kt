@@ -15,6 +15,95 @@ import com.maxarchm.launcher.ui.drawer.DrawerSectionAnchorPresentation
 
 class SettingsBackupJsonTest {
     @Test
+    fun roundTripPreservesSavedShapeInBothModes() {
+        IconShapeClipMode.entries.forEach { mode ->
+            listOf(0, 37, 100).forEach { clip ->
+                val shape = IconShapeSettings(mode, clip)
+                val document = SettingsBackupJson.serialize(
+                    aggregate = testAggregate(),
+                    settings = testSettings(),
+                    iconShape = shape,
+                )
+                assertEquals(shape, SettingsBackupJson.parse(document)?.iconShape)
+                val section = JSONObject(document).getJSONObject("iconShape")
+                assertEquals(2, section.length())
+                assertEquals(mode.storageValue, section.getString("mode"))
+                assertEquals(clip, section.getInt("freeformClip"))
+            }
+        }
+    }
+
+    @Test
+    fun oldSchemasWithoutShapeRestoreCompleteDefault() {
+        (1..SettingsBackupJson.BACKUP_SCHEMA_VERSION).forEach { schema ->
+            val document = validBackupDocument().put("schemaVersion", schema)
+            document.remove("iconShape")
+            assertEquals(
+                IconShapeSettings(),
+                SettingsBackupJson.parse(document.toString())?.iconShape,
+            )
+        }
+    }
+
+    @Test
+    fun invalidShapeModeDefaultsIndependentlyOfValidProportion() {
+        listOf(null, JSONObject.NULL, "", "unknown", 7, true, JSONObject()).forEach { mode ->
+            val section = JSONObject().put("mode", mode).put("freeformClip", 23)
+            val parsed = SettingsBackupJson.parse(
+                validBackupDocument().put("iconShape", section).toString(),
+            )
+            assertEquals(IconShapeSettings(IconShapeClipMode.Oem, 23), parsed?.iconShape)
+            assertEquals(testAggregate(), parsed?.aggregate)
+            assertEquals(testSettings(), parsed?.settings)
+        }
+    }
+
+    @Test
+    fun invalidProportionsDefaultWithoutClampingOrChangingMode() {
+        val invalid = listOf(
+            null, JSONObject.NULL, "", "25", 25.5, -1, 101,
+            Long.MAX_VALUE, true, JSONObject(), org.json.JSONArray(),
+        )
+        IconShapeClipMode.entries.forEach { mode ->
+            invalid.forEach { clip ->
+                val section = JSONObject().put("mode", mode.storageValue)
+                    .put("freeformClip", clip)
+                val document = validBackupDocument().put("iconShape", section)
+                document.getJSONObject("quickActionBindings")
+                    .put("doubleTap", "screen_lock")
+                val parsed = SettingsBackupJson.parse(document.toString())
+                assertEquals(IconShapeSettings(mode, 50), parsed?.iconShape)
+                assertEquals(testAggregate(), parsed?.aggregate)
+                assertEquals(testSettings(), parsed?.settings)
+                assertEquals(QuickAction.ScreenLock, parsed?.bindings?.doubleTap)
+            }
+        }
+    }
+
+    @Test
+    fun invalidShapeSectionDefaultsWithoutRejectingOtherSections() {
+        listOf(JSONObject.NULL, "", 7, true, org.json.JSONArray()).forEach { section ->
+            val parsed = SettingsBackupJson.parse(
+                validBackupDocument().put("iconShape", section).toString(),
+            )
+            assertEquals(IconShapeSettings(), parsed?.iconShape)
+            assertEquals(testAggregate(), parsed?.aggregate)
+            assertEquals(testSettings(), parsed?.settings)
+        }
+    }
+
+    @Test
+    fun invalidShapeFieldsTogetherRestoreCompleteDefault() {
+        val section = JSONObject().put("mode", "unknown").put("freeformClip", 101)
+        val parsed = SettingsBackupJson.parse(
+            validBackupDocument().put("iconShape", section).toString(),
+        )
+        assertEquals(IconShapeSettings(), parsed?.iconShape)
+        assertEquals(testAggregate(), parsed?.aggregate)
+        assertEquals(testSettings(), parsed?.settings)
+    }
+
+    @Test
     fun roundTripPreservesCompleteFavoriteDisplaySettingsAndBindings() {
         val aggregate = testAggregate()
         val settings = testSettings()
