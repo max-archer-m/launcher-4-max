@@ -53,7 +53,7 @@ Primary risks are interaction overlap between the bottom app bar and edit mode, 
 
 | Iteration | Status | Updated | Basis |
 | --- | --- | --- | --- |
-| [Iteration 35: Icon Shape Customization](iteration-35-icon-shape-customization.md) | `Completed` | 2026-10-16 | All changes accepted; the author explicitly approved local closure before push. |
+| [Iteration 35: Icon Shape Customization](iteration-35-icon-shape-customization.md) | `Completed` | 2026-10-16 | All changes accepted by the author and merged into `main`. |
 | [Iteration 36: Home Bottom App Bar](iteration-36-home-bottom-app-bar.md) | `Planned` | 2026-10-14 | The author identified the bottom app bar as an independent iteration. |
 | [Iteration 37: Home Edit Mode Interaction](iteration-37-home-edit-mode-interaction.md) | `Planned` | 2026-10-14 | The author identified module titles as part of the Home edit-mode interaction change. |
 | [Iteration 38: Home Favorite Placement and Layout](iteration-38-home-favorite-placement-layout.md) | `Planned` | 2026-10-14 | The accepted Home placement and layout updates form an independently reviewable placement journey. |
@@ -84,10 +84,10 @@ Author-reported acceptance of all iteration 35 changes: `Passed` on 2026-10-16.
   the author's instruction. Test sources include store defaults, reload, invalid fields,
   read/write failure and retry, and shared slider cancellation and refresh.
 - Author-reported regression and final change acceptance: `Passed` on 2026-10-16.
-- Author closure decision on 2026-10-16: mark this iteration `Completed` after acceptance and
-  amend the final documentation commit before push. For this iteration, the author explicitly
-  permits local closure before shared-history synchronization. Push remains pending and is
-  not represented as completed.
+- Author-approved closure on 2026-10-16 is recorded in documentation commit
+  `6843126a9f649ce5d2471940a450112c1264c007`.
+  The implementation and closure documentation are synchronized to shared history and merged
+  into `main` by `f8eb08e394e8eff42d3c8dbe96f5ba92fa5b2d01`.
 - Iteration 36 retains responsibility for integration of its new bottom app bar.
 
 ### Iteration 36: Home Bottom App Bar
@@ -134,5 +134,5 @@ This version uses the `Author daily-use baseline` gates. The accepted APK must r
 
 ## Completion result
 
-No final result exists. Iteration 35 is in progress as of 2026-10-16;
-the remaining iterations are planned.
+Version 1.8.0 is not yet complete. As of 2026-10-16, Iteration 35 is `Completed`,
+accepted by the author, and merged into `main`; Iterations 36–39 remain `Planned`.
