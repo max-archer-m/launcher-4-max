@@ -20,6 +20,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -132,6 +133,7 @@ internal fun Launcher4MaxApp(systemHomeEvents: MutableSharedFlow<Unit>? = null) 
         favoriteStore = graph.favoriteStore,
         drawerDisplaySettingsStore = graph.drawerDisplaySettingsStore,
         quickActionBindingsStore = graph.quickActionBindingsStore,
+        iconShapeSettingsStore = graph.iconShapeSettingsStore,
         defaultLauncherPromptStore = graph.defaultLauncherPromptStore,
         informationLauncher = graph.informationLauncher,
         uninstallLauncher = graph.uninstallLauncher,
@@ -151,6 +153,7 @@ internal fun Launcher4MaxApp(
     favoriteStore: FavoriteStore? = null,
     drawerDisplaySettingsStore: DrawerDisplaySettingsStore? = null,
     quickActionBindingsStore: QuickActionBindingsStore? = null,
+    iconShapeSettingsStore: IconShapeSettingsStore? = null,
     defaultLauncherPromptStore: DefaultLauncherPromptStore? = null,
     onDrawerDisplaySettingsSaveFailure: (() -> Unit)? = null,
     informationLauncher: ApplicationInformationLauncher = ApplicationInformationLauncher { false },
@@ -206,6 +209,19 @@ internal fun Launcher4MaxApp(
         (quickActionBindingsState as? QuickActionBindingsReadState.Readable)
             ?.bindings
             ?: QuickActionBindings()
+    val effectiveIconShapeSettingsStore = iconShapeSettingsStore ?: remember(
+        androidContext,
+    ) {
+        IconShapeSettingsStore(context = androidContext)
+    }
+    val iconShapeSettingsState by effectiveIconShapeSettingsStore.state
+        .collectAsStateWithLifecycle()
+    val iconShapeSettings =
+        (iconShapeSettingsState as? IconShapeSettingsReadState.Readable)
+            ?.settings
+            ?: IconShapeSettings()
+    var iconShapeSaveInFlight by remember { mutableStateOf(false) }
+    var iconShapeSaveFailureToken by remember { mutableIntStateOf(0) }
     val effectiveDefaultLauncherPromptStore = defaultLauncherPromptStore ?: remember(
         androidContext,
     ) {
@@ -388,6 +404,15 @@ internal fun Launcher4MaxApp(
             DrawerDisplaySettingsReadState.Loading
         ) {
             effectiveDrawerDisplaySettingsStore.load()
+        }
+    }
+
+    LaunchedEffect(effectiveIconShapeSettingsStore) {
+        if (
+            effectiveIconShapeSettingsStore.state.value is
+            IconShapeSettingsReadState.Loading
+        ) {
+            effectiveIconShapeSettingsStore.load()
         }
     }
 
@@ -1393,6 +1418,35 @@ internal fun Launcher4MaxApp(
                 accessibilityLockController = accessibilityLockController,
                 backupController = settingsBackupController,
                 bindings = quickActionBindings,
+                iconShapeSettings = iconShapeSettings,
+                iconShapeSaveInFlight = iconShapeSaveInFlight ||
+                    iconShapeSettingsState !is IconShapeSettingsReadState.Readable,
+                iconShapeSaveFailureToken = iconShapeSaveFailureToken,
+                onCommitIconShapeSettings = { nextSettings ->
+                    if (
+                        !iconShapeSaveInFlight &&
+                        settingsOpen && settingsPage == SettingsPage.IconShape &&
+                        effectiveIconShapeSettingsStore.state.value is
+                        IconShapeSettingsReadState.Readable
+                    ) {
+                        // Lock before launch so callbacks in the same frame cannot queue saves.
+                        iconShapeSaveInFlight = true
+                        scope.launch {
+                            try {
+                                if (!effectiveIconShapeSettingsStore.replace(nextSettings)) {
+                                    iconShapeSaveFailureToken += 1
+                                    Toast.makeText(
+                                        androidContext,
+                                        R.string.icon_shape_save_failure,
+                                        Toast.LENGTH_SHORT,
+                                    ).show()
+                                }
+                            } finally {
+                                iconShapeSaveInFlight = false
+                            }
+                        }
+                    }
+                },
                 onBindQuickAction = { slot, action ->
                     scope.launch {
                         effectiveQuickActionBindingsStore.replace(

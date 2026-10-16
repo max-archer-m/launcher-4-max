@@ -74,6 +74,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.maxarchm.launcher.AccessibilityLockController
 import com.maxarchm.launcher.EmptyAccessibilityLockController
+import com.maxarchm.launcher.IconShapeSettings
 import com.maxarchm.launcher.QuickAction
 import com.maxarchm.launcher.QuickActionBindings
 import com.maxarchm.launcher.QuickActionSlot
@@ -98,6 +99,10 @@ internal fun SettingsScreen(
     backupController: SettingsBackupControl? = null,
     bindings: QuickActionBindings = QuickActionBindings(),
     onBindQuickAction: (QuickActionSlot, QuickAction) -> Unit = { _, _ -> },
+    iconShapeSettings: IconShapeSettings = IconShapeSettings(),
+    iconShapeSaveInFlight: Boolean = false,
+    iconShapeSaveFailureToken: Int = 0,
+    onCommitIconShapeSettings: (IconShapeSettings) -> Unit = {},
     page: SettingsPage = SettingsPage.Root,
     onPageChange: (SettingsPage) -> Unit = {},
     onBack: () -> Unit,
@@ -205,7 +210,13 @@ internal fun SettingsScreen(
             )
             HorizontalDivider(color = MaterialTheme.colorScheme.onSurfaceVariant)
             if (page == SettingsPage.IconShape) {
-                IconShapeSettingsContent(modifier = Modifier.weight(1f))
+                IconShapeSettingsContent(
+                    settings = iconShapeSettings,
+                    saveInFlight = iconShapeSaveInFlight,
+                    saveFailureToken = iconShapeSaveFailureToken,
+                    onCommit = onCommitIconShapeSettings,
+                    modifier = Modifier.weight(1f),
+                )
             } else if (page == SettingsPage.QuickActions) {
                 QuickActionSettingsContent(
                     bindings = bindings,

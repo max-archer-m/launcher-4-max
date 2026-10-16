@@ -24,8 +24,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -51,6 +51,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toBitmap
 import com.maxarchm.launcher.FavoriteListSize
+import com.maxarchm.launcher.IconShapeClipMode
+import com.maxarchm.launcher.IconShapeSettings
 import com.maxarchm.launcher.R
 import com.maxarchm.launcher.iconSizeResource
 import com.maxarchm.launcher.lineHeightResource
@@ -64,18 +66,24 @@ import com.maxarchm.launcher.ui.style.StyleTitleLine
 import com.maxarchm.launcher.ui.style.StyleTwoOptionSelector
 import com.maxarchm.launcher.ui.style.styleSettingsPanelSurface
 
-private const val DEFAULT_FREEFORM_CLIP = 50
-
-/** Page-local demo only: leaving this composition discards mode and ratio. */
 @Composable
-internal fun IconShapeSettingsContent(modifier: Modifier = Modifier) {
+internal fun IconShapeSettingsContent(
+    settings: IconShapeSettings,
+    saveInFlight: Boolean,
+    saveFailureToken: Int,
+    onCommit: (IconShapeSettings) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val spacing = dimensionResource(R.dimen.settings_horizontal_padding)
     val previewInset = dimensionResource(R.dimen.icon_shape_preview_window_inset)
     val cornerRadius = dimensionResource(R.dimen.style_settings_panel_corner_radius)
     val clipModeTitle = stringResource(R.string.icon_shape_clip_mode)
-    var oemClip by remember { mutableStateOf(true) }
-    var freeformClip by remember { mutableIntStateOf(DEFAULT_FREEFORM_CLIP) }
-    val previewClip = if (oemClip) OEM_ICON_CLIP else freeformClip
+    var draftSettings by remember(settings) { mutableStateOf(settings) }
+    LaunchedEffect(settings, saveFailureToken) {
+        draftSettings = settings
+    }
+    val oemClip = draftSettings.mode == IconShapeClipMode.Oem
+    val previewClip = if (oemClip) OEM_ICON_CLIP else draftSettings.freeformClip
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -145,18 +153,41 @@ internal fun IconShapeSettingsContent(modifier: Modifier = Modifier) {
                         ),
                         selectedIndex = if (oemClip) 0 else 1,
                         selectorWidth = dimensionResource(R.dimen.icon_shape_selector_width),
-                        enabled = true,
-                        onSelectIndex = { oemClip = it == 0 },
+                        enabled = !saveInFlight,
+                        onSelectIndex = {
+                            val nextSettings = draftSettings.copy(
+                                mode = if (it == 0) {
+                                    IconShapeClipMode.Oem
+                                } else {
+                                    IconShapeClipMode.Freeform
+                                },
+                            )
+                            draftSettings = nextSettings
+                            onCommit(nextSettings)
+                        },
                         testTagPrefix = "icon_shape_clip_mode",
                     )
                 }
                 StyleBackgroundOpacityBlock(
                     title = stringResource(R.string.icon_shape_corner_radius),
-                    opacity = freeformClip,
-                    enabled = !oemClip,
-                    available = !oemClip,
-                    onOpacityChange = { freeformClip = it.coerceIn(FREEFORM_ICON_CLIP_RANGE) },
-                    onOpacityChangeFinished = {},
+                    opacity = draftSettings.freeformClip,
+                    enabled = !oemClip && !saveInFlight,
+                    available = !oemClip && !saveInFlight,
+                    onOpacityChange = {
+                        draftSettings = draftSettings.copy(
+                            freeformClip = it.coerceIn(FREEFORM_ICON_CLIP_RANGE),
+                        )
+                    },
+                    onOpacityChangeFinished = { finalClip ->
+                        if (!saveInFlight && !oemClip) {
+                            val nextSettings = draftSettings.copy(
+                                freeformClip = finalClip.coerceIn(FREEFORM_ICON_CLIP_RANGE),
+                            )
+                            draftSettings = nextSettings
+                            onCommit(nextSettings)
+                        }
+                    },
+                    onOpacityChangeCancelled = { draftSettings = settings },
                     sliderTestTag = "icon_shape_corner_radius",
                 )
             }

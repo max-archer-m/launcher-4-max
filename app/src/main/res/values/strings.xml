@@ -139,6 +139,7 @@
     <string name="quick_action_settings">Quick action settings</string>
     <string name="icon_shape">Icon shape</string>
     <string name="icon_shape_clip_mode">Clip mode</string>
+    <string name="icon_shape_save_failure">Unable to save icon shape</string>
     <string name="icon_shape_oem_clip">OEM clip</string>
     <string name="icon_shape_freeform_clip">Freeform clip</string>
     <string name="icon_shape_corner_radius">Corner radius</string>

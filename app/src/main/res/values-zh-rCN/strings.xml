@@ -138,6 +138,7 @@
     <string name="quick_action_settings">快捷操作设置</string>
     <string name="icon_shape">图标形状</string>
     <string name="icon_shape_clip_mode">剪裁模式</string>
+    <string name="icon_shape_save_failure">无法保存图标形状</string>
     <string name="icon_shape_oem_clip">OEM 剪裁</string>
     <string name="icon_shape_freeform_clip">自由剪裁</string>
     <string name="icon_shape_corner_radius">圆角比例</string>
