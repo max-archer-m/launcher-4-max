@@ -16,6 +16,31 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
 import com.maxarchm.launcher.R
 
+internal const val OEM_ICON_CLIP = -1
+internal val FREEFORM_ICON_CLIP_RANGE = 0..100
+
+/** Clips a square bitmap without changing source artwork or the production appearance model. */
+internal fun clipLauncherIcon(source: Bitmap, clip: Int): Bitmap {
+    require(source.width == source.height)
+    require(clip == OEM_ICON_CLIP || clip in FREEFORM_ICON_CLIP_RANGE)
+    val side = source.width
+    val result = createBitmap(side, side)
+    val canvas = Canvas(result)
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG).apply {
+        shader = BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
+    }
+    if (clip == OEM_ICON_CLIP) {
+        val mask = AdaptiveIconDrawable(Color.BLACK.toDrawable(), null).apply {
+            bounds = Rect(0, 0, side, side)
+        }
+        canvas.drawPath(mask.iconMask, paint)
+    } else {
+        val radius = clip.toFloat() / FREEFORM_ICON_CLIP_RANGE.last * side / 2f
+        canvas.drawRoundRect(0f, 0f, side.toFloat(), side.toFloat(), radius, radius, paint)
+    }
+    return result
+}
+
 internal sealed interface LauncherIconShape {
     data object SystemAdaptive : LauncherIconShape
 }
@@ -62,18 +87,6 @@ internal class SystemLauncherIconRenderer(
             config = Bitmap.Config.ARGB_8888,
         )
 
-        val result = createBitmap(
-            iconSizePixels,
-            iconSizePixels,
-        )
-        val resultCanvas = Canvas(result)
-        val maskSource = AdaptiveIconDrawable(Color.BLACK.toDrawable(), null).apply {
-            bounds = Rect(0, 0, iconSizePixels, iconSizePixels)
-        }
-        val maskPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG).apply {
-            shader = BitmapShader(sourceBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
-        }
-        resultCanvas.drawPath(maskSource.iconMask, maskPaint)
-        return result
+        return clipLauncherIcon(sourceBitmap, OEM_ICON_CLIP)
     }
 }

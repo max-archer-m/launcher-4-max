@@ -137,6 +137,17 @@
     <string name="settings_data_restore_dialog_body">Confirming replaces the current favorites and display settings with the backup contents. This action cannot be undone.</string>
     <string name="settings_data_restore_confirm">Restore</string>
     <string name="quick_action_settings">Quick action settings</string>
+    <string name="icon_shape">Icon shape</string>
+    <string name="icon_shape_clip_mode">Clip mode</string>
+    <string name="icon_shape_oem_clip">OEM clip</string>
+    <string name="icon_shape_freeform_clip">Freeform clip</string>
+    <string name="icon_shape_corner_radius">Corner radius</string>
+    <string name="icon_shape_preview_large">Large icon preview</string>
+    <string name="icon_shape_sample_app_large">Sample app (Large)</string>
+    <string name="icon_shape_sample_app_medium">Sample app (Medium)</string>
+    <string name="icon_shape_sample_app_small">Sample app (Small)</string>
+    <string name="icon_shape_preview_medium">Medium icon preview</string>
+    <string name="icon_shape_preview_small">Small icon preview</string>
     <string name="quick_action_double_tap_slot">Basic-information double tap</string>
     <string name="quick_action_long_press_slot">Basic-information long press</string>
     <string name="quick_action_no_action">No action</string>

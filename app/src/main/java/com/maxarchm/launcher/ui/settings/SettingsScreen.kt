@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -45,6 +46,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
@@ -80,6 +83,12 @@ import com.maxarchm.launcher.SettingsBackupState
 import com.maxarchm.launcher.storageValue
 import kotlinx.coroutines.launch
 
+internal enum class SettingsPage {
+    Root,
+    QuickActions,
+    IconShape,
+}
+
 @Composable
 internal fun SettingsScreen(
     platform: SettingsPlatform,
@@ -89,8 +98,8 @@ internal fun SettingsScreen(
     backupController: SettingsBackupControl? = null,
     bindings: QuickActionBindings = QuickActionBindings(),
     onBindQuickAction: (QuickActionSlot, QuickAction) -> Unit = { _, _ -> },
-    quickActionSettingsOpen: Boolean = false,
-    onQuickActionSettingsOpenChange: (Boolean) -> Unit = {},
+    page: SettingsPage = SettingsPage.Root,
+    onPageChange: (SettingsPage) -> Unit = {},
     onBack: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -106,6 +115,7 @@ internal fun SettingsScreen(
     var showProminentDisclosure by remember { mutableStateOf(false) }
     var backupInFlight by remember { mutableStateOf(false) }
     var pendingRestore by remember { mutableStateOf<SettingsBackupState?>(null) }
+    val rootListState = rememberLazyListState()
     var isAccessibilitySystemEnabled by remember(accessibilityLockController) {
         mutableStateOf(accessibilityLockController.isSystemEnabled())
     }
@@ -167,6 +177,13 @@ internal fun SettingsScreen(
     Surface(
         modifier = Modifier
             .fillMaxSize()
+            .graphicsLayer {
+                compositingStrategy = if (page == SettingsPage.IconShape) {
+                    CompositingStrategy.Offscreen
+                } else {
+                    CompositingStrategy.Auto
+                }
+            }
             .testTag("settings_surface"),
         color = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface,
@@ -178,16 +195,18 @@ internal fun SettingsScreen(
         ) {
             SettingsTopBar(
                 title = stringResource(
-                    if (quickActionSettingsOpen) {
-                        R.string.quick_action_settings
-                    } else {
-                        R.string.settings
+                    when (page) {
+                        SettingsPage.Root -> R.string.settings
+                        SettingsPage.QuickActions -> R.string.quick_action_settings
+                        SettingsPage.IconShape -> R.string.icon_shape
                     },
                 ),
                 onBack = onBack,
             )
             HorizontalDivider(color = MaterialTheme.colorScheme.onSurfaceVariant)
-            if (quickActionSettingsOpen) {
+            if (page == SettingsPage.IconShape) {
+                IconShapeSettingsContent(modifier = Modifier.weight(1f))
+            } else if (page == SettingsPage.QuickActions) {
                 QuickActionSettingsContent(
                     bindings = bindings,
                     serviceEnabled = isAccessibilitySystemEnabled && isAccessibilityConnected,
@@ -200,6 +219,7 @@ internal fun SettingsScreen(
                 )
             } else {
             LazyColumn(
+                state = rootListState,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
@@ -223,8 +243,16 @@ internal fun SettingsScreen(
                     PrimarySettingsItem(
                         title = stringResource(R.string.quick_action_settings),
                         supportingText = null,
-                        onClick = { onQuickActionSettingsOpenChange(true) },
+                        onClick = { onPageChange(SettingsPage.QuickActions) },
                         testTag = "settings_quick_action_settings",
+                    )
+                }
+                item(key = "icon-shape") {
+                    PrimarySettingsItem(
+                        title = stringResource(R.string.icon_shape),
+                        supportingText = null,
+                        onClick = { onPageChange(SettingsPage.IconShape) },
+                        testTag = "settings_icon_shape",
                     )
                 }
                 if (backupController != null) {

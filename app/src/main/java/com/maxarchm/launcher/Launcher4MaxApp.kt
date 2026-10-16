@@ -56,6 +56,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlin.math.roundToInt
 import com.maxarchm.launcher.ui.settings.EmptySettingsPlatform
+import com.maxarchm.launcher.ui.settings.SettingsPage
 import com.maxarchm.launcher.ui.settings.SettingsPlatform
 import com.maxarchm.launcher.ui.settings.SettingsScreen
 import com.maxarchm.launcher.ui.drawer.DrawerDisplaySettings
@@ -257,7 +258,7 @@ internal fun Launcher4MaxApp(
     var favoriteSelection by remember { mutableStateOf<List<LaunchableIdentity>>(emptyList()) }
     var favoriteSelectionSaving by remember { mutableStateOf(false) }
     var settingsOpen by remember { mutableStateOf(false) }
-    var quickActionSettingsOpen by remember { mutableStateOf(false) }
+    var settingsPage by remember { mutableStateOf(SettingsPage.Root) }
     var externalLaunchPendingReturn by remember { mutableStateOf(false) }
     var inventoryRefreshPendingReturn by remember { mutableStateOf(false) }
     var shortcutOwner by remember { mutableStateOf<LaunchableIdentity?>(null) }
@@ -577,7 +578,7 @@ internal fun Launcher4MaxApp(
         selectedEntry = null
         selectedEntryFromHome = false
         settingsOpen = false
-        quickActionSettingsOpen = false
+        settingsPage = SettingsPage.Root
         homeCoordinator.dismissEditMode()
         homeCoordinator.clearEditSelection()
         homeCoordinator.completeFavoriteReveal()
@@ -893,11 +894,11 @@ internal fun Launcher4MaxApp(
         settleTo(AppSurface.Home)
     }
 
-    BackHandler(enabled = settingsOpen && quickActionSettingsOpen) {
-        quickActionSettingsOpen = false
+    BackHandler(enabled = settingsOpen && settingsPage != SettingsPage.Root) {
+        settingsPage = SettingsPage.Root
     }
 
-    BackHandler(enabled = settingsOpen && !quickActionSettingsOpen) {
+    BackHandler(enabled = settingsOpen && settingsPage == SettingsPage.Root) {
         settingsOpen = false
     }
 
@@ -1090,6 +1091,7 @@ internal fun Launcher4MaxApp(
             } while (pointersRemainPressed)
         }
     }
+    val iconShapePageOpen = settingsOpen && settingsPage == SettingsPage.IconShape
 
     Box(
         modifier = Modifier
@@ -1110,9 +1112,21 @@ internal fun Launcher4MaxApp(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .alpha((1f - (2f * progress)).coerceIn(0f, 1f))
-                .then(homePointerSafetyModifier)
-                .then(if (homeCoordinator.editMode) Modifier else gestureModifier)
+                .alpha(
+                    if (settingsOpen && settingsPage == SettingsPage.IconShape) {
+                        0f
+                    } else {
+                        (1f - (2f * progress)).coerceIn(0f, 1f)
+                    },
+                )
+                .then(if (iconShapePageOpen) Modifier else homePointerSafetyModifier)
+                .then(
+                    if (iconShapePageOpen || homeCoordinator.editMode) {
+                        Modifier
+                    } else {
+                        gestureModifier
+                    },
+                )
                 .testTag("home_surface"),
         ) {
             HomeScreen(
@@ -1200,8 +1214,14 @@ internal fun Launcher4MaxApp(
                 modifier = Modifier
                     .fillMaxSize()
                     .offset { IntOffset(0, drawerOffsetPx.roundToInt()) }
-                    .alpha((2f * progress).coerceIn(0f, 1f))
-                    .then(drawerPointerSafetyModifier)
+                    .alpha(
+                        if (settingsOpen && settingsPage == SettingsPage.IconShape) {
+                            0f
+                        } else {
+                            (2f * progress).coerceIn(0f, 1f)
+                        },
+                    )
+                    .then(if (iconShapePageOpen) Modifier else drawerPointerSafetyModifier)
                     .testTag("drawer_surface"),
             ) {
                 DrawerScreen(
@@ -1383,13 +1403,11 @@ internal fun Launcher4MaxApp(
                         )
                     }
                 },
-                quickActionSettingsOpen = quickActionSettingsOpen,
-                onQuickActionSettingsOpenChange = { open ->
-                    quickActionSettingsOpen = open
-                },
+                page = settingsPage,
+                onPageChange = { settingsPage = it },
                 onBack = {
-                    if (quickActionSettingsOpen) {
-                        quickActionSettingsOpen = false
+                    if (settingsPage != SettingsPage.Root) {
+                        settingsPage = SettingsPage.Root
                     } else {
                         settingsOpen = false
                     }

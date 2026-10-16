@@ -136,6 +136,17 @@
     <string name="settings_data_restore_dialog_body">确认后，当前收藏与显示设置将被备份内容替换。此操作无法撤销。</string>
     <string name="settings_data_restore_confirm">恢复</string>
     <string name="quick_action_settings">快捷操作设置</string>
+    <string name="icon_shape">图标形状</string>
+    <string name="icon_shape_clip_mode">剪裁模式</string>
+    <string name="icon_shape_oem_clip">OEM 剪裁</string>
+    <string name="icon_shape_freeform_clip">自由剪裁</string>
+    <string name="icon_shape_corner_radius">圆角比例</string>
+    <string name="icon_shape_preview_large">大图标预览</string>
+    <string name="icon_shape_sample_app_large">示例应用（大）</string>
+    <string name="icon_shape_sample_app_medium">示例应用（中）</string>
+    <string name="icon_shape_sample_app_small">示例应用（小）</string>
+    <string name="icon_shape_preview_medium">中图标预览</string>
+    <string name="icon_shape_preview_small">小图标预览</string>
     <string name="quick_action_double_tap_slot">基础信息区双击</string>
     <string name="quick_action_long_press_slot">基础信息区长按</string>
     <string name="quick_action_no_action">无操作</string>

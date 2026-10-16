@@ -238,6 +238,10 @@
     <dimen name="settings_top_bar_min_height">56dp</dimen>
     <dimen name="settings_back_target_start">12dp</dimen>
     <dimen name="settings_horizontal_padding">16dp</dimen>
+    <dimen name="icon_shape_selector_width">232dp</dimen>
+    <dimen name="icon_shape_preview_row_gap">16dp</dimen>
+    <dimen name="icon_shape_preview_window_inset">64dp</dimen>
+    <dimen name="icon_shape_settings_bottom_margin">32dp</dimen>
 
     <!-- Settings screen / Primary and nested preference rows -->
     <dimen name="settings_primary_one_line_min_height">56dp</dimen>

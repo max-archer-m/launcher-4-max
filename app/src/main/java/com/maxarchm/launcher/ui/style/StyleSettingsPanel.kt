@@ -319,7 +319,7 @@ internal fun StyleSelectorBlock(
 }
 
 @Composable
-private fun StyleTwoOptionSelector(
+internal fun StyleTwoOptionSelector(
     title: String,
     optionLabels: List<String>,
     selectedIndex: Int,
@@ -575,6 +575,7 @@ internal fun StyleBackgroundOpacityBlock(
     onOpacityChangeFinished: (Int) -> Unit,
     sliderTestTag: String,
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
+    available: Boolean = true,
 ) {
     require(opacity in DrawerDisplaySettings.BACKGROUND_OPACITY_RANGE) {
         "Invalid Drawer background opacity"
@@ -605,7 +606,7 @@ internal fun StyleBackgroundOpacityBlock(
     DisposableEffect(Unit) {
         onDispose { opacityActive[0] = false }
     }
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth().alpha(styleSettingsContentAlpha(available))) {
         StyleTitleLine(text = title)
         Row(
             modifier = Modifier
