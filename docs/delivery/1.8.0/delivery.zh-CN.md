@@ -53,7 +53,7 @@
 
 | 迭代 | 状态 | 更新日期 | 依据 |
 | --- | --- | --- | --- |
-| [迭代 35：图标形状配置](iteration-35-icon-shape-customization.zh-CN.md) | `Completed` | 2026-10-16 | 全部改动验收通过；作者明确批准先本地关闭、后推送。 |
+| [迭代 35：图标形状配置](iteration-35-icon-shape-customization.zh-CN.md) | `Completed` | 2026-10-16 | 全部改动已获作者验收通过，并已合入 `main`。 |
 | [迭代 36：Home 底部应用栏](iteration-36-home-bottom-app-bar.zh-CN.md) | `Planned` | 2026-10-14 | 作者确认底部应用栏应作为独立迭代。 |
 | [迭代 37：Home 编辑模式交互](iteration-37-home-edit-mode-interaction.zh-CN.md) | `Planned` | 2026-10-14 | 作者确认模块标题属于 Home 编辑模式交互修改。 |
 | [迭代 38：Home 收藏放置与布局](iteration-38-home-favorite-placement-layout.zh-CN.md) | `Planned` | 2026-10-14 | 已接受的 Home 放置与布局更新形成独立可验收的放置旅程。 |
@@ -81,9 +81,10 @@
 - Agent 构建、lint 与设备测试：`Not run`；遵照作者要求，未执行 Gradle。
   测试源码包含 store 默认、重载、非法字段、读写失败与重试，以及共享 slider 取消及刷新。
 - 作者于 2026-10-16 报告回归及最终改动验收：`Passed`。
-- 作者于 2026-10-16 明确决定：验收通过后将本迭代标为 `Completed`，
-  并在推送前 amend 最后一笔文档提交。本迭代按作者授权先本地关闭、后同步共享历史。
-  推送仍待执行，不记为已完成。
+- 作者于 2026-10-16 批准关闭，记录于文档提交
+  `6843126a9f649ce5d2471940a450112c1264c007`。
+  实现与关闭文档已同步至共享历史，并通过
+  `f8eb08e394e8eff42d3c8dbe96f5ba92fa5b2d01` 合入 `main`。
 - 迭代36继续负责其新增底部应用栏的集成。
 
 ### 迭代 36：Home 底部应用栏
@@ -130,4 +131,5 @@
 
 ## 完成结果
 
-尚无最终结果。截至 2026-10-16，迭代35进行中，其余迭代仍为规划状态。
+1.8.0 版本尚未完成。截至 2026-10-16，迭代35为 `Completed`，
+已获作者验收通过并合入 `main`；迭代36–39仍为 `Planned`。
