@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
@@ -30,11 +31,19 @@ internal interface BackupSettingsAccess {
     suspend fun restoreSettings(settings: DrawerDisplaySettings): Boolean
 }
 
-/** One parsed backup document: favorites, display settings, and quick-action bindings. */
+/** Read and restore access to the successfully saved icon-shape preference. */
+internal interface BackupIconShapeAccess {
+    fun currentIconShapeSettings(): IconShapeSettings?
+
+    suspend fun restoreIconShapeSettings(settings: IconShapeSettings): Boolean
+}
+
+/** One parsed backup document containing the saved favorites and settings. */
 internal data class SettingsBackupState(
     val aggregate: OrderedFavoriteAggregate,
     val settings: DrawerDisplaySettings,
     val bindings: QuickActionBindings = QuickActionBindings(),
+    val iconShape: IconShapeSettings = IconShapeSettings(),
 )
 
 /**
@@ -63,12 +72,13 @@ private const val BACKUP_TIMESTAMP_PATTERN = "yyyyMMddHHmm"
  * present section restores that field's default value.
  */
 internal object SettingsBackupJson {
-    const val BACKUP_SCHEMA_VERSION = 4
+    const val BACKUP_SCHEMA_VERSION = 5
 
     fun serialize(
         aggregate: OrderedFavoriteAggregate,
         settings: DrawerDisplaySettings,
         bindings: QuickActionBindings = QuickActionBindings(),
+        iconShape: IconShapeSettings = IconShapeSettings(),
     ): String {
         val favorites = JSONObject().put(
             "modules",
@@ -123,6 +133,12 @@ internal object SettingsBackupJson {
             .put("favorites", favorites)
             .put("displaySettings", displaySettings)
             .put("quickActionBindings", quickActionBindings)
+            .put(
+                "iconShape",
+                JSONObject()
+                    .put("mode", iconShape.mode.storageValue)
+                    .put("freeformClip", iconShape.freeformClip),
+            )
             .toString(2)
     }
 
@@ -149,6 +165,7 @@ internal object SettingsBackupJson {
                     aggregate = aggregate,
                     settings = settings,
                     bindings = bindings,
+                    iconShape = parseIconShape(root.optJSONObject("iconShape")),
                 )
             }
         }
@@ -267,6 +284,22 @@ internal object SettingsBackupJson {
         } catch (_: IllegalArgumentException) {
             null
         }
+    }
+
+    private fun parseIconShape(section: JSONObject?): IconShapeSettings {
+        if (section == null) return IconShapeSettings()
+        val mode = IconShapeClipMode.entries.firstOrNull {
+            it.storageValue == section.opt("mode")
+        } ?: IconShapeClipMode.Oem
+        // Do not use optInt: it coerces strings and truncates fractional numbers.
+        val rawClip = section.opt("freeformClip")
+        val clip = when (rawClip) {
+            is Int -> rawClip
+            is Long -> rawClip.takeIf { it in 0L..100L }?.toInt()
+            else -> null
+        }?.takeIf { it in IconShapeSettings.FREEFORM_CLIP_RANGE }
+            ?: IconShapeSettings.DEFAULT_FREEFORM_CLIP
+        return IconShapeSettings(mode = mode, freeformClip = clip)
     }
 
     private fun parseBindings(bindings: JSONObject?): QuickActionBindings? {
@@ -396,22 +429,25 @@ internal object SettingsBackupJson {
 
 /**
  * Replaces the complete current state with a parsed backup as one coordinated
- * operation. Favorites are replaced first, then display settings, then bindings.
- * A later-stage failure rolls earlier stages back (favorites rollback is retried
- * once) so no mixed state remains before restore reports failure.
+ * operation. Favorites, display settings, bindings, and icon shape are replaced in
+ * that order. Later failures compensate earlier writes. This is not a cross-file
+ * atomic transaction; compensation can itself fail.
  */
 internal class SettingsBackupRestoreCoordinator(
     private val favorites: BackupFavoritesAccess,
     private val settings: BackupSettingsAccess,
     private val bindings: BackupBindingsAccess,
+    private val iconShape: BackupIconShapeAccess,
 ) {
     suspend fun restore(backup: SettingsBackupState): Boolean {
         val previousFavorites = favorites.currentOrderedAggregate() ?: return false
         val previousSettings = settings.currentSettings() ?: return false
         val previousBindings = bindings.currentBindings() ?: return false
+        val previousIconShape = iconShape.currentIconShapeSettings() ?: return false
         val favoritesChanged = backup.aggregate != previousFavorites
         val settingsChanged = backup.settings != previousSettings
         val bindingsChanged = backup.bindings != previousBindings
+        val iconShapeChanged = backup.iconShape != previousIconShape
 
         if (favoritesChanged && !favorites.restoreAggregate(backup.aggregate)) {
             return false
@@ -425,7 +461,60 @@ internal class SettingsBackupRestoreCoordinator(
             if (favoritesChanged) rollbackFavorites(previousFavorites)
             return false
         }
+        if (iconShapeChanged) {
+            val shapeRestored = try {
+                iconShape.restoreIconShapeSettings(backup.iconShape)
+            } catch (cancellation: CancellationException) {
+                compensateIconShapeFailure(
+                    previousIconShape, previousBindings, previousSettings, previousFavorites,
+                    bindingsChanged, settingsChanged, favoritesChanged,
+                )
+                throw cancellation
+            } catch (_: Exception) {
+                false
+            }
+            if (!shapeRestored) {
+                compensateIconShapeFailure(
+                    previousIconShape, previousBindings, previousSettings, previousFavorites,
+                    bindingsChanged, settingsChanged, favoritesChanged,
+                )
+                return false
+            }
+        }
         return true
+    }
+
+    private suspend fun compensateIconShapeFailure(
+        previousIconShape: IconShapeSettings,
+        previousBindings: QuickActionBindings,
+        previousSettings: DrawerDisplaySettings,
+        previousFavorites: OrderedFavoriteAggregate,
+        bindingsChanged: Boolean,
+        settingsChanged: Boolean,
+        favoritesChanged: Boolean,
+    ) = withContext(NonCancellable) {
+        // Also compensate the last stage: cancellation may arrive after its disk write.
+        retryCompensation { iconShape.restoreIconShapeSettings(previousIconShape) }
+        if (bindingsChanged) {
+            retryCompensation { bindings.restoreBindings(previousBindings) }
+        }
+        if (settingsChanged) {
+            retryCompensation { settings.restoreSettings(previousSettings) }
+        }
+        if (favoritesChanged) {
+            retryCompensation { favorites.restoreAggregate(previousFavorites) }
+        }
+    }
+
+    private suspend fun retryCompensation(restore: suspend () -> Boolean) {
+        repeat(2) {
+            val succeeded = try {
+                restore()
+            } catch (_: Exception) {
+                false
+            }
+            if (succeeded) return
+        }
     }
 
     private suspend fun rollbackFavorites(previous: OrderedFavoriteAggregate) {
@@ -455,11 +544,13 @@ internal class SettingsBackupController(
     private val favorites: BackupFavoritesAccess,
     private val settings: BackupSettingsAccess,
     private val bindings: BackupBindingsAccess,
+    private val iconShape: BackupIconShapeAccess,
 ) : SettingsBackupControl {
     private val coordinator = SettingsBackupRestoreCoordinator(
         favorites = favorites,
         settings = settings,
         bindings = bindings,
+        iconShape = iconShape,
     )
 
     override fun suggestedFileName(): String {
@@ -479,10 +570,12 @@ internal class SettingsBackupController(
             val aggregate = favorites.currentOrderedAggregate() ?: return@withContext false
             val currentSettings = settings.currentSettings() ?: return@withContext false
             val currentBindings = bindings.currentBindings() ?: return@withContext false
+            val currentIconShape = iconShape.currentIconShapeSettings() ?: return@withContext false
             val document = SettingsBackupJson.serialize(
                 aggregate = aggregate,
                 settings = currentSettings,
                 bindings = currentBindings,
+                iconShape = currentIconShape,
             )
             context.contentResolver.openOutputStream(uri, WRITE_MODE)?.use { output ->
                 output.write(document.toByteArray())

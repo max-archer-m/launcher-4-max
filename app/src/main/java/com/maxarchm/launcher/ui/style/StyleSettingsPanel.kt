@@ -8,6 +8,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,14 +36,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.changedToUp
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
@@ -319,7 +331,7 @@ internal fun StyleSelectorBlock(
 }
 
 @Composable
-private fun StyleTwoOptionSelector(
+internal fun StyleTwoOptionSelector(
     title: String,
     optionLabels: List<String>,
     selectedIndex: Int,
@@ -541,20 +553,55 @@ private fun styleSettingsContentAlpha(enabled: Boolean): Float =
     if (enabled) 1f else integerResource(R.integer.disabled_content_alpha_percent) / 100f
 
 /**
- * The one shared style settings panel surface consumed by both hosts: border, corner
- * radius, and surface color. Hosts keep only their own placement, sizing, scrolling, and
- * insets; they must not re-assemble these surface values.
+ * Shared surface and inward edge for style panels, icon-shape settings, and the Quick
+ * action popup. Hosts keep placement, sizing, scrolling, and insets; the popup supplies
+ * its own corner radius.
  */
 @Composable
 internal fun Modifier.styleSettingsPanelSurface(): Modifier {
     val panelCornerRadius = dimensionResource(R.dimen.style_settings_panel_corner_radius)
+    return styleSettingsPanelSurface(cornerRadius = panelCornerRadius)
+}
+
+@Composable
+internal fun Modifier.styleSettingsPanelSurface(cornerRadius: Dp): Modifier {
+    val panelCornerRadius = cornerRadius
     val panelShape = RoundedCornerShape(size = panelCornerRadius)
+    val surface = colorResource(R.color.launcher4max_sheet_surface)
+    val border = colorResource(R.color.style_settings_panel_border)
+    val borderWidth = dimensionResource(R.dimen.style_settings_panel_border_width)
+    val transitionWidth = dimensionResource(R.dimen.style_settings_panel_inner_transition_width)
     return this
         .clip(shape = panelShape)
-        .background(color = colorResource(R.color.launcher4max_sheet_surface))
+        .background(color = surface)
+        .drawWithCache {
+            val edge = borderWidth.toPx()
+            val transition = transitionWidth.toPx()
+            val radius = panelCornerRadius.toPx()
+            onDrawBehind {
+                // Nested opaque fills stay inside the border and decay quickly to the surface.
+                // Quarter-pixel steps avoid visible rings at higher display densities.
+                val steps = (transition * 4).roundToInt().coerceAtLeast(1)
+                for (step in 0..steps) {
+                    val progress = step.toFloat() / steps
+                    val remaining = 1f - progress
+                    val edgeWeight = remaining * remaining * remaining * remaining
+                    val inset = edge + transition * progress
+                    val width = size.width - inset * 2
+                    val height = size.height - inset * 2
+                    if (width <= 0f || height <= 0f) break
+                    drawRoundRect(
+                        color = lerp(surface, border, edgeWeight),
+                        topLeft = Offset(inset, inset),
+                        size = Size(width, height),
+                        cornerRadius = CornerRadius((radius - inset).coerceAtLeast(0f)),
+                    )
+                }
+            }
+        }
         .border(
-            width = dimensionResource(R.dimen.style_settings_panel_border_width),
-            color = colorResource(R.color.style_settings_panel_border),
+            width = borderWidth,
+            color = border,
             shape = panelShape,
         )
 }
@@ -575,6 +622,8 @@ internal fun StyleBackgroundOpacityBlock(
     onOpacityChangeFinished: (Int) -> Unit,
     sliderTestTag: String,
     @SuppressLint("ModifierParameter") modifier: Modifier = Modifier,
+    available: Boolean = true,
+    onOpacityChangeCancelled: (() -> Unit)? = null,
 ) {
     require(opacity in DrawerDisplaySettings.BACKGROUND_OPACITY_RANGE) {
         "Invalid Drawer background opacity"
@@ -601,11 +650,15 @@ internal fun StyleBackgroundOpacityBlock(
     }
     var lastTickedOpacity by remember { mutableIntStateOf(value = opacity) }
     var latestOpacity by remember { mutableIntStateOf(value = opacity) }
+    var pointerActive by remember { mutableStateOf(false) }
+    var pointerCancelled by remember { mutableStateOf(false) }
+    val currentOpacity by rememberUpdatedState(opacity)
+    val currentOnCancel by rememberUpdatedState(onOpacityChangeCancelled)
     val opacityActive = remember { booleanArrayOf(true) }
     DisposableEffect(Unit) {
         onDispose { opacityActive[0] = false }
     }
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier.fillMaxWidth().alpha(styleSettingsContentAlpha(available))) {
         StyleTitleLine(text = title)
         Row(
             modifier = Modifier
@@ -633,6 +686,8 @@ internal fun StyleBackgroundOpacityBlock(
             Slider(
                 value = opacity.toFloat(),
                 onValueChange = { value ->
+                    // A later accessibility change has no pointer-down event.
+                    if (!pointerActive) pointerCancelled = false
                     // The slider exposes the contracted 0..100 percentage range directly.
                     val rounded = value.roundToInt()
                     latestOpacity = rounded
@@ -646,7 +701,7 @@ internal fun StyleBackgroundOpacityBlock(
                     }
                 },
                 onValueChangeFinished = {
-                    if (!opacityActive[0]) return@Slider
+                    if (!opacityActive[0] || pointerCancelled) return@Slider
                     val released = latestOpacity
                     lastTickedOpacity = released
                     onOpacityChangeFinished(released)
@@ -667,6 +722,39 @@ internal fun StyleBackgroundOpacityBlock(
                 modifier = Modifier
                     .weight(weight = 1f)
                     .fillMaxHeight()
+                    .then(
+                        if (onOpacityChangeCancelled == null) {
+                            Modifier
+                        } else {
+                            Modifier.pointerInput(enabled) {
+                                awaitEachGesture {
+                                    val down = awaitFirstDown(
+                                        requireUnconsumed = false,
+                                        pass = PointerEventPass.Initial,
+                                    )
+                                    latestOpacity = currentOpacity
+                                    pointerActive = true
+                                    pointerCancelled = true
+                                    try {
+                                        do {
+                                            val event = awaitPointerEvent(PointerEventPass.Initial)
+                                            val pointer = event.changes.firstOrNull {
+                                                it.id == down.id
+                                            }
+                                            // ACTION_CANCEL is a consumed synthetic up. Observe
+                                            // Initial before Slider consumes a real release.
+                                            if (pointer?.changedToUp() == true) {
+                                                pointerCancelled = false
+                                            }
+                                        } while (event.changes.any { it.pressed })
+                                    } finally {
+                                        pointerActive = false
+                                        if (pointerCancelled) currentOnCancel?.invoke()
+                                    }
+                                }
+                            }
+                        },
+                    )
                     .testTag(tag = sliderTestTag),
             )
         }

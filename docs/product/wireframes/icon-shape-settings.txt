@@ -5,35 +5,32 @@
 |                                                                              |
 |------------------------------------------------------------------------------|
 |                                                                              |
-|  +------------------------------------------------------------------------+  |
-|  |                LIVE PREVIEW WINDOW / ROUNDED RECTANGLE                 |  |
-|  |                                                                        |  |
-|  |           FULLY TRANSPARENT INTERIOR                                   |  |
-|  |           DOES NOT READ OR DRAW THE WALLPAPER                          |  |
-|  |           SYSTEM WALLPAPER SHOWS THROUGH                               |  |
-|  |                                                                        |  |
-|  |           EXPANDS TO FILL ALL REMAINING VERTICAL SPACE                 |  |
-|  |           BETWEEN THE APP BAR AND THE SETTINGS BLOCK                   |  |
-|  |                                                                        |  |
-|  |                                                                        |  |
-|  |                  [DEFAULT APP ICON / LARGE STOP]                       |  |
-|  |                                                                        |  |
-|  |                  [DEFAULT APP ICON / MEDIUM STOP]                      |  |
-|  |                                                                        |  |
-|  |                  [DEFAULT APP ICON / SMALL STOP]                       |  |
-|  |                                                                        |  |
-|  |           ICON GROUP CENTERED IN THE WINDOW                            |  |
-|  |           (HORIZONTALLY AND VERTICALLY)                                |  |
-|  |                                                                        |  |
-|  |                                                                        |  |
-|  |                                                                        |  |
-|  +------------------------------------------------------------------------+  |
+|  PREVIEW REGION FILLS REMAINING HEIGHT ABOVE SETTINGS BLOCK                    |
+|                                                                              |
+|      WINDOW INSET FROM ALL FOUR EDGES OF PREVIEW REGION                        |
+|      +----------------------------------------------------------------+      |
+|      | LIVE PREVIEW WINDOW / ROUNDED RECTANGLE                        |      |
+|      |                                                                |      |
+|      | FULLY TRANSPARENT; SYSTEM WALLPAPER SHOWS THROUGH              |      |
+|      | DOES NOT READ OR DRAW THE WALLPAPER                            |      |
+|      |                                                                |      |
+|      |          [DEFAULT APP ICON]  Sample app (Large)                |      |
+|      |                                                                |      |
+|      |          [DEFAULT APP ICON]  Sample app (Medium)               |      |
+|      |                                                                |      |
+|      |          [DEFAULT APP ICON]  Sample app (Small)                |      |
+|      |                                                                |      |
+|      | EACH ICON + RIGHT-SIDE NAME CENTERED AS ONE ROW                |      |
+|      | ROW GROUP CENTERED HORIZONTALLY AND VERTICALLY                 |      |
+|      +----------------------------------------------------------------+      |
+|                                                                              |
+|      OPAQUE INSET BELOW WINDOW / END OF PREVIEW REGION                        |
 |                                                                              |
 |  +------------------------------------------------------------------------+  |
-|  |               SETTINGS BLOCK / SHARED STYLE-PANEL LANGUAGE             |  |
+|  |       BOTTOM-ANCHORED SETTINGS BLOCK / SHARED STYLE-PANEL LANGUAGE      |  |
 |  |                                                                        |  |
 |  |  CLIP MODE                                                             |  |
-|  |  +----------------------------------------------+                         |
+|  |  +----------------------------------------------+                      |  |
 |  |  |   [ OEM CLIP ]      |      FREEFORM CLIP     |                      |  |
 |  |  +----------------------------------------------+                      |  |
 |  |                                                                        |  |
@@ -44,6 +41,13 @@
 |  |                                                                        |  |
 |  +------------------------------------------------------------------------+  |
 |                                                                              |
+|                  BOTTOM PADDING INSIDE SAFE AREA                              |
+|------------------------------------------------------------------------------|
 |                               BOTTOM SAFE AREA                               |
 |                                                                              |
 +------------------------------------------------------------------------------+
+
+Non-normative structure; exact copy, typography, insets, and spacing:
+[Settings presentation](../presentation/settings.md#icon-shape-settings-page)
+Behavior:
+[Icon shape](../features/icon-shape.md#settings-surface)

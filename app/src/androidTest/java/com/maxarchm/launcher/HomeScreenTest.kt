@@ -40,6 +40,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import com.maxarchm.launcher.ui.settings.EmptySettingsPlatform
+import com.maxarchm.launcher.ui.settings.SettingsPage
 import com.maxarchm.launcher.ui.settings.SettingsPlatform
 import com.maxarchm.launcher.ui.settings.SettingsScreen
 import com.maxarchm.launcher.ui.drawer.DrawerScreen
@@ -2086,7 +2087,7 @@ class HomeScreenTest {
                     platform = EmptySettingsPlatform,
                     licenseText = "",
                     accessibilityLockController = controller,
-                    quickActionSettingsOpen = true,
+                    page = SettingsPage.QuickActions,
                     onBack = {},
                 )
             }
@@ -2112,7 +2113,7 @@ class HomeScreenTest {
                     platform = EmptySettingsPlatform,
                     licenseText = "",
                     accessibilityLockController = controller,
-                    quickActionSettingsOpen = true,
+                    page = SettingsPage.QuickActions,
                     onBack = {},
                 )
             }
@@ -2137,7 +2138,7 @@ class HomeScreenTest {
                     platform = EmptySettingsPlatform,
                     licenseText = "",
                     accessibilityLockController = controller,
-                    quickActionSettingsOpen = true,
+                    page = SettingsPage.QuickActions,
                     onBindQuickAction = { slot, action ->
                         boundSlot = slot
                         boundAction = action

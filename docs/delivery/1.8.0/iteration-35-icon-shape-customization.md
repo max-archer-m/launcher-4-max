@@ -13,6 +13,25 @@ Deliver the accepted icon-shape preference from Settings through persistence to 
 - Applicable version contract: [1.8.0 delivery](delivery.md)
 - All linked product documents are read at product-contract baseline `0e6ac891f26f0d7ea5d4e483d4d0916a99de23b6`.
 
+### Accepted preview amendment: 2026-10-16
+
+The author accepted the bounded preview amendment at
+`0ebf612e0553385bdce9e794a1f57500bf5feb8a`, supplementing the original baseline
+`0e6ac891f26f0d7ea5d4e483d4d0916a99de23b6` to make preview geometry, sample labels,
+and accessibility expectations explicit. The objective and primary acceptance outcome remain unchanged.
+
+- Previous boundary: the original icon-shape Settings preview and selection contract at the original baseline.
+- Amended boundary: the accepted 64dp preview insets, 16dp row spacing, localized sample labels,
+  and row accessibility semantics within the existing preview journey. This adds no new product scope.
+- Changed sources at the amendment revision: [Icon shape](https://github.com/max-archer-m/launcher-4-max/blob/0ebf612e0553385bdce9e794a1f57500bf5feb8a/docs/product/features/icon-shape.md),
+  [Settings presentation](https://github.com/max-archer-m/launcher-4-max/blob/0ebf612e0553385bdce9e794a1f57500bf5feb8a/docs/product/presentation/settings.md),
+  and the [icon-shape settings wireframe](https://github.com/max-archer-m/launcher-4-max/blob/0ebf612e0553385bdce9e794a1f57500bf5feb8a/docs/product/wireframes/icon-shape-settings.txt),
+  including their maintained Chinese counterparts where applicable.
+- Acceptance and validation include the amended preview geometry, label presentation, and accessibility
+  semantics alongside the existing selection, persistence, Home/Drawer, and backup journeys.
+  The implementation line must contain the amendment baseline before dependent implementation.
+  Other product references retain the original baseline.
+
 ## Observable outcome
 
 The author can select the contracted icon shape in Settings, see it applied consistently to eligible application icons in Home and Drawer, and retain the selection across recreation and restart.

@@ -53,7 +53,7 @@ Primary risks are interaction overlap between the bottom app bar and edit mode, 
 
 | Iteration | Status | Updated | Basis |
 | --- | --- | --- | --- |
-| [Iteration 35: Icon Shape Customization](iteration-35-icon-shape-customization.md) | `Planned` | 2026-10-14 | The current product contract contains the icon-shape settings and rendering scope selected for the first 1.8.0 capability iteration. |
+| [Iteration 35: Icon Shape Customization](iteration-35-icon-shape-customization.md) | `Completed` | 2026-10-16 | All changes accepted; the author explicitly approved local closure before push. |
 | [Iteration 36: Home Bottom App Bar](iteration-36-home-bottom-app-bar.md) | `Planned` | 2026-10-14 | The author identified the bottom app bar as an independent iteration. |
 | [Iteration 37: Home Edit Mode Interaction](iteration-37-home-edit-mode-interaction.md) | `Planned` | 2026-10-14 | The author identified module titles as part of the Home edit-mode interaction change. |
 | [Iteration 38: Home Favorite Placement and Layout](iteration-38-home-favorite-placement-layout.md) | `Planned` | 2026-10-14 | The accepted Home placement and layout updates form an independently reviewable placement journey. |
@@ -63,7 +63,32 @@ Primary risks are interaction overlap between the bottom app bar and edit mode, 
 
 ### Iteration 35: Icon Shape Customization
 
-[Contract](iteration-35-icon-shape-customization.md). Status: `Planned`. No implementation evidence exists yet. Follow-up owner: project author. Final author decision: not applicable yet.
+[Contract](iteration-35-icon-shape-customization.md). Status: `Completed`.
+The author authorized implementation and the remaining code, test, and delivery-document closure.
+Author-reported acceptance of all iteration 35 changes: `Passed` on 2026-10-16.
+
+- Contract traceability: the original baseline `0e6ac891f26f0d7ea5d4e483d4d0916a99de23b6`
+  and the accepted preview amendment `0ebf612e0553385bdce9e794a1f57500bf5feb8a` are both
+  ancestors of final implementation `0647ce4d4c313b7dd6d60775429193f264fb2581`.
+  The bounded 64dp/16dp/label and accessibility amendment was requested and accepted by the
+  author within the existing scope; it is recorded in the iteration contract.
+- Implementation commits: `a6c1226` (preview controls), `6a9ec2a` (preference persistence),
+  `e4c198f` (shared icon application), and `4795bfb` (backup compatibility).
+  Final implementation `0647ce4d4c313b7dd6d60775429193f264fb2581` aligns the shared inward
+  panel edge across Home, Drawer, icon-shape settings, and the Quick action popup, and adds
+  focused store and slider regression coverage.
+- Agent static validation on macOS/zsh: `git diff --check`, added Kotlin line-length and
+  Unicode checks, resource XML parsing and duplicate/reference checks, and affected local
+  Markdown link checks. These checks concern source consistency, not runtime acceptance.
+- Agent build, lint, and instrumented tests: `Not run`; no Gradle command was executed under
+  the author's instruction. Test sources include store defaults, reload, invalid fields,
+  read/write failure and retry, and shared slider cancellation and refresh.
+- Author-reported regression and final change acceptance: `Passed` on 2026-10-16.
+- Author closure decision on 2026-10-16: mark this iteration `Completed` after acceptance and
+  amend the final documentation commit before push. For this iteration, the author explicitly
+  permits local closure before shared-history synchronization. Push remains pending and is
+  not represented as completed.
+- Iteration 36 retains responsibility for integration of its new bottom app bar.
 
 ### Iteration 36: Home Bottom App Bar
 
@@ -109,4 +134,5 @@ This version uses the `Author daily-use baseline` gates. The accepted APK must r
 
 ## Completion result
 
-No final result exists. This version is in planning as of 2026-10-14.
+No final result exists. Iteration 35 is in progress as of 2026-10-16;
+the remaining iterations are planned.
