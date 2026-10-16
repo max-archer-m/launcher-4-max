@@ -18,7 +18,7 @@ class StylePanelBorderTest {
             context.resources.getDimensionPixelSize(R.dimen.style_settings_panel_border_width),
         )
         assertEquals(
-            0xFF6E6E73.toInt(),
+            0xFF5A5A60.toInt(),
             ContextCompat.getColor(context, R.color.style_settings_panel_border),
         )
     }

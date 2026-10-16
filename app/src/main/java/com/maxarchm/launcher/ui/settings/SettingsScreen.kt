@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,7 +44,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LayoutCoordinates
@@ -54,7 +52,6 @@ import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -82,6 +79,7 @@ import com.maxarchm.launcher.R
 import com.maxarchm.launcher.SettingsBackupControl
 import com.maxarchm.launcher.SettingsBackupState
 import com.maxarchm.launcher.storageValue
+import com.maxarchm.launcher.ui.style.styleSettingsPanelSurface
 import kotlinx.coroutines.launch
 
 internal enum class SettingsPage {
@@ -912,8 +910,7 @@ private fun QuickActionSelectionPopup(
     ) {
         Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(cornerRadius))
-                .background(colorResource(R.color.launcher4max_sheet_surface))
+                .styleSettingsPanelSurface(cornerRadius = cornerRadius)
                 .testTag("quick_action_selection_popup"),
         ) {
             QuickAction.entries.forEach { action ->

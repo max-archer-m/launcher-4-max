@@ -44,10 +44,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.pointer.PointerEventPass
-import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
+import androidx.compose.ui.input.pointer.changedToUp
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -548,20 +553,55 @@ private fun styleSettingsContentAlpha(enabled: Boolean): Float =
     if (enabled) 1f else integerResource(R.integer.disabled_content_alpha_percent) / 100f
 
 /**
- * The one shared style settings panel surface consumed by both hosts: border, corner
- * radius, and surface color. Hosts keep only their own placement, sizing, scrolling, and
- * insets; they must not re-assemble these surface values.
+ * Shared surface and inward edge for style panels, icon-shape settings, and the Quick
+ * action popup. Hosts keep placement, sizing, scrolling, and insets; the popup supplies
+ * its own corner radius.
  */
 @Composable
 internal fun Modifier.styleSettingsPanelSurface(): Modifier {
     val panelCornerRadius = dimensionResource(R.dimen.style_settings_panel_corner_radius)
+    return styleSettingsPanelSurface(cornerRadius = panelCornerRadius)
+}
+
+@Composable
+internal fun Modifier.styleSettingsPanelSurface(cornerRadius: Dp): Modifier {
+    val panelCornerRadius = cornerRadius
     val panelShape = RoundedCornerShape(size = panelCornerRadius)
+    val surface = colorResource(R.color.launcher4max_sheet_surface)
+    val border = colorResource(R.color.style_settings_panel_border)
+    val borderWidth = dimensionResource(R.dimen.style_settings_panel_border_width)
+    val transitionWidth = dimensionResource(R.dimen.style_settings_panel_inner_transition_width)
     return this
         .clip(shape = panelShape)
-        .background(color = colorResource(R.color.launcher4max_sheet_surface))
+        .background(color = surface)
+        .drawWithCache {
+            val edge = borderWidth.toPx()
+            val transition = transitionWidth.toPx()
+            val radius = panelCornerRadius.toPx()
+            onDrawBehind {
+                // Nested opaque fills stay inside the border and decay quickly to the surface.
+                // Quarter-pixel steps avoid visible rings at higher display densities.
+                val steps = (transition * 4).roundToInt().coerceAtLeast(1)
+                for (step in 0..steps) {
+                    val progress = step.toFloat() / steps
+                    val remaining = 1f - progress
+                    val edgeWeight = remaining * remaining * remaining * remaining
+                    val inset = edge + transition * progress
+                    val width = size.width - inset * 2
+                    val height = size.height - inset * 2
+                    if (width <= 0f || height <= 0f) break
+                    drawRoundRect(
+                        color = lerp(surface, border, edgeWeight),
+                        topLeft = Offset(inset, inset),
+                        size = Size(width, height),
+                        cornerRadius = CornerRadius((radius - inset).coerceAtLeast(0f)),
+                    )
+                }
+            }
+        }
         .border(
-            width = dimensionResource(R.dimen.style_settings_panel_border_width),
-            color = colorResource(R.color.style_settings_panel_border),
+            width = borderWidth,
+            color = border,
             shape = panelShape,
         )
 }
@@ -701,7 +741,9 @@ internal fun StyleBackgroundOpacityBlock(
                                             val pointer = event.changes.firstOrNull {
                                                 it.id == down.id
                                             }
-                                            if (pointer?.changedToUpIgnoreConsumed() == true) {
+                                            // ACTION_CANCEL is a consumed synthetic up. Observe
+                                            // Initial before Slider consumes a real release.
+                                            if (pointer?.changedToUp() == true) {
                                                 pointerCancelled = false
                                             }
                                         } while (event.changes.any { it.pressed })

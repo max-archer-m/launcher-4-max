@@ -19,6 +19,7 @@ import org.junit.Rule
 import org.junit.Test
 import com.maxarchm.launcher.ui.drawer.DrawerDisplaySettings
 import com.maxarchm.launcher.ui.drawer.DrawerDisplaySettingsPanel
+import com.maxarchm.launcher.ui.style.StyleBackgroundOpacityBlock
 
 class DrawerBackgroundOpacityTest {
     @get:Rule
@@ -103,5 +104,66 @@ class DrawerBackgroundOpacityTest {
         composeRule.waitForIdle()
         assertEquals(null, previews.last())
         assertEquals(1, commits.size)
+    }
+
+    @Test
+    fun cancelledShapeSliderPreviewDoesNotCommitAndNextReleaseUsesRefreshedValue() {
+        var saved by mutableStateOf(50)
+        var draft by mutableStateOf(50)
+        val released = mutableListOf<Int>()
+        var cancellations = 0
+        composeRule.setContent {
+            Launcher4MaxTheme {
+                StyleBackgroundOpacityBlock(
+                    title = "Corner radius",
+                    opacity = draft,
+                    enabled = true,
+                    onOpacityChange = { draft = it },
+                    onOpacityChangeFinished = { released.add(it) },
+                    onOpacityChangeCancelled = {
+                        cancellations++
+                        draft = saved
+                    },
+                    sliderTestTag = "shape_slider",
+                )
+            }
+        }
+        val slider = composeRule.onNodeWithTag("shape_slider")
+        slider.performTouchInput {
+            down(center)
+            moveBy(percentOffset(x = 0.3f, y = 0f))
+        }
+        composeRule.runOnIdle {
+            assertTrue(draft != saved)
+            assertTrue(released.isEmpty())
+        }
+        slider.performTouchInput { cancel() }
+        composeRule.runOnIdle {
+            assertEquals(1, cancellations)
+            assertEquals(saved, draft)
+            assertTrue(released.isEmpty())
+        }
+        // Accessibility has no pointer-down and must recover from the cancelled gesture.
+        slider.performSemanticsAction(SemanticsActions.SetProgress) { action ->
+            action(0f)
+        }
+        composeRule.runOnIdle {
+            assertEquals(listOf(0), released)
+            assertEquals(0, draft)
+            assertEquals(1, cancellations)
+            saved = 20
+            draft = saved
+        }
+        composeRule.waitForIdle()
+        slider.performTouchInput {
+            down(center)
+            moveBy(percentOffset(x = 0.2f, y = 0f))
+            up()
+        }
+        composeRule.runOnIdle {
+            assertEquals(listOf(0, draft), released)
+            assertTrue(released.last() != saved)
+            assertEquals(1, cancellations)
+        }
     }
 }

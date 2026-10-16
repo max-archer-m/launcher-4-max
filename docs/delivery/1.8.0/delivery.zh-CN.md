@@ -53,7 +53,7 @@
 
 | 迭代 | 状态 | 更新日期 | 依据 |
 | --- | --- | --- | --- |
-| [迭代 35：图标形状配置](iteration-35-icon-shape-customization.zh-CN.md) | `Planned` | 2026-10-14 | 当前产品契约已包含本版本第一项能力迭代所选的图标形状设置与呈现范围。 |
+| [迭代 35：图标形状配置](iteration-35-icon-shape-customization.zh-CN.md) | `In Progress` | 2026-10-16 | 作者报告验收 Passed；本地收尾尚未提交。 |
 | [迭代 36：Home 底部应用栏](iteration-36-home-bottom-app-bar.zh-CN.md) | `Planned` | 2026-10-14 | 作者确认底部应用栏应作为独立迭代。 |
 | [迭代 37：Home 编辑模式交互](iteration-37-home-edit-mode-interaction.zh-CN.md) | `Planned` | 2026-10-14 | 作者确认模块标题属于 Home 编辑模式交互修改。 |
 | [迭代 38：Home 收藏放置与布局](iteration-38-home-favorite-placement-layout.zh-CN.md) | `Planned` | 2026-10-14 | 已接受的 Home 放置与布局更新形成独立可验收的放置旅程。 |
@@ -63,7 +63,22 @@
 
 ### 迭代 35：图标形状配置
 
-[契约](iteration-35-icon-shape-customization.zh-CN.md)。状态：`Planned`。尚无实现证据。后续责任人：项目作者。最终作者决定：尚不适用。
+[契约](iteration-35-icon-shape-customization.zh-CN.md)。状态：`In Progress`。
+作者于 2026-10-16 报告验收：`Passed`。本地收尾尚未提交。
+
+- 契约追溯：原基线 `0e6ac891f26f0d7ea5d4e483d4d0916a99de23b6` 与已接受预览增补
+  `0ebf612e0553385bdce9e794a1f57500bf5feb8a` 均为实现 HEAD 的祖先。
+  64dp/16dp/label 变更由作者要求并验收。
+- 实现提交：`a6c1226`（预览控件）、`6a9ec2a`（偏好持久化）、`e4c198f`（共享图标应用）、
+  `4795bfb`（备份兼容）。本地收尾统一 Home、Drawer、图标形状设置和快捷操作 Popup
+  的共享面板向内边缘效果，并补充聚焦 store 与 slider 回归覆盖。
+- Agent 在 macOS/zsh 的静态验证：`git diff --check`、新增 Kotlin 行长和 Unicode 检查、
+  资源 XML 解析及重名/引用检查、受影响本地 Markdown 链接检查。
+  这些检查仅验证源码一致性，不代表运行时验收。
+- Agent 构建、lint 与设备测试：`Not run`；遵照作者要求，未执行 Gradle。
+  测试源码包含 store 默认、重载、非法字段、读写失败与重试，以及共享 slider 取消及刷新。
+- 作者于 2026-10-16 报告修复后回归及改动验收：`Passed`。
+- 迭代36继续负责其新增底部应用栏的集成。
 
 ### 迭代 36：Home 底部应用栏
 
@@ -109,4 +124,4 @@
 
 ## 完成结果
 
-尚无最终结果。本版本截至 2026-10-14 处于规划状态。
+尚无最终结果。截至 2026-10-16，迭代35进行中，其余迭代仍为规划状态。
