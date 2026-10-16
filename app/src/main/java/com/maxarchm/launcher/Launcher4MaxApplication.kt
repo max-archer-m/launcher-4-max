@@ -18,8 +18,6 @@ class Launcher4MaxApplication : Application() {
 }
 
 internal class AppGraph(context: Context) {
-    val inventoryLoader: AndroidLaunchableInventoryLoader =
-        AndroidLaunchableInventoryLoader(context = context)
     val entryLauncher: AndroidLaunchableEntryLauncher =
         AndroidLaunchableEntryLauncher(context = context)
     val favoriteStore: OrderedFavoriteStoreAdapter =
@@ -30,6 +28,13 @@ internal class AppGraph(context: Context) {
         QuickActionBindingsStore(context = context)
     val iconShapeSettingsStore: IconShapeSettingsStore =
         IconShapeSettingsStore(context = context)
+    val inventoryLoader: AndroidLaunchableInventoryLoader =
+        AndroidLaunchableInventoryLoader(
+            context = context,
+            iconAppearanceProvider = {
+                iconShapeSettingsStore.lastSuccessfulSettings.iconAppearance()
+            },
+        )
     val defaultLauncherPromptStore: DefaultLauncherPromptStore =
         DefaultLauncherPromptStore(context = context)
     val informationLauncher: AndroidApplicationInformationLauncher =

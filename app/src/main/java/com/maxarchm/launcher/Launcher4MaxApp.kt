@@ -51,6 +51,7 @@ import java.time.LocalDate
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableSharedFlow
+import com.maxarchm.launcher.platform.icons.LauncherIconAppearance
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -416,9 +417,21 @@ internal fun Launcher4MaxApp(
         }
     }
 
-    LaunchedEffect(inventoryCoordinator) {
-        if (inventoryState is LaunchableInventoryState.Loading) {
-            inventoryCoordinator.load(showLoading = true)
+    LaunchedEffect(inventoryCoordinator, effectiveIconShapeSettingsStore) {
+        var lastAppearance: LauncherIconAppearance? = null
+        effectiveIconShapeSettingsStore.state.collect { state ->
+            if (state is IconShapeSettingsReadState.Loading) return@collect
+            val appearance = effectiveIconShapeSettingsStore.lastSuccessfulSettings.iconAppearance()
+            if (lastAppearance != appearance) {
+                lastAppearance = appearance
+                // Keep collecting successful saves while a previous inventory load is suspended.
+                launch {
+                    inventoryCoordinator.load(
+                        showLoading = false,
+                        preserveContentOnFailure = true,
+                    )
+                }
+            }
         }
     }
 

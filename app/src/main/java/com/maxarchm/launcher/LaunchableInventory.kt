@@ -46,6 +46,8 @@ internal data class LaunchableEntry(
     val icon: Drawable,
     val iconBitmap: Bitmap? = null,
     val profileBadge: Drawable? = null,
+    val sourceIcon: Drawable? = null,
+    val iconAppearance: LauncherIconAppearance? = null,
 )
 
 internal enum class ProfileInventoryReadStatus {
@@ -66,6 +68,8 @@ internal fun LaunchableInventorySnapshot.drawerSectionsFor(locale: Locale): List
 
 internal fun interface LaunchableInventoryLoader {
     suspend fun load(): LaunchableInventorySnapshot
+
+    fun currentIconAppearance(): LauncherIconAppearance? = null
 }
 
 internal sealed interface FavoriteAvailability {
@@ -93,6 +97,8 @@ internal interface LaunchableIdentityStatusResolver {
     ): FavoriteAvailability
 
     fun markAvailable(identity: LaunchableIdentity) = Unit
+
+    suspend fun refreshPresentation(entry: LaunchableEntry): LaunchableEntry = entry
 }
 
 internal fun interface LaunchableInventoryObservation {
@@ -164,10 +170,19 @@ internal class LaunchableInventoryCoordinator(
             do {
                 pendingLoad = false
                 if (shouldShowLoading) mutableState.value = LaunchableInventoryState.Loading
+                val appearance = loader.currentIconAppearance()
                 mutableState.value = try {
                     val snapshot = loader.load()
-                    if (snapshot.entries.isEmpty()) {
-                        LaunchableInventoryState.Error(lastSuccessfulSnapshot)
+                    if (appearance != loader.currentIconAppearance()) {
+                        pendingLoad = true
+                        mutableState.value
+                    } else if (snapshot.entries.isEmpty()) {
+                        val reliableSnapshot = lastSuccessfulSnapshot
+                        if (shouldPreserveContentOnFailure && reliableSnapshot != null) {
+                            LaunchableInventoryState.Content(reliableSnapshot)
+                        } else {
+                            LaunchableInventoryState.Error(reliableSnapshot)
+                        }
                     } else {
                         lastSuccessfulSnapshot = snapshot
                         snapshot.entries.forEach { lastTrustedEntries[it.identity] = it }
@@ -177,7 +192,10 @@ internal class LaunchableInventoryCoordinator(
                     throw cancellation
                 } catch (_: Exception) {
                     val reliableSnapshot = lastSuccessfulSnapshot
-                    if (shouldPreserveContentOnFailure && reliableSnapshot != null) {
+                    if (appearance != loader.currentIconAppearance()) {
+                        pendingLoad = true
+                        mutableState.value
+                    } else if (shouldPreserveContentOnFailure && reliableSnapshot != null) {
                         LaunchableInventoryState.Content(snapshot = reliableSnapshot)
                     } else {
                         LaunchableInventoryState.Error(lastKnownSnapshot = reliableSnapshot)
@@ -212,7 +230,9 @@ internal class LaunchableInventoryCoordinator(
                 ?: resolver?.resolveMissingIdentity(
                     identity = identity,
                     snapshot = snapshot,
-                    lastKnownEntry = lastTrustedEntries[identity],
+                    lastKnownEntry = lastTrustedEntries[identity]?.let {
+                        resolver.refreshPresentation(it)
+                    },
                 )
                 ?: FavoriteAvailability.Unknown(lastTrustedEntries[identity])
         }
@@ -223,6 +243,7 @@ internal class AndroidLaunchableInventoryLoader(
     context: Context,
     private val iconRenderer: LauncherIconRenderer = SystemLauncherIconRenderer(context),
     private val iconAppearance: LauncherIconAppearance = LauncherIconAppearance(),
+    private val iconAppearanceProvider: () -> LauncherIconAppearance = { iconAppearance },
 ) : LaunchableInventoryLoader, LaunchableInventoryMonitor, LaunchableIdentityStatusResolver {
     private val applicationContext = context.applicationContext
     private val launcherApps = checkNotNull(applicationContext.getSystemService<LauncherApps>())
@@ -237,7 +258,10 @@ internal class AndroidLaunchableInventoryLoader(
         MAXIMUM_CACHED_ICONS,
     )
 
+    override fun currentIconAppearance(): LauncherIconAppearance = iconAppearanceProvider()
+
     override suspend fun load(): LaunchableInventorySnapshot = withContext(Dispatchers.IO) {
+        val appearance = currentIconAppearance()
         val density = applicationContext.resources.displayMetrics.densityDpi
         val locale = applicationContext.resources.configuration.locales[0]
         val iconSizePixels = applicationContext.resources.getDimensionPixelSize(
@@ -274,6 +298,7 @@ internal class AndroidLaunchableInventoryLoader(
                         identity = identity,
                         density = density,
                         iconSizePixels = iconSizePixels,
+                        appearance = appearance,
                     )
 
                     LaunchableEntry(
@@ -282,6 +307,8 @@ internal class AndroidLaunchableInventoryLoader(
                         label = activity.label.toString(),
                         icon = preparedIcon.drawable,
                         iconBitmap = preparedIcon.bitmap,
+                        sourceIcon = preparedIcon.source,
+                        iconAppearance = appearance,
                         profileBadge = if (user == currentUser) {
                             null
                         } else {
@@ -365,13 +392,16 @@ internal class AndroidLaunchableInventoryLoader(
                     val sourceIcon = runCatching {
                         applicationInfo.loadIcon(applicationContext.packageManager)
                     }.getOrDefault(applicationContext.packageManager.defaultActivityIcon)
-                    val renderedIcon = iconRenderer.render(sourceIcon, user, iconAppearance)
+                    val appearance = currentIconAppearance()
+                    val renderedIcon = iconRenderer.render(sourceIcon, user, appearance)
                     LaunchableEntry(
                         identity = identity,
                         user = user,
                         label = applicationInfo.loadLabel(applicationContext.packageManager)
                             .toString(),
                         icon = renderedIcon,
+                        sourceIcon = sourceIcon,
+                        iconAppearance = appearance,
                         iconBitmap = runCatching {
                             val iconSizePixels = applicationContext.resources
                                 .getDimensionPixelSize(R.dimen.drawer_application_icon_size)
@@ -420,32 +450,53 @@ internal class AndroidLaunchableInventoryLoader(
         pendingExactComponentDisappearance.remove(identity)
     }
 
+    override suspend fun refreshPresentation(entry: LaunchableEntry): LaunchableEntry =
+        withContext(Dispatchers.IO) {
+            val appearance = currentIconAppearance()
+            val source = entry.sourceIcon ?: return@withContext entry
+            if (entry.iconAppearance == appearance) return@withContext entry
+            val rendered = runCatching {
+                iconRenderer.render(source, entry.user, appearance)
+            }.getOrElse { return@withContext entry }
+            val size = applicationContext.resources.getDimensionPixelSize(
+                R.dimen.drawer_application_icon_size,
+            )
+            entry.copy(
+                icon = rendered,
+                iconBitmap = runCatching { rendered.toBitmap(size, size) }.getOrNull(),
+                iconAppearance = appearance,
+            )
+        }
+
     private fun preparedIconFor(
         activity: LauncherActivityInfo,
         user: UserHandle,
         identity: LaunchableIdentity,
         density: Int,
         iconSizePixels: Int,
+        appearance: LauncherIconAppearance,
     ): PreparedIcon {
         val cacheKey = RenderedIconCacheKey(
             identity = identity,
             density = density,
             uiMode = applicationContext.resources.configuration.uiMode,
-            shape = iconAppearance.shape,
+            shape = appearance.shape,
         )
         renderedIconCache.get(cacheKey)?.let { return it }
 
         val fallbackIcon = applicationContext.packageManager.defaultActivityIcon
-        val sourceIcon = runCatching {
+        var sourceIcon = runCatching {
             activity.getIcon(density)
         }.getOrDefault(fallbackIcon)
         val renderedIcon = runCatching {
-            iconRenderer.render(sourceIcon, user, iconAppearance)
+            iconRenderer.render(sourceIcon, user, appearance)
         }.getOrElse {
-            iconRenderer.render(fallbackIcon, user, iconAppearance)
+            sourceIcon = fallbackIcon
+            iconRenderer.render(fallbackIcon, user, appearance)
         }
         return PreparedIcon(
             drawable = renderedIcon,
+            source = sourceIcon,
             bitmap = runCatching {
                 renderedIcon.toBitmap(iconSizePixels, iconSizePixels)
             }.getOrNull(),
@@ -548,6 +599,7 @@ internal class AndroidLaunchableInventoryLoader(
 
     private data class PreparedIcon(
         val drawable: Drawable,
+        val source: Drawable,
         val bitmap: Bitmap?,
     )
 

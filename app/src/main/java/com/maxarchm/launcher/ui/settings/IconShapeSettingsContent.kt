@@ -1,11 +1,5 @@
 package com.maxarchm.launcher.ui.settings
 
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Rect
-import android.graphics.drawable.AdaptiveIconDrawable
-import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -48,8 +42,6 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.createBitmap
-import androidx.core.graphics.drawable.toBitmap
 import com.maxarchm.launcher.FavoriteListSize
 import com.maxarchm.launcher.IconShapeClipMode
 import com.maxarchm.launcher.IconShapeSettings
@@ -59,6 +51,7 @@ import com.maxarchm.launcher.lineHeightResource
 import com.maxarchm.launcher.platform.icons.FREEFORM_ICON_CLIP_RANGE
 import com.maxarchm.launcher.platform.icons.OEM_ICON_CLIP
 import com.maxarchm.launcher.platform.icons.clipLauncherIcon
+import com.maxarchm.launcher.platform.icons.prepareLauncherIconBitmap
 import com.maxarchm.launcher.textSizeResource
 import com.maxarchm.launcher.ui.drawer.drawerForegroundShadow
 import com.maxarchm.launcher.ui.style.StyleBackgroundOpacityBlock
@@ -229,7 +222,7 @@ private fun IconShapeDemoList(clip: Int) {
             val accessibilityName = stringResource(accessibilityResource)
             val pixels = with(density) { size.roundToPx() }
             val source = remember(context, pixels) {
-                createIconShapeDemoBitmap(
+                prepareLauncherIconBitmap(
                     context.packageManager.defaultActivityIcon,
                     pixels,
                     context.resources,
@@ -264,37 +257,5 @@ private fun IconShapeDemoList(clip: Int) {
                 )
             }
         }
-    }
-}
-
-/** Prepares square artwork; only clipLauncherIcon applies the selected outer mask. */
-private fun createIconShapeDemoBitmap(
-    source: Drawable,
-    pixels: Int,
-    resources: Resources,
-): Bitmap {
-    if (source !is AdaptiveIconDrawable) {
-        return source.toBitmap(pixels, pixels)
-    }
-    val adaptive = source.constantState?.newDrawable(resources)?.mutate()
-        as? AdaptiveIconDrawable ?: source
-    val background = adaptive.background
-    val foreground = adaptive.foreground
-    val originalBounds = Rect(adaptive.bounds)
-    val backgroundBounds = background?.let { Rect(it.bounds) }
-    val foregroundBounds = foreground?.let { Rect(it.bounds) }
-    try {
-        // Let the parent compute adaptive layer overscan; do not shrink layers to the viewport.
-        adaptive.setBounds(0, 0, pixels, pixels)
-        val bitmap = createBitmap(pixels, pixels)
-        val canvas = Canvas(bitmap)
-        background?.draw(canvas)
-        foreground?.draw(canvas)
-        return bitmap
-    } finally {
-        // Also restore child bounds when no independent constant-state copy was available.
-        adaptive.bounds = originalBounds
-        if (backgroundBounds != null) background?.bounds = backgroundBounds
-        if (foregroundBounds != null) foreground?.bounds = foregroundBounds
     }
 }

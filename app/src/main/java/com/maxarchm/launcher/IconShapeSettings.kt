@@ -2,6 +2,8 @@ package com.maxarchm.launcher
 
 import android.content.Context
 import android.util.AtomicFile
+import com.maxarchm.launcher.platform.icons.LauncherIconAppearance
+import com.maxarchm.launcher.platform.icons.LauncherIconShape
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.DataInputStream
@@ -49,6 +51,14 @@ internal sealed interface IconShapeSettingsReadState {
     data object ReadFailure : IconShapeSettingsReadState
 }
 
+internal fun IconShapeSettings.iconAppearance(): LauncherIconAppearance =
+    LauncherIconAppearance(
+        shape = when (mode) {
+            IconShapeClipMode.Oem -> LauncherIconShape.SystemAdaptive
+            IconShapeClipMode.Freeform -> LauncherIconShape.Freeform(freeformClip)
+        },
+    )
+
 internal class IconShapeSettingsStore internal constructor(
     private val atomicFile: AtomicFile,
 ) {
@@ -71,9 +81,13 @@ internal class IconShapeSettingsStore internal constructor(
 
     val state: StateFlow<IconShapeSettingsReadState> = mutableState
 
+    @Volatile
+    var lastSuccessfulSettings: IconShapeSettings = IconShapeSettings()
+        private set
+
     suspend fun load(): Unit = mutationMutex.withLock {
         mutableState.value = IconShapeSettingsReadState.Loading
-        mutableState.value = withContext(Dispatchers.IO) {
+        val result = withContext(Dispatchers.IO) {
             if (!atomicFile.hasReadableSource()) {
                 IconShapeSettingsReadState.Readable(IconShapeSettings())
             } else {
@@ -86,6 +100,10 @@ internal class IconShapeSettingsStore internal constructor(
                 }
             }
         }
+        if (result is IconShapeSettingsReadState.Readable) {
+            lastSuccessfulSettings = result.settings
+        }
+        mutableState.value = result
     }
 
     fun loadBlocking(): Unit = runBlocking { load() }
@@ -98,6 +116,7 @@ internal class IconShapeSettingsStore internal constructor(
         try {
             withContext(Dispatchers.IO) {
                 writeDocument(settings = settings)
+                lastSuccessfulSettings = settings
                 mutableState.value = IconShapeSettingsReadState.Readable(settings)
             }
             true

@@ -1,6 +1,7 @@
 package com.maxarchm.launcher.platform.icons
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -19,7 +20,36 @@ import com.maxarchm.launcher.R
 internal const val OEM_ICON_CLIP = -1
 internal val FREEFORM_ICON_CLIP_RANGE = 0..100
 
-/** Clips a square bitmap without changing source artwork or the production appearance model. */
+/** Prepares adaptive layers without applying their parent's OEM mask. */
+internal fun prepareLauncherIconBitmap(
+    source: Drawable,
+    pixels: Int,
+    resources: Resources,
+): Bitmap {
+    if (source !is AdaptiveIconDrawable) return source.toBitmap(pixels, pixels)
+    val adaptive = source.constantState?.newDrawable(resources)?.mutate()
+        as? AdaptiveIconDrawable ?: source
+    val background = adaptive.background
+    val foreground = adaptive.foreground
+    val originalBounds = Rect(adaptive.bounds)
+    val backgroundBounds = background?.let { Rect(it.bounds) }
+    val foregroundBounds = foreground?.let { Rect(it.bounds) }
+    try {
+        // The parent computes layer overscan, but only the final clip supplies the mask.
+        adaptive.setBounds(0, 0, pixels, pixels)
+        val bitmap = createBitmap(pixels, pixels)
+        val canvas = Canvas(bitmap)
+        background?.draw(canvas)
+        foreground?.draw(canvas)
+        return bitmap
+    } finally {
+        adaptive.bounds = originalBounds
+        if (backgroundBounds != null) background?.bounds = backgroundBounds
+        if (foregroundBounds != null) foreground?.bounds = foregroundBounds
+    }
+}
+
+/** Clips square artwork before profile badging. */
 internal fun clipLauncherIcon(source: Bitmap, clip: Int): Bitmap {
     require(source.width == source.height)
     require(clip == OEM_ICON_CLIP || clip in FREEFORM_ICON_CLIP_RANGE)
@@ -43,6 +73,11 @@ internal fun clipLauncherIcon(source: Bitmap, clip: Int): Bitmap {
 
 internal sealed interface LauncherIconShape {
     data object SystemAdaptive : LauncherIconShape
+    data class Freeform(val clip: Int) : LauncherIconShape {
+        init {
+            require(clip in FREEFORM_ICON_CLIP_RANGE)
+        }
+    }
 }
 
 internal data class LauncherIconAppearance(
@@ -74,6 +109,10 @@ internal class SystemLauncherIconRenderer(
     ): Drawable {
         val normalizedBitmap = when (appearance.shape) {
             LauncherIconShape.SystemAdaptive -> renderSystemAdaptiveIcon(source)
+            is LauncherIconShape.Freeform -> clipLauncherIcon(
+                prepareLauncherIconBitmap(source, iconSizePixels, resources),
+                appearance.shape.clip,
+            )
         }
         val normalizedDrawable = normalizedBitmap.toDrawable(resources)
 
